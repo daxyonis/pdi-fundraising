@@ -3,7 +3,7 @@
 * Campaign entity
 * @author Eva Maciejko
 */
-entity Campaign {
+entity PdiCampaign {
 	organizationNumber Long,
     organizationName String,
     project String,
@@ -16,7 +16,7 @@ entity Campaign {
 * Group entity
 * @author Eva Maciejko
 */
-entity Group {
+entity PdiGroup {
 	number Long,
     name String,
     leader String    
@@ -67,14 +67,14 @@ entity OrderHeader {
     confirmationNumber String
 }
 
-entity OrderDetail {
+entity OrderItem {
 	orderNumber String,
     productNumber String,
     quantity Integer,
     unitPrice BigDecimal    
 }
 
-entity Product {
+entity PdiProduct {
 	productNumber String,    
     unitPrice BigDecimal,
     nameFr String,
@@ -86,7 +86,7 @@ entity Product {
     categoryEn String
 }
 
-entity Category {
+entity PdiCategory {
 	number Long,
     descriptionFr String,
     descriptionEn String
@@ -95,7 +95,7 @@ entity Category {
 relationship OneToOne {
 	Seller{me} to WebUser,
     Seller{buyer} to WebUser,
-    OrderDetail{product} to Product
+    OrderItem{product} to PdiProduct
 }
 
 relationship ManyToMany {
@@ -103,14 +103,11 @@ relationship ManyToMany {
 }
 
 relationship OneToMany {
-	Campaign to Group{campaign},
-	Group to Seller{group},
+	PdiCampaign to PdiGroup{campaign},
+	PdiGroup to Seller{group},
     Seller to OrderHeader{seller},
-    OrderHeader to OrderDetail{header}    
-}
-
-relationship ManyToOne {
-	Product to Category
+    OrderHeader to OrderItem{header},
+    PdiCategory to PdiProduct{category}
 }
 
 // Use Data Transfer Objects (DTO)
