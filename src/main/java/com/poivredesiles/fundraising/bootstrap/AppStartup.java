@@ -4,9 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.poivredesiles.fundraising.model.Role;
@@ -17,6 +18,8 @@ import com.poivredesiles.fundraising.repository.UserRepository;
 
 @Component
 public class AppStartup implements CommandLineRunner {
+	
+	private final Logger log = LoggerFactory.getLogger(AppStartup.class);
 
 	@Value("#{${application.admin.usernames}}")
 	private List<String> adminUsernames;
@@ -28,14 +31,9 @@ public class AppStartup implements CommandLineRunner {
 
 	private RoleRepository roleRepository;
 
-	private PasswordEncoder passwordEncoder;
-
-//	private ApplicationProperties applicationProperties;
-
-	public AppStartup(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+	public AppStartup(UserRepository userRepository, RoleRepository roleRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -53,23 +51,30 @@ public class AppStartup implements CommandLineRunner {
 		roles.add(new Role(RoleEnum.ADMIN));
 		int index = 0;
 		for (String username : adminUsernames) {
-			User user = new User();
-			user.setRoles(roles);
-			user.setUsername(username);
-			user.setPassword(adminPasswords.get(index++));
-			user.setLanguage("FR");
-			user.setCreatedBy("system");
-			userRepository.save(user);
+			if (userRepository.countByUsername(username) < 1) {
+				log.info("Creating user {}", username);
+				User user = new User();
+				user.setRoles(roles);
+				user.setUsername(username);
+				user.setPassword(adminPasswords.get(index++));
+				user.setLanguage("FR");
+				user.setCreatedBy("system");
+				userRepository.save(user);
+			}
 		}
 	}
 
 	private void createRoles() {
-		for (RoleEnum role : RoleEnum.values()) {
-			if (roleRepository.findById(role.name()).isEmpty()) {
-				roleRepository.save(new Role(role));
-			}
-		}
 		long numRoles = roleRepository.count();
-		assert (numRoles == (long) RoleEnum.values().length);
+		if (numRoles < (long) RoleEnum.values().length) {
+			for (RoleEnum role : RoleEnum.values()) {
+				if (roleRepository.findById(role.name()).isEmpty()) {
+					log.info("Creating role {}", role.name());
+					roleRepository.save(new Role(role));
+				}
+			}
+			numRoles = roleRepository.count();
+			assert (numRoles == (long) RoleEnum.values().length);
+		}
 	}
 }
