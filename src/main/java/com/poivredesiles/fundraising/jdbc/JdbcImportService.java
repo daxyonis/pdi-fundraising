@@ -13,6 +13,8 @@ import com.poivredesiles.fundraising.jdbc.dto.Product;
 import com.poivredesiles.fundraising.jdbc.dto.Section;
 import com.poivredesiles.fundraising.jdbc.mapper.ProductRowMapper;
 import com.poivredesiles.fundraising.jdbc.mapper.SectionRowMapper;
+import com.poivredesiles.fundraising.service.PdiCategoryService;
+import com.poivredesiles.fundraising.service.PdiProductService;
 
 @Service
 public class JdbcImportService {
@@ -21,6 +23,12 @@ public class JdbcImportService {
 
 	@Autowired	
 	private FileMakerDatasource fileMakerDatasource;
+	
+	@Autowired
+	private PdiCategoryService pdiCategoryService;
+	
+	@Autowired
+	private PdiProductService pdiProductService;
 
 	/**
 	 * IMPORT of Products and Sections
@@ -29,11 +37,10 @@ public class JdbcImportService {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(fileMakerDatasource.create());
 
 		List<Section> sections = readSections(jdbcTemplate);
+		pdiCategoryService.importSections(sections);
 		
 		List<Product> products = readProducts(jdbcTemplate);
-		
-		log.info("Sections: {}", sections.toString());
-		log.info("Produits: {}", products.toString());
+		pdiProductService.importProducts(products);
 	}
 
 	/**

@@ -79,21 +79,19 @@ entity OrderItem {
 }
 
 entity PdiProduct {
-	productNumber String,    
-    unitPrice BigDecimal,
+	productNumber String,        
     nameFr String,
     nameEn String,
     descriptionFr String,
     descriptionEn String,
-    weight String,
-    categoryFr String,
-    categoryEn String
+    weight String    
 }
 
 entity PdiCategory {
 	number Long,
     descriptionFr String,
-    descriptionEn String
+    descriptionEn String,
+    unitPrice BigDecimal
 }
 
 relationship OneToOne {
