@@ -7,9 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import com.poivredesiles.fundraising.model.Role;
-import com.poivredesiles.fundraising.model.RoleEnum;
-import com.poivredesiles.fundraising.model.User;
+import com.poivredesiles.fundraising.model.user.Role;
+import com.poivredesiles.fundraising.model.user.RoleEnum;
+import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.service.dto.UserDTO;
 
 @Mapper(componentModel = "spring", uses = {MapperUtils.class})

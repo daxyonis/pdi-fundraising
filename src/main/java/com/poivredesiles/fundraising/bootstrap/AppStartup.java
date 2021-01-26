@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.poivredesiles.fundraising.model.Role;
-import com.poivredesiles.fundraising.model.RoleEnum;
-import com.poivredesiles.fundraising.model.User;
-import com.poivredesiles.fundraising.repository.RoleRepository;
-import com.poivredesiles.fundraising.repository.UserRepository;
+import com.poivredesiles.fundraising.model.user.Role;
+import com.poivredesiles.fundraising.model.user.RoleEnum;
+import com.poivredesiles.fundraising.model.user.User;
+import com.poivredesiles.fundraising.repository.user.RoleRepository;
+import com.poivredesiles.fundraising.repository.user.UserRepository;
 
 @Component
 public class AppStartup implements CommandLineRunner {

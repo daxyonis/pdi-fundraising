@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.model;
+package com.poivredesiles.fundraising.model.user;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

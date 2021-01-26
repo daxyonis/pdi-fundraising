@@ -4,12 +4,15 @@
 * @author Eva Maciejko
 */
 entity PdiCampaign {
-	organizationNumber Long,
+	organizationNum Long,
     organizationName String,
     project String,
+    leaderNum String,
+    leaderEmail String,
     dueDate LocalDate,
-    orderType Integer,
-    blocked Boolean
+    orderTypeNum Integer,
+    blocked Boolean,
+    terminationDate LocalDate
 }
 
 /**
@@ -19,7 +22,7 @@ entity PdiCampaign {
 entity PdiGroup {
 	number Long,
     name String,
-    leader String    
+    leaderNum String
 }
 
 /**
@@ -54,7 +57,8 @@ entity Role {
 }
 
 enum OrderStatusEnum {
-	PAID
+	PAID,
+    ERROR
 }
 
 entity OrderHeader {

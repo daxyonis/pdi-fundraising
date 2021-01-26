@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.model;
+package com.poivredesiles.fundraising.model.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

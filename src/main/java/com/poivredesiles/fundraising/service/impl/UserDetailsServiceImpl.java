@@ -6,9 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.poivredesiles.fundraising.model.MyUserDetails;
-import com.poivredesiles.fundraising.model.User;
-import com.poivredesiles.fundraising.repository.UserRepository;
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.model.user.User;
+import com.poivredesiles.fundraising.repository.user.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

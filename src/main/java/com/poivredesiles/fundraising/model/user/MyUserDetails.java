@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.model;
+package com.poivredesiles.fundraising.model.user;
 
 import java.util.Collection;
 import java.util.List;
