@@ -92,6 +92,11 @@ public class PdiProductServiceImpl implements PdiProductService {
 		
 	}
 
+	/**
+	 * Update one product	
+	 * @param pdiProduct	product to update
+	 * @param product		product resource with updated values
+	 */
 	private void updateProduct(PdiProduct pdiProduct, Product product) {
 		pdiProduct.setProductNumber(product.getNumber());
 		pdiProduct.setNameFr(product.getNameFr());
