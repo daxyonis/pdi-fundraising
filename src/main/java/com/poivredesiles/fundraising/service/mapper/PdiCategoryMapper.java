@@ -3,7 +3,7 @@ package com.poivredesiles.fundraising.service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.poivredesiles.fundraising.model.PdiCategory;
+import com.poivredesiles.fundraising.model.product.PdiCategory;
 import com.poivredesiles.fundraising.service.dto.PdiCategoryDTO;
 
 /**
@@ -14,7 +14,6 @@ public interface PdiCategoryMapper extends EntityMapper<PdiCategoryDTO, PdiCateg
 
 
     @Mapping(target = "pdiProducts", ignore = true)
-    @Mapping(target = "removePdiProduct", ignore = true)
     PdiCategory toEntity(PdiCategoryDTO pdiCategoryDTO);
 
     default PdiCategory fromId(Long id) {

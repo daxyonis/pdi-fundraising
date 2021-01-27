@@ -94,6 +94,10 @@ entity PdiCategory {
     unitPrice BigDecimal
 }
 
+entity OrderType {
+	number Long    
+}
+
 relationship OneToOne {
 	Seller{me} to WebUser,
     Seller{buyer} to WebUser,
@@ -101,7 +105,8 @@ relationship OneToOne {
 }
 
 relationship ManyToMany {
-	WebUser{Role(name)} to Role{webUser}
+	WebUser{name} to Role{webUser},
+    OrderType{productNumber} to PdiProduct{number}
 }
 
 relationship OneToMany {
@@ -109,7 +114,8 @@ relationship OneToMany {
 	PdiGroup to Seller{group},
     Seller to OrderHeader{seller},
     OrderHeader to OrderItem{header},
-    PdiCategory to PdiProduct{category}
+    PdiCategory to PdiProduct{category},    
+    OrderType{pdiProducts required} to PdiGroup
 }
 
 // Use Data Transfer Objects (DTO)

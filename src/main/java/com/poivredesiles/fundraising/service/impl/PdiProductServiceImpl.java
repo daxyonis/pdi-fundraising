@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.jdbc.dto.Product;
-import com.poivredesiles.fundraising.model.PdiCategory;
-import com.poivredesiles.fundraising.model.PdiProduct;
+import com.poivredesiles.fundraising.model.product.PdiCategory;
+import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.repository.product.PdiCategoryRepository;
 import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
 import com.poivredesiles.fundraising.service.PdiProductService;

@@ -3,7 +3,7 @@ package com.poivredesiles.fundraising.service.dto;
 import java.io.Serializable;
 
 /**
- * A DTO for the {@link com.poivredesiles.fundraising.domain.PdiProduct} entity.
+ * A DTO for the {@link com.poivredesiles.fundraising.model.product.domain.PdiProduct} entity.
  */
 public class PdiProductDTO implements Serializable {
     

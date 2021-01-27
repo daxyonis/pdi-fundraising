@@ -7,7 +7,7 @@ import com.poivredesiles.fundraising.jdbc.dto.Product;
 import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
 
 /**
- * Service Interface for managing {@link com.poivredesiles.fundraising.domain.PdiProduct}.
+ * Service Interface for managing {@link com.poivredesiles.fundraising.model.product.domain.PdiProduct}.
  */
 public interface PdiProductService {
 

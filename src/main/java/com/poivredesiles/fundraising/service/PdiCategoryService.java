@@ -7,7 +7,7 @@ import com.poivredesiles.fundraising.jdbc.dto.Section;
 import com.poivredesiles.fundraising.service.dto.PdiCategoryDTO;
 
 /**
- * Service Interface for managing {@link com.poivredesiles.fundraising.domain.PdiCategory}.
+ * Service Interface for managing {@link com.poivredesiles.fundraising.model.product.domain.PdiCategory}.
  */
 public interface PdiCategoryService {
 

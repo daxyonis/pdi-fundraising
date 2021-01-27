@@ -4,6 +4,11 @@ import java.math.BigDecimal;
 
 import lombok.Data;
 
+/**
+ * Data class for the Filemaker "Section" table
+ * @author evita
+ *
+ */
 @Data
 public class Section {
 

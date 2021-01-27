@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.poivredesiles.fundraising.jdbc.dto.Product;
 import com.poivredesiles.fundraising.jdbc.dto.Section;
+import com.poivredesiles.fundraising.jdbc.dto.TypeBC;
 import com.poivredesiles.fundraising.jdbc.mapper.ProductRowMapper;
 import com.poivredesiles.fundraising.jdbc.mapper.SectionRowMapper;
+import com.poivredesiles.fundraising.jdbc.mapper.TypeBCRowMapper;
+import com.poivredesiles.fundraising.service.OrderTypeService;
 import com.poivredesiles.fundraising.service.PdiCategoryService;
 import com.poivredesiles.fundraising.service.PdiProductService;
 
@@ -29,6 +32,9 @@ public class JdbcImportService {
 	
 	@Autowired
 	private PdiProductService pdiProductService;
+	
+	@Autowired
+	private OrderTypeService orderTypeService;
 
 	/**
 	 * IMPORT of Products and Sections
@@ -41,6 +47,25 @@ public class JdbcImportService {
 		
 		List<Product> products = readProducts(jdbcTemplate);
 		pdiProductService.importProducts(products);
+		
+		List<TypeBC> orderTypes = readOrderTypes(jdbcTemplate);
+		orderTypeService.importOrderTypes(orderTypes);
+	}
+
+	/**
+	 * Import the order type data
+	 * @param jdbcTemplate
+	 * @return
+	 */
+	private List<TypeBC> readOrderTypes(JdbcTemplate jdbcTemplate) {
+		assert (jdbcTemplate != null);
+		try {
+			List<TypeBC> orderTypes = jdbcTemplate.query("select * from TypeBC", new TypeBCRowMapper());
+			return orderTypes;
+		} catch (DataAccessException e) {
+			log.error("Error reading the FM TypeBC", e);
+			throw e;
+		}
 	}
 
 	/**
@@ -61,8 +86,7 @@ public class JdbcImportService {
 	 * Import the section data
 	 */
 	private List<Section> readSections(JdbcTemplate jdbcTemplate) {
-		assert (jdbcTemplate != null);
-		
+		assert (jdbcTemplate != null);		
 		try {
 			// Must put the "Section" table name in quotes because it is a reserved word in SQL
 			List<Section> sections = jdbcTemplate.query("select * from \"Section\"", new SectionRowMapper());

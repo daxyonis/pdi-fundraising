@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * A DTO for the {@link com.poivredesiles.fundraising.domain.PdiCategory} entity.
+ * A DTO for the {@link com.poivredesiles.fundraising.model.product.domain.PdiCategory} entity.
  */
 public class PdiCategoryDTO implements Serializable {
     

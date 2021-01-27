@@ -3,7 +3,7 @@ package com.poivredesiles.fundraising.service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.poivredesiles.fundraising.model.PdiProduct;
+import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
 
 /**
