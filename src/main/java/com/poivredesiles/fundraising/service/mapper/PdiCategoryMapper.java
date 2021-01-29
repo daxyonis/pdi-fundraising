@@ -9,9 +9,8 @@ import com.poivredesiles.fundraising.service.dto.PdiCategoryDTO;
 /**
  * Mapper for the entity {@link PdiCategory} and its DTO {@link PdiCategoryDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {PdiProductMapper.class})
 public interface PdiCategoryMapper extends EntityMapper<PdiCategoryDTO, PdiCategory> {
-
 
     @Mapping(target = "pdiProducts", ignore = true)
     PdiCategory toEntity(PdiCategoryDTO pdiCategoryDTO);

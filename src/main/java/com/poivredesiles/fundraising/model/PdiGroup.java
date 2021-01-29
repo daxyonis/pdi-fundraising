@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "pdigroup")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude={"sellers", "campaign", "orderType"})
 public class PdiGroup extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

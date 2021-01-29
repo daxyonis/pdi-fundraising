@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +23,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "pdiproduct")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude = {"category"})
 public class PdiProduct extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +38,7 @@ public class PdiProduct extends AbstractAuditingEntity implements Serializable {
     
     // Number visible to the customer
     @Column(name = "label_number")
-    private Long labelNumber;
+    private String labelNumber;
 
     @Column(name = "name_fr")
     private String nameFr;
@@ -54,8 +55,8 @@ public class PdiProduct extends AbstractAuditingEntity implements Serializable {
     @Column(name = "weight")
     private String weight;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = "pdiProducts", allowSetters = true)
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JsonIgnoreProperties("pdiProducts")
     private PdiCategory category;
     
 }

@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "ordertype")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude="pdiProducts")
 public class OrderType extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class OrderType extends AbstractAuditingEntity implements Serializable {
     @ManyToMany
     @JoinTable(name = "ordertype_pdiproduct",
                joinColumns = @JoinColumn(name = "ordertype_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "pdiproduct_id", referencedColumnName = "id"))
+               inverseJoinColumns = @JoinColumn(name = "pdiproduct_id", referencedColumnName = "id"))    
     private Set<PdiProduct> pdiProducts = new HashSet<>();
 
 

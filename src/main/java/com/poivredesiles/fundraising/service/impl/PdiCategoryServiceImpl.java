@@ -74,7 +74,8 @@ public class PdiCategoryServiceImpl implements PdiCategoryService {
 			for(Section section : sections) {
 				PdiCategory category = pdiCategoryRepository.findByNumber(section.getNumber());
 				if(category == null) {					
-					category = new PdiCategory();					
+					category = new PdiCategory();
+					category.setCreatedBy("system");
 				}
 				updateCategory(category, section);
 			}
@@ -86,6 +87,7 @@ public class PdiCategoryServiceImpl implements PdiCategoryService {
 		category.setDescriptionFr(section.getSectionFr());
 		category.setDescriptionEn(section.getSectionEn());
 		category.setUnitPrice(section.getUnitPrice());
+		category.setLastModifiedBy("system");
 		pdiCategoryRepository.save(category);
 	}
 }

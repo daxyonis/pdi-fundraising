@@ -85,7 +85,9 @@ public class PdiProductServiceImpl implements PdiProductService {
 					updateProduct(pdiProduct.get(), product);
 				} else {
 					// Create new
-					updateProduct(new PdiProduct(), product);
+					PdiProduct newProduct = new PdiProduct();
+					newProduct.setCreatedBy("system");
+					updateProduct(newProduct, product);
 				}
 			}
 		}
@@ -99,6 +101,7 @@ public class PdiProductServiceImpl implements PdiProductService {
 	 */
 	private void updateProduct(PdiProduct pdiProduct, Product product) {
 		pdiProduct.setProductNumber(product.getNumber());
+		pdiProduct.setLabelNumber(product.getLabelNumber());
 		pdiProduct.setNameFr(product.getNameFr());
 		pdiProduct.setNameEn(product.getNameEn());
 		pdiProduct.setDescriptionFr(product.getDescFr());
@@ -112,6 +115,7 @@ public class PdiProductServiceImpl implements PdiProductService {
 				throw new ResourceNotFoundException("Product has unknown category");
 			}
 		}
+		pdiProduct.setLastModifiedBy("system");
 		pdiProductRepository.save(pdiProduct);
 	}
 }

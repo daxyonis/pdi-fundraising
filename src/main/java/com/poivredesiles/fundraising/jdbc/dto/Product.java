@@ -24,4 +24,7 @@ public class Product {
 	
 	private String weight;
 	
+	// As seen by customers
+	private String labelNumber;
+	
 }

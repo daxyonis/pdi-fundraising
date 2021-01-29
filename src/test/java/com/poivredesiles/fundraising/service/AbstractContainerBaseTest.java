@@ -22,6 +22,13 @@ import org.testcontainers.utility.DockerImageName;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+/**
+ * Abstract class for using testcontainers
+ * It starts a mysql container before all test methods
+ * and stops it after the test methods
+ * @author evita
+ *
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = { AbstractContainerBaseTest.Initializer.class })

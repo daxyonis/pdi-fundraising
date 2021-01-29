@@ -79,32 +79,36 @@ public class OrderTypeServiceImpl implements OrderTypeService {
 	}
 
 	@Override
-	public void importOrderTypes(List<TypeBC> typeBCList) {		
-		List<Long> addedTypeBCNumbers = new ArrayList<>();
-		
-		for (TypeBC typeBC : typeBCList) {
-			// Do not treat same number twice
-			if (!addedTypeBCNumbers.contains(typeBC.getNumber())) {
-				
-				Optional<OrderType> orderType = orderTypeRepository.findByNumber(typeBC.getNumber());
-				List<String> productNumberList = typeBCList.stream()
-						.filter(bc -> bc.getNumber() == typeBC.getNumber())
-						.map(TypeBC::getProductNumber)
-						.collect(Collectors.toList());
-				
-				if (orderType.isPresent()) {
-					// Update its products
-					addProducts(orderType.get(), productNumberList);
-				} else {
-					// Create new
-					OrderType newOrderType = new OrderType();
-					newOrderType.setNumber(typeBC.getNumber());
-					addProducts(newOrderType, productNumberList);
+	public void importOrderTypes(List<TypeBC> typeBCList) {	
+		if (typeBCList != null) {
+			log.info("Importing {} TypeBC", typeBCList.size());
+			List<Long> addedTypeBCNumbers = new ArrayList<>();
+
+			for (TypeBC typeBC : typeBCList) {
+				// Do not treat same number twice
+				if (!addedTypeBCNumbers.contains(typeBC.getNumber())) {
+
+					Optional<OrderType> orderType = orderTypeRepository.findByNumber(typeBC.getNumber());
+					List<String> productNumberList = typeBCList.stream()
+							.filter(bc -> bc.getNumber() == typeBC.getNumber())
+							.map(TypeBC::getProductNumber)
+							.collect(Collectors.toList());
+
+					if (orderType.isPresent()) {
+						// Update its products
+						addProducts(orderType.get(), productNumberList);
+					} else {
+						// Create new
+						OrderType newOrderType = new OrderType();
+						newOrderType.setCreatedBy("system");						
+						newOrderType.setNumber(typeBC.getNumber());
+						orderTypeRepository.save(newOrderType);
+						addProducts(newOrderType, productNumberList);
+					}
+					addedTypeBCNumbers.add(typeBC.getNumber());
 				}
-				addedTypeBCNumbers.add(typeBC.getNumber());
 			}
 		}
-
 	}
 
 	/**
@@ -113,8 +117,10 @@ public class OrderTypeServiceImpl implements OrderTypeService {
 	 * @param productNumberList	a list of product numbers
 	 */
 	private void addProducts(OrderType orderType, List<String> productNumberList) {
-		Set<PdiProduct> products = pdiProductRepository.findByProductNumberIn(productNumberList);
+		// TODO : get the list of products via the product service
+		Set<PdiProduct> products = pdiProductRepository.findAllFromProductNumberList(productNumberList);
 		orderType.setPdiProducts(products);
+		orderType.setLastModifiedBy("system");
 		orderTypeRepository.save(orderType);
 	}
 }
