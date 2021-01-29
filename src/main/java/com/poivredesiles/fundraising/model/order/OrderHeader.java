@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
-import com.poivredesiles.fundraising.model.Seller;
+import com.poivredesiles.fundraising.model.PdiSeller;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -68,7 +68,7 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 
     @ManyToOne
     @JsonIgnoreProperties(value = "orderHeaders", allowSetters = true)
-    private Seller seller;   
+    private PdiSeller seller;   
 
     
     public OrderHeader addOrderItem(OrderItem orderItem) {

@@ -47,4 +47,9 @@ public class JdbcImportServiceITest{
 		assertEquals(NUM_TYPE_BC, numOrderTypes);
 		assertEquals(NUM_TYPE_BC_PRODUCTS, numOrderTypePdiProducts);								
 	}
+	
+	@Test
+	public void importCampaignGroupsAndSellersTest() {
+		jdbcImportService.importCampaignGroupsAndSellers();
+	}
 }

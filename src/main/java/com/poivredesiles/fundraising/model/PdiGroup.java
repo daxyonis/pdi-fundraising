@@ -13,9 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.order.OrderType;
 
 import lombok.Data;
@@ -46,12 +44,13 @@ public class PdiGroup extends AbstractAuditingEntity implements Serializable {
     private String leaderNum;
 
     @OneToMany(mappedBy = "group")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<Seller> sellers = new HashSet<>();
+    private Set<PdiSeller> sellers = new HashSet<>();
 
     @ManyToOne
+    @JsonIgnoreProperties(value = "pdiGroups", allowSetters = true)
     private PdiCampaign campaign;
 
     @ManyToOne
+    @JsonIgnoreProperties(value = "pdiProducts", allowSetters = true)
     private OrderType orderType;
 }

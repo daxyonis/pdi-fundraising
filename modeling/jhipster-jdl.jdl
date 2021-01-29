@@ -105,8 +105,8 @@ relationship OneToOne {
 }
 
 relationship ManyToMany {
-	WebUser{name} to Role{webUser},
-    OrderType{productNumber} to PdiProduct{number}
+	WebUser{roles} to Role{webUsers},
+    OrderType{pdiProducts required} to PdiProduct{orderTypes}
 }
 
 relationship OneToMany {
@@ -115,7 +115,7 @@ relationship OneToMany {
     Seller to OrderHeader{seller},
     OrderHeader to OrderItem{header},
     PdiCategory to PdiProduct{category},    
-    OrderType{pdiProducts required} to PdiGroup
+    OrderType to PdiCampaign{orderType}
 }
 
 // Use Data Transfer Objects (DTO)

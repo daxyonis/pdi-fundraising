@@ -9,15 +9,26 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.poivredesiles.fundraising.jdbc.dto.Campaign;
+import com.poivredesiles.fundraising.jdbc.dto.Group;
+import com.poivredesiles.fundraising.jdbc.dto.GroupLink;
 import com.poivredesiles.fundraising.jdbc.dto.Product;
 import com.poivredesiles.fundraising.jdbc.dto.Section;
+import com.poivredesiles.fundraising.jdbc.dto.Seller;
 import com.poivredesiles.fundraising.jdbc.dto.TypeBC;
+import com.poivredesiles.fundraising.jdbc.mapper.CampaignRowMapper;
+import com.poivredesiles.fundraising.jdbc.mapper.GroupLinkRowMapper;
+import com.poivredesiles.fundraising.jdbc.mapper.GroupRowMapper;
 import com.poivredesiles.fundraising.jdbc.mapper.ProductRowMapper;
 import com.poivredesiles.fundraising.jdbc.mapper.SectionRowMapper;
+import com.poivredesiles.fundraising.jdbc.mapper.SellerRowMapper;
 import com.poivredesiles.fundraising.jdbc.mapper.TypeBCRowMapper;
 import com.poivredesiles.fundraising.service.OrderTypeService;
+import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiCategoryService;
+import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.PdiProductService;
+import com.poivredesiles.fundraising.service.PdiSellerService;
 
 @Service
 public class JdbcImportService {
@@ -35,9 +46,18 @@ public class JdbcImportService {
 	
 	@Autowired
 	private OrderTypeService orderTypeService;
+	
+	@Autowired
+	private PdiCampaignService pdiCampaignService;
+	
+	@Autowired
+	private PdiGroupService pdiGroupService;
+	
+	@Autowired
+	private PdiSellerService pdiSellerService;
 
 	/**
-	 * IMPORT of Products and Sections
+	 * JDBC IMPORT of Products and Sections
 	 */
 	public void importProductsAndSections() {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(fileMakerDatasource.create());
@@ -51,6 +71,23 @@ public class JdbcImportService {
 		List<TypeBC> orderTypes = readOrderTypes(jdbcTemplate);
 		orderTypeService.importOrderTypes(orderTypes);
 	}
+	
+	/**
+	 * JDBC IMPORT of Campaigns, Groups and Sellers 
+	 */
+	public void importCampaignGroupsAndSellers() {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(fileMakerDatasource.create());
+		
+		List<Campaign> campaigns = readCampaigns(jdbcTemplate);
+		pdiCampaignService.importCampaigns(campaigns);
+		
+		List<Group> groups = readGroups(jdbcTemplate);
+		pdiGroupService.importGroups(groups);
+		
+		List<GroupLink> groupLinks = readGroupLinks(jdbcTemplate);
+		List<Seller> sellers = readSellers(jdbcTemplate);
+		pdiSellerService.importSellers(sellers, groupLinks);
+	}	
 
 	/**
 	 * Import the order type data
@@ -97,4 +134,71 @@ public class JdbcImportService {
 		}
 	}
 
+	/**
+	 * Import the Campaign data
+	 * @param jdbcTemplate
+	 * @return a list of campaigns
+	 */
+	private List<Campaign> readCampaigns(JdbcTemplate jdbcTemplate) {
+		assert (jdbcTemplate != null);
+		try {
+			List<Campaign> campaigns = jdbcTemplate.query("select * from Campagne", new CampaignRowMapper());
+			return campaigns;
+		} catch (DataAccessException e) {
+			log.error("Error reading the FM Campagne", e);
+			throw e;
+		}
+	}
+	
+	/**
+	 * Import the Group data
+	 * @param jdbcTemplate
+	 * @return a list of groups
+	 */
+	private List<Group> readGroups(JdbcTemplate jdbcTemplate) {
+		assert (jdbcTemplate != null);
+		try {
+			List<Group> groups = jdbcTemplate.query("select * from Groupe", new GroupRowMapper());
+			return groups;
+		} catch (DataAccessException e) {
+			log.error("Error reading the FM Groupe", e);
+			throw e;
+		}
+	}
+	
+	/**
+	 * Import the Seller data
+	 * @param jdbcTemplate
+	 * @return a list of sellers
+	 */
+	private List<Seller> readSellers(JdbcTemplate jdbcTemplate) {
+		assert (jdbcTemplate != null);
+		try {
+			List<Seller> sellers = jdbcTemplate.query("select * from Vendeur", new SellerRowMapper());
+			return sellers;
+		} catch (DataAccessException e) {
+			log.error("Error reading the FM Vendeur", e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Import the GroupLink data
+	 * @param jdbcTemplate
+	 * @return a list of GroupLinks
+	 */
+	private List<GroupLink> readGroupLinks(JdbcTemplate jdbcTemplate) {
+		assert (jdbcTemplate != null);
+		try {
+			List<GroupLink> groupLinks = jdbcTemplate.query("select * from LienGroupe", new GroupLinkRowMapper());
+			return groupLinks;
+		} catch (DataAccessException e) {
+			log.error("Error reading the FM LienGroupe", e);
+			throw e;
+		}
+	}
+
+	
+
+	
 }

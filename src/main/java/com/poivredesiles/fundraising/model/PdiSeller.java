@@ -32,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "seller")
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class Seller extends AbstractAuditingEntity implements Serializable {
+public class PdiSeller extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -67,18 +67,18 @@ public class Seller extends AbstractAuditingEntity implements Serializable {
         return orderHeaders;
     }
 
-    public Seller orderHeaders(Set<OrderHeader> orderHeaders) {
+    public PdiSeller orderHeaders(Set<OrderHeader> orderHeaders) {
         this.orderHeaders = orderHeaders;
         return this;
     }
 
-    public Seller addOrderHeader(OrderHeader orderHeader) {
+    public PdiSeller addOrderHeader(OrderHeader orderHeader) {
         this.orderHeaders.add(orderHeader);
         orderHeader.setSeller(this);
         return this;
     }
 
-    public Seller removeOrderHeader(OrderHeader orderHeader) {
+    public PdiSeller removeOrderHeader(OrderHeader orderHeader) {
         this.orderHeaders.remove(orderHeader);
         orderHeader.setSeller(null);
         return this;
@@ -92,7 +92,7 @@ public class Seller extends AbstractAuditingEntity implements Serializable {
         return group;
     }
 
-    public Seller group(PdiGroup pdiGroup) {
+    public PdiSeller group(PdiGroup pdiGroup) {
         this.group = pdiGroup;
         return this;
     }

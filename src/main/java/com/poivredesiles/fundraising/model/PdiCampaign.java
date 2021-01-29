@@ -7,14 +7,15 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import com.poivredesiles.fundraising.model.order.OrderType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +26,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "pdicampaign")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude = {"pdiGroups", "orderType"})
 public class PdiCampaign extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,7 +36,7 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     private Long id;
 
     @Column(name = "organization_num")
-    private Long organizationNum;
+    private String organizationNum;
 
     @Column(name = "organization_name")
     private String organizationName;
@@ -56,12 +57,14 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     private Integer orderTypeNum;
 
     @Column(name = "blocked")
-    private Boolean blocked;
+    private boolean blocked = false;
 
     @Column(name = "termination_date")
     private LocalDate terminationDate;
 
-    @OneToMany(mappedBy = "campaign")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToMany(mappedBy = "campaign", fetch = FetchType.LAZY)    
     private Set<PdiGroup> pdiGroups = new HashSet<>();  
+    
+    @ManyToOne    
+    private OrderType orderType;
 }
