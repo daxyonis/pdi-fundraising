@@ -2,14 +2,12 @@ package com.poivredesiles.fundraising.imports.dto;
 
 import java.util.Date;
 
-import com.poivredesiles.fundraising.exception.PdiImportDataException;
-
 import lombok.Data;
 
 @Data
 public class Campaign {
 	
-	private String number;
+	private Long number;
 
 	private String organizationNumber;
 	
@@ -25,15 +23,14 @@ public class Campaign {
 	
 	private Long numTypeBC;
 	
-	private String blocked;
+	private boolean blocked;
 	
 	private Date closedDate;
 
-	public void validate() {
-		if(number == null || number.isEmpty()) {
-			throw new PdiImportDataException("Invalid Campaign entry");
-		}
-			
-		
+	public boolean valid() {
+		if(number == null) {
+			return false;
+		} 
+		return true;		
 	}
 }

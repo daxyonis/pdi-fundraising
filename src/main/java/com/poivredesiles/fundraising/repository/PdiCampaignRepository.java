@@ -8,5 +8,5 @@ import com.poivredesiles.fundraising.model.PdiCampaign;
 
 public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> {		
 
-	Optional<PdiCampaign> findOneByNumber(String number);
+	Optional<PdiCampaign> findOneByNumber(Long number);
 }

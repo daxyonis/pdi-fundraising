@@ -24,7 +24,7 @@ public class JdbcImportServiceITest{
 	private final int NUM_TYPE_BC_PRODUCTS = 99;
 	private final int NUM_CAMPAIGN = 1;
 	private final int NUM_GROUPS = 6;
-	private final int NUM_SELLERS = 28;
+	private final int NUM_SELLERS = 27;
 	
 	private JdbcTemplate jdbcTemplate;			
 	
@@ -36,7 +36,7 @@ public class JdbcImportServiceITest{
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 	}			
 		
-//	@Test
+	@Test
 	public void importProductsAndSectionsTest() throws SQLException {
 		jdbcImportService.importProductsAndSections();		
 					

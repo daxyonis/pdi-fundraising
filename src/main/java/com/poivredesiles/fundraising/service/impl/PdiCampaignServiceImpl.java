@@ -23,56 +23,60 @@ import com.poivredesiles.fundraising.service.PdiCampaignService;
 public class PdiCampaignServiceImpl implements PdiCampaignService {
 
 	private final Logger log = LoggerFactory.getLogger(PdiCampaignServiceImpl.class);
-	
+
 	@Autowired
 	private PdiCampaignRepository pdiCampaignRepository;
-	
+
 	@Autowired
 	private OrderTypeRepository orderTypeRepository;
-	
+
 	@Override
 	public void importCampaigns(List<Campaign> campaigns) {
-		if(campaigns != null) {
+		if (campaigns != null) {
 			log.info("Importing {} campaigns", campaigns.size());
-			for(Campaign campaign : campaigns) {				
+			for (Campaign campaign : campaigns) {
 				Optional<PdiCampaign> pdiCampaign = pdiCampaignRepository.findOneByNumber(campaign.getNumber());
-				if(pdiCampaign.isPresent()) {
+				if (pdiCampaign.isPresent()) {
 					updateCampaign(pdiCampaign.get(), campaign);
 				} else {
 					// Create new campaign
 					PdiCampaign newPdiCampaign = new PdiCampaign();
-					newPdiCampaign.setCreatedBy("system");					
+					newPdiCampaign.setCreatedBy("system");
 					updateCampaign(newPdiCampaign, campaign);
 				}
 			}
-		}	
+		}
 	}
 
 	/**
 	 * Update the PDI campaign
-	 * @param pdiCampaign	PDI campaign to be updated/created
-	 * @param campaign		
+	 * 
+	 * @param pdiCampaign PDI campaign to be updated/created
+	 * @param campaign
 	 */
 	private void updateCampaign(PdiCampaign pdiCampaign, Campaign campaign) {
 		// First validate the input data is valid
-		campaign.validate();
-		pdiCampaign.setNumber(campaign.getNumber());
-		pdiCampaign.setProject(campaign.getProject());
-//		pdiCampaign.setBlocked(campaign.getBlocked()); ? TODO
-		pdiCampaign.setDueDate(convertToLocalDate(campaign.getDueDate()));
-		pdiCampaign.setLeaderNum(campaign.getLeaderNumber());
-		pdiCampaign.setLeaderEmail(campaign.getLeaderEmail());
-		pdiCampaign.setOrderTypeNum(campaign.getNumTypeBC());
-		pdiCampaign.setOrganizationNum(campaign.getOrganizationNumber());
-		pdiCampaign.setOrganizationName(campaign.getOrganizationName());	
-		
-		updateOrderType(pdiCampaign);
-		pdiCampaignRepository.save(pdiCampaign);
+		if (campaign.valid()) {
+			pdiCampaign.setNumber(campaign.getNumber());
+			pdiCampaign.setProject(campaign.getProject());
+			pdiCampaign.setBlocked(campaign.isBlocked());
+			pdiCampaign.setDueDate(convertToLocalDate(campaign.getDueDate()));
+			pdiCampaign.setLeaderNum(campaign.getLeaderNumber());
+			pdiCampaign.setLeaderEmail(campaign.getLeaderEmail());
+			pdiCampaign.setOrderTypeNum(campaign.getNumTypeBC());
+			pdiCampaign.setOrganizationNum(campaign.getOrganizationNumber());
+			pdiCampaign.setOrganizationName(campaign.getOrganizationName());
+
+			updateOrderType(pdiCampaign);
+			pdiCampaignRepository.save(pdiCampaign);
+		} else {
+			log.error("Did not save invalid campaign: {}", campaign.toString());
+		}
 	}
 
 	private void updateOrderType(PdiCampaign pdiCampaign) {
 		Optional<OrderType> orderType = orderTypeRepository.findByNumber(pdiCampaign.getOrderTypeNum());
-		if(orderType.isPresent()) {
+		if (orderType.isPresent()) {
 			pdiCampaign.setOrderType(orderType.get());
 		}
 	}

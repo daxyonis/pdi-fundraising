@@ -1,7 +1,5 @@
 package com.poivredesiles.fundraising.imports.dto;
 
-import com.poivredesiles.fundraising.exception.PdiImportDataException;
-
 import lombok.Data;
 
 @Data
@@ -13,12 +11,12 @@ public class Group {
 	
 	private String leaderNumber;		
 	
-	private String campaignNumber;
+	private Long campaignNumber;
 
-	public void validate() {
+	public boolean valid() {
 		if(number == null) {
-			throw new PdiImportDataException("Invalid Group entry");
+			return false;
 		}
-		
+		return true;
 	}
 }

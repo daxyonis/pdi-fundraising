@@ -20,13 +20,20 @@ public class ImportsUtils {
 	}
 	
 	/**
-	 * Converts a Date to LocalDate
+	 * Converts a Date to LocalDate (handles null)
 	 * @param dateToConvert
 	 * @return
 	 */
-	public static LocalDate convertToLocalDate(Date dateToConvert) {		
-		return dateToConvert.toInstant()
-			      .atZone(ZoneId.systemDefault())
-			      .toLocalDate();
+	public static LocalDate convertToLocalDate(Date dateToConvert) {
+		if(dateToConvert == null) {
+			return null;
+		}
+		if(dateToConvert instanceof java.sql.Date) {
+			return ((java.sql.Date) dateToConvert).toLocalDate();
+		} else {
+			return dateToConvert.toInstant()
+				      .atZone(ZoneId.systemDefault())
+				      .toLocalDate();
+		}
 	}
 }

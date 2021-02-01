@@ -16,5 +16,12 @@ public class Seller {
 	private String password;
 	
 	private String authorization;
+
+	public boolean valid() {
+		if(number == null || name == null || name.isBlank()) {
+			return false;
+		} 
+		return true;
+	}
 	
 }

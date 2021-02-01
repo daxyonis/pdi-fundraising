@@ -36,7 +36,7 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     private Long id;
 
     @Column(name = "number")
-    private String number;
+    private Long number;
         
     @Column(name = "organization_num")
     private String organizationNum;

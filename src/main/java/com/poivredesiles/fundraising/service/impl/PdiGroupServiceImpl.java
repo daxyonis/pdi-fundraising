@@ -53,13 +53,16 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 	 * @param group	input data
 	 */
 	private void updateGroup(PdiGroup pdiGroup, Group group) {
-		group.validate();
-		pdiGroup.setNumber(group.getNumber());
-		pdiGroup.setName(group.getName());
-		pdiGroup.setLeaderNum(group.getLeaderNumber());
-		
-		updateCampaign(pdiGroup, group.getCampaignNumber());
-		pdiGroupRepository.save(pdiGroup);
+		if(group.valid()) {
+			pdiGroup.setNumber(group.getNumber());
+			pdiGroup.setName(group.getName());
+			pdiGroup.setLeaderNum(group.getLeaderNumber());
+			
+			updateCampaign(pdiGroup, group.getCampaignNumber());
+			pdiGroupRepository.save(pdiGroup);
+		} else {
+			log.error("Did not save invalid group: {}", group.toString());
+		}
 	}
 
 	/**
@@ -67,7 +70,7 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 	 * @param pdiGroup	PDI group to update
 	 * @param campaignNumber the campaign number associated with this group
 	 */
-	private void updateCampaign(PdiGroup pdiGroup, String campaignNumber) {
+	private void updateCampaign(PdiGroup pdiGroup, Long campaignNumber) {
 		Optional<PdiCampaign> pdiCampaign =  pdiCampaignRepository.findOneByNumber(campaignNumber);
 		if(pdiCampaign.isPresent()) {
 			pdiGroup.setPdiCampaign(pdiCampaign.get());

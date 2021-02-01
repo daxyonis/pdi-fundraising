@@ -15,7 +15,7 @@ public class CampaignRowMapper implements RowMapper<Campaign> {
 	public Campaign mapRow(ResultSet rs, int rowNum) throws SQLException {
 		
 		Campaign campaign = new Campaign();
-		campaign.setNumber(sanitize(rs.getString("NoCampagne")));		
+		campaign.setNumber(rs.getLong("NoCampagne"));		
 		campaign.setOrganizationNumber(sanitize(rs.getString("NoOrganisme")));
 		campaign.setOrganizationName(sanitize(rs.getString("NomOrganisme")));
 		campaign.setProject(sanitize(rs.getString("Projet")));
@@ -23,7 +23,12 @@ public class CampaignRowMapper implements RowMapper<Campaign> {
 		campaign.setLeaderEmail(sanitize(rs.getString("CourrielResponsable")));
 		campaign.setDueDate(rs.getDate("DateLimite"));
 		campaign.setNumTypeBC(rs.getLong("NoTypeBC"));
-		campaign.setBlocked(sanitize(rs.getString("Bloqué")));
+		String blockedStr = rs.getString("Bloqué");
+		if(blockedStr != null && Integer.parseInt(blockedStr) == 1) {
+			campaign.setBlocked(true);
+		} else {
+			campaign.setBlocked(false);
+		}
 		campaign.setClosedDate(rs.getDate("DateTerminée"));	
 		return campaign;
 	}	
