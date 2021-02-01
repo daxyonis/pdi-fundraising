@@ -23,12 +23,7 @@ public class CampaignRowMapper implements RowMapper<Campaign> {
 		campaign.setLeaderEmail(sanitize(rs.getString("CourrielResponsable")));
 		campaign.setDueDate(rs.getDate("DateLimite"));
 		campaign.setNumTypeBC(rs.getLong("NoTypeBC"));
-		String blockedStr = rs.getString("Bloqué");
-		if(blockedStr != null && Integer.parseInt(blockedStr) == 1) {
-			campaign.setBlocked(true);
-		} else {
-			campaign.setBlocked(false);
-		}
+		campaign.setBlockedAsString(rs.getString("Bloqué"));		
 		campaign.setClosedDate(rs.getDate("DateTerminée"));	
 		return campaign;
 	}	

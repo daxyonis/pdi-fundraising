@@ -1,0 +1,72 @@
+package com.poivredesiles.fundraising.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.poivredesiles.fundraising.imports.CsvImportService;
+import com.poivredesiles.fundraising.imports.dto.Campaign;
+import com.poivredesiles.fundraising.imports.dto.Group;
+import com.poivredesiles.fundraising.imports.dto.Product;
+import com.poivredesiles.fundraising.imports.dto.Section;
+import com.poivredesiles.fundraising.imports.dto.TypeBC;
+
+public class CsvImportServiceTest {
+	
+	private final String FILEMAKER_CSV_FOLDER =  "C:\\Users\\evita\\OneDrive\\Documents\\Projects\\PoivreDesIles\\filemaker\\PDI\\";
+	
+	private final int NUM_SECTIONS = 16;
+	private final int NUM_PRODUCTS = 99;	
+	private final int NUM_TYPE_BC_PRODUCTS = 99;
+	private final int NUM_CAMPAIGN = 1;
+	private final int NUM_GROUPS = 6;
+	private final int NUM_SELLERS = 27;
+	
+	Logger log = LoggerFactory.getLogger(CsvImportServiceTest.class);
+
+	private CsvImportService csvImportService = new CsvImportService();
+		
+	@Test
+	public void readSectionsTest() {
+		log.info("---------- CSV Read Sections ------------");
+		List<Section> sections = csvImportService.readSections(FILEMAKER_CSV_FOLDER + "section.csv");				
+		log.info(sections.toString());
+		assertEquals(NUM_SECTIONS, sections.size());
+	}
+	
+	@Test
+	public void readProductsTest() {
+		log.info("---------- CSV Read Products ------------");
+		List<Product> products = csvImportService.readProducts(FILEMAKER_CSV_FOLDER + "produit.csv");				
+		log.info(products.toString());
+		assertEquals(NUM_PRODUCTS, products.size());
+	}
+	
+	@Test
+	public void readTypeBCTest() {
+		log.info("---------- CSV Read TypeBC ------------");
+		List<TypeBC> typeBCs = csvImportService.readOrderTypes(FILEMAKER_CSV_FOLDER + "typebc.csv");				
+		log.info(typeBCs.toString());
+		assertEquals(NUM_TYPE_BC_PRODUCTS, typeBCs.size());
+	}
+	
+	@Test
+	public void readCampaignsTest() {
+		log.info("---------- CSV Read Campaigns ------------");
+		List<Campaign> campaigns = csvImportService.readCampaigns(FILEMAKER_CSV_FOLDER + "campagne.csv");				
+		log.info(campaigns.toString());
+		assertEquals(NUM_CAMPAIGN, campaigns.size());
+	}
+	
+	@Test
+	public void readGroupsTest() {
+		log.info("---------- CSV Read Groups ------------");
+		List<Group> groups = csvImportService.readGroups(FILEMAKER_CSV_FOLDER + "groupe.csv");				
+		log.info(groups.toString());
+		assertEquals(NUM_GROUPS, groups.size());
+	}
+}

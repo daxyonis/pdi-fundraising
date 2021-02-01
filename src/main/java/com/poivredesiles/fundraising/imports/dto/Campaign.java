@@ -33,4 +33,12 @@ public class Campaign {
 		} 
 		return true;		
 	}
+	
+	public void setBlockedAsString(String blockedStr) {
+		if(blockedStr == null || blockedStr.isBlank() || Integer.parseInt(blockedStr) != 1) {
+			this.setBlocked(false);
+		} else {
+			this.setBlocked(true);
+		}
+	}
 }
