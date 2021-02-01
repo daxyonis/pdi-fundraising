@@ -68,7 +68,7 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 
     @ManyToOne
     @JsonIgnoreProperties(value = "orderHeaders", allowSetters = true)
-    private PdiSeller seller;   
+    private PdiSeller pdiSeller;   
 
     
     public OrderHeader addOrderItem(OrderItem orderItem) {

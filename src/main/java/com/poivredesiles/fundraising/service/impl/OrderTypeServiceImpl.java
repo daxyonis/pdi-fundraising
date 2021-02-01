@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.poivredesiles.fundraising.jdbc.dto.TypeBC;
+import com.poivredesiles.fundraising.imports.dto.TypeBC;
 import com.poivredesiles.fundraising.model.order.OrderType;
 import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;

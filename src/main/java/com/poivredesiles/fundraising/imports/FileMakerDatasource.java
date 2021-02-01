@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.jdbc;
+package com.poivredesiles.fundraising.imports;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Value;

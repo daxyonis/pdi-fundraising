@@ -2,7 +2,7 @@ package com.poivredesiles.fundraising.service;
 
 import java.util.List;
 
-import com.poivredesiles.fundraising.jdbc.dto.Campaign;
+import com.poivredesiles.fundraising.imports.dto.Campaign;
 
 public interface PdiCampaignService {
 

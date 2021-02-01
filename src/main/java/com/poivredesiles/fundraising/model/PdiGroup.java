@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "pdigroup")
 @Data
-@EqualsAndHashCode(callSuper=false, exclude={"sellers", "campaign", "orderType"})
+@EqualsAndHashCode(callSuper=false, exclude={"pdiSellers", "pdiCampaign", "orderType"})
 public class PdiGroup extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,12 +43,12 @@ public class PdiGroup extends AbstractAuditingEntity implements Serializable {
     @Column(name = "leader_num")
     private String leaderNum;
 
-    @OneToMany(mappedBy = "group")
-    private Set<PdiSeller> sellers = new HashSet<>();
+    @OneToMany(mappedBy = "pdiGroup")
+    private Set<PdiSeller> pdiSellers = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties(value = "pdiGroups", allowSetters = true)
-    private PdiCampaign campaign;
+    private PdiCampaign pdiCampaign;
 
     @ManyToOne
     @JsonIgnoreProperties(value = "pdiProducts", allowSetters = true)

@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.poivredesiles.fundraising.jdbc.JdbcImportService;
+import com.poivredesiles.fundraising.imports.JdbcImportService;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -22,6 +22,9 @@ public class JdbcImportServiceITest{
 	private final int NUM_PRODUCTS = 99;
 	private final int NUM_TYPE_BC = 1;
 	private final int NUM_TYPE_BC_PRODUCTS = 99;
+	private final int NUM_CAMPAIGN = 1;
+	private final int NUM_GROUPS = 6;
+	private final int NUM_SELLERS = 28;
 	
 	private JdbcTemplate jdbcTemplate;			
 	
@@ -33,7 +36,7 @@ public class JdbcImportServiceITest{
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 	}			
 		
-	@Test
+//	@Test
 	public void importProductsAndSectionsTest() throws SQLException {
 		jdbcImportService.importProductsAndSections();		
 					
@@ -51,5 +54,13 @@ public class JdbcImportServiceITest{
 	@Test
 	public void importCampaignGroupsAndSellersTest() {
 		jdbcImportService.importCampaignGroupsAndSellers();
+		
+		int numCampaigns = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdicampaign", Integer.class);
+		int numGroups = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdigroup", Integer.class);
+		int numSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller", Integer.class);
+		
+		assertEquals(NUM_CAMPAIGN, numCampaigns);
+		assertEquals(NUM_GROUPS,numGroups);
+		assertEquals(NUM_SELLERS, numSellers);
 	}
 }

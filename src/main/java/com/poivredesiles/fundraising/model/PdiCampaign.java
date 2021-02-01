@@ -35,6 +35,9 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "number")
+    private String number;
+        
     @Column(name = "organization_num")
     private String organizationNum;
 
@@ -54,15 +57,15 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     private LocalDate dueDate;
 
     @Column(name = "order_type_num")
-    private Integer orderTypeNum;
+    private Long orderTypeNum;
 
     @Column(name = "blocked")
     private boolean blocked = false;
 
-    @Column(name = "termination_date")
-    private LocalDate terminationDate;
+    @Column(name = "closed_date")
+    private LocalDate closedDate;
 
-    @OneToMany(mappedBy = "campaign", fetch = FetchType.LAZY)    
+    @OneToMany(mappedBy = "pdiCampaign", fetch = FetchType.LAZY)    
     private Set<PdiGroup> pdiGroups = new HashSet<>();  
     
     @ManyToOne    

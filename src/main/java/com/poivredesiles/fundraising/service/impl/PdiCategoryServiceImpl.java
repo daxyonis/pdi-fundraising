@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.poivredesiles.fundraising.jdbc.dto.Section;
+import com.poivredesiles.fundraising.imports.dto.Section;
 import com.poivredesiles.fundraising.model.product.PdiCategory;
 import com.poivredesiles.fundraising.repository.product.PdiCategoryRepository;
 import com.poivredesiles.fundraising.service.PdiCategoryService;

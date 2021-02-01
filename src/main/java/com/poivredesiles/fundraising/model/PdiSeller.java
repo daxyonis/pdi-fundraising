@@ -15,9 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.user.User;
@@ -29,9 +26,9 @@ import lombok.EqualsAndHashCode;
  * Seller entity\n@author Eva Maciejko
  */
 @Entity
-@Table(name = "seller")
+@Table(name = "pdiseller")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude= {"me", "buyer", "orderHeaders", "pdiGroup"})
 public class PdiSeller extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,13 +51,12 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(unique = true)
     private User buyer;
 
-    @OneToMany(mappedBy = "seller")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToMany(mappedBy = "pdiSeller")    
     private Set<OrderHeader> orderHeaders = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "sellers", allowSetters = true)
-    private PdiGroup group;
+    @JsonIgnoreProperties(value = "pdiSellers", allowSetters = true)
+    private PdiGroup pdiGroup;
 
     
     public Set<OrderHeader> getOrderHeaders() {
@@ -74,31 +70,18 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
 
     public PdiSeller addOrderHeader(OrderHeader orderHeader) {
         this.orderHeaders.add(orderHeader);
-        orderHeader.setSeller(this);
+        orderHeader.setPdiSeller(this);
         return this;
     }
 
     public PdiSeller removeOrderHeader(OrderHeader orderHeader) {
         this.orderHeaders.remove(orderHeader);
-        orderHeader.setSeller(null);
+        orderHeader.setPdiSeller(null);
         return this;
     }
 
     public void setOrderHeaders(Set<OrderHeader> orderHeaders) {
         this.orderHeaders = orderHeaders;
-    }
-
-    public PdiGroup getGroup() {
-        return group;
-    }
-
-    public PdiSeller group(PdiGroup pdiGroup) {
-        this.group = pdiGroup;
-        return this;
-    }
-
-    public void setGroup(PdiGroup pdiGroup) {
-        this.group = pdiGroup;
-    }
+    }    
    
 }

@@ -1,13 +1,13 @@
-package com.poivredesiles.fundraising.jdbc.mapper;
+package com.poivredesiles.fundraising.imports.mapper;
 
-import static com.poivredesiles.fundraising.jdbc.JdbcUtils.sanitize;
+import static com.poivredesiles.fundraising.imports.ImportsUtils.sanitize;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.poivredesiles.fundraising.jdbc.dto.Campaign;
+import com.poivredesiles.fundraising.imports.dto.Campaign;
 
 public class CampaignRowMapper implements RowMapper<Campaign> {
 
@@ -15,6 +15,7 @@ public class CampaignRowMapper implements RowMapper<Campaign> {
 	public Campaign mapRow(ResultSet rs, int rowNum) throws SQLException {
 		
 		Campaign campaign = new Campaign();
+		campaign.setNumber(sanitize(rs.getString("NoCampagne")));		
 		campaign.setOrganizationNumber(sanitize(rs.getString("NoOrganisme")));
 		campaign.setOrganizationName(sanitize(rs.getString("NomOrganisme")));
 		campaign.setProject(sanitize(rs.getString("Projet")));
@@ -23,8 +24,8 @@ public class CampaignRowMapper implements RowMapper<Campaign> {
 		campaign.setDueDate(rs.getDate("DateLimite"));
 		campaign.setNumTypeBC(rs.getLong("NoTypeBC"));
 		campaign.setBlocked(sanitize(rs.getString("Bloqué")));
-		campaign.setClosedDate(rs.getDate("DateTerminée"));
+		campaign.setClosedDate(rs.getDate("DateTerminée"));	
 		return campaign;
-	}
+	}	
 
 }

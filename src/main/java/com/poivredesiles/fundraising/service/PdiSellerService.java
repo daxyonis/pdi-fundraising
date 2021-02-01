@@ -2,8 +2,8 @@ package com.poivredesiles.fundraising.service;
 
 import java.util.List;
 
-import com.poivredesiles.fundraising.jdbc.dto.GroupLink;
-import com.poivredesiles.fundraising.jdbc.dto.Seller;
+import com.poivredesiles.fundraising.imports.dto.GroupLink;
+import com.poivredesiles.fundraising.imports.dto.Seller;
 
 public interface PdiSellerService {
 

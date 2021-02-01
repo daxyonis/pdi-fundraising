@@ -1,13 +1,13 @@
-package com.poivredesiles.fundraising.jdbc.mapper;
+package com.poivredesiles.fundraising.imports.mapper;
 
-import static com.poivredesiles.fundraising.jdbc.JdbcUtils.sanitize;
+import static com.poivredesiles.fundraising.imports.ImportsUtils.sanitize;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.poivredesiles.fundraising.jdbc.dto.Product;
+import com.poivredesiles.fundraising.imports.dto.Product;
 
 public class ProductRowMapper implements RowMapper<Product> {
 

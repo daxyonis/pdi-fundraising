@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.jdbc;
+package com.poivredesiles.fundraising.imports;
 
 import java.util.List;
 
@@ -9,20 +9,20 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import com.poivredesiles.fundraising.jdbc.dto.Campaign;
-import com.poivredesiles.fundraising.jdbc.dto.Group;
-import com.poivredesiles.fundraising.jdbc.dto.GroupLink;
-import com.poivredesiles.fundraising.jdbc.dto.Product;
-import com.poivredesiles.fundraising.jdbc.dto.Section;
-import com.poivredesiles.fundraising.jdbc.dto.Seller;
-import com.poivredesiles.fundraising.jdbc.dto.TypeBC;
-import com.poivredesiles.fundraising.jdbc.mapper.CampaignRowMapper;
-import com.poivredesiles.fundraising.jdbc.mapper.GroupLinkRowMapper;
-import com.poivredesiles.fundraising.jdbc.mapper.GroupRowMapper;
-import com.poivredesiles.fundraising.jdbc.mapper.ProductRowMapper;
-import com.poivredesiles.fundraising.jdbc.mapper.SectionRowMapper;
-import com.poivredesiles.fundraising.jdbc.mapper.SellerRowMapper;
-import com.poivredesiles.fundraising.jdbc.mapper.TypeBCRowMapper;
+import com.poivredesiles.fundraising.imports.dto.Campaign;
+import com.poivredesiles.fundraising.imports.dto.Group;
+import com.poivredesiles.fundraising.imports.dto.GroupLink;
+import com.poivredesiles.fundraising.imports.dto.Product;
+import com.poivredesiles.fundraising.imports.dto.Section;
+import com.poivredesiles.fundraising.imports.dto.Seller;
+import com.poivredesiles.fundraising.imports.dto.TypeBC;
+import com.poivredesiles.fundraising.imports.mapper.CampaignRowMapper;
+import com.poivredesiles.fundraising.imports.mapper.GroupLinkRowMapper;
+import com.poivredesiles.fundraising.imports.mapper.GroupRowMapper;
+import com.poivredesiles.fundraising.imports.mapper.ProductRowMapper;
+import com.poivredesiles.fundraising.imports.mapper.SectionRowMapper;
+import com.poivredesiles.fundraising.imports.mapper.SellerRowMapper;
+import com.poivredesiles.fundraising.imports.mapper.TypeBCRowMapper;
 import com.poivredesiles.fundraising.service.OrderTypeService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiCategoryService;

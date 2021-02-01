@@ -2,7 +2,7 @@ package com.poivredesiles.fundraising.service;
 
 import java.util.List;
 
-import com.poivredesiles.fundraising.jdbc.dto.Group;
+import com.poivredesiles.fundraising.imports.dto.Group;
 
 public interface PdiGroupService {
 

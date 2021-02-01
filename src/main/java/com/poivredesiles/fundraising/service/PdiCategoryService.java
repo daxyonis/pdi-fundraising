@@ -3,7 +3,7 @@ package com.poivredesiles.fundraising.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.poivredesiles.fundraising.jdbc.dto.Section;
+import com.poivredesiles.fundraising.imports.dto.Section;
 import com.poivredesiles.fundraising.service.dto.PdiCategoryDTO;
 
 /**

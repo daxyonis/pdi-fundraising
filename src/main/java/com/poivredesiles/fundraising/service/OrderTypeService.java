@@ -2,7 +2,7 @@ package com.poivredesiles.fundraising.service;
 
 import java.util.List;
 
-import com.poivredesiles.fundraising.jdbc.dto.TypeBC;
+import com.poivredesiles.fundraising.imports.dto.TypeBC;
 import com.poivredesiles.fundraising.service.dto.OrderTypeDTO;
 
 /**

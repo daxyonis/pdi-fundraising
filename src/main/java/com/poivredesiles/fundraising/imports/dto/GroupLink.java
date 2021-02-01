@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.jdbc.dto;
+package com.poivredesiles.fundraising.imports.dto;
 
 import lombok.Data;
 
@@ -9,5 +9,5 @@ public class GroupLink {
 	
 	private Long groupNumber;
 	
-	private String saleThing;
+	private boolean groupForLeaderSales;
 }

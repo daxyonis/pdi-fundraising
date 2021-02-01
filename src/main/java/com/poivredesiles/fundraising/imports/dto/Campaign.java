@@ -1,11 +1,15 @@
-package com.poivredesiles.fundraising.jdbc.dto;
+package com.poivredesiles.fundraising.imports.dto;
 
 import java.util.Date;
+
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 
 import lombok.Data;
 
 @Data
 public class Campaign {
+	
+	private String number;
 
 	private String organizationNumber;
 	
@@ -24,4 +28,12 @@ public class Campaign {
 	private String blocked;
 	
 	private Date closedDate;
+
+	public void validate() {
+		if(number == null || number.isEmpty()) {
+			throw new PdiImportDataException("Invalid Campaign entry");
+		}
+			
+		
+	}
 }

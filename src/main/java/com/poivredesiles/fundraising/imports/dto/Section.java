@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.jdbc.dto;
+package com.poivredesiles.fundraising.imports.dto;
 
 import java.math.BigDecimal;
 

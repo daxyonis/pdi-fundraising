@@ -1,13 +1,13 @@
-package com.poivredesiles.fundraising.jdbc.mapper;
+package com.poivredesiles.fundraising.imports.mapper;
 
-import static com.poivredesiles.fundraising.jdbc.JdbcUtils.sanitize;
+import static com.poivredesiles.fundraising.imports.ImportsUtils.sanitize;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.poivredesiles.fundraising.jdbc.dto.Group;
+import com.poivredesiles.fundraising.imports.dto.Group;
 
 public class GroupRowMapper implements RowMapper<Group> {
 
@@ -16,9 +16,9 @@ public class GroupRowMapper implements RowMapper<Group> {
 		
 		Group group = new Group();
 		group.setNumber(rs.getLong("NoGroupe"));
-		group.setName(sanitize(rs.getString("Groupe")));
-		group.setOrganizationNumber(sanitize(rs.getString("NoOrganisme")));
+		group.setName(sanitize(rs.getString("Groupe")));		
 		group.setLeaderNumber(sanitize(rs.getString("NoResponsable")));
+		group.setCampaignNumber(sanitize(rs.getString("NoCampagne")));
 		return group;
 	}
 
