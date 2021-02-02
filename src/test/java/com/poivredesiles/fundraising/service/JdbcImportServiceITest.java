@@ -58,9 +58,11 @@ public class JdbcImportServiceITest{
 		int numCampaigns = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdicampaign", Integer.class);
 		int numGroups = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdigroup", Integer.class);
 		int numSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller", Integer.class);
+		int numUsers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user", Integer.class);
 		
 		assertEquals(NUM_CAMPAIGN, numCampaigns);
 		assertEquals(NUM_GROUPS,numGroups);
 		assertEquals(NUM_SELLERS, numSellers);
+		assertEquals(4, numUsers);	// 2 Admins + 1 buyer and 1 seller
 	}
 }

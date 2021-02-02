@@ -44,4 +44,15 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@ManyToMany(fetch = FetchType.EAGER)    
     private Set<Role> roles = new HashSet<>(); 
 	
+	public void addRole(RoleEnum roleEnum) {
+		if(roles == null) {
+			roles = new HashSet<>();
+		}
+		roles.add(new Role(roleEnum));
+	}
+
+	public void clearRoles() {
+		roles.clear();		
+	}
+	
 }

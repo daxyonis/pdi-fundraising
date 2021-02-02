@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,8 @@ import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.model.PdiGroup;
 import com.poivredesiles.fundraising.model.PdiSeller;
+import com.poivredesiles.fundraising.model.user.RoleEnum;
+import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.PdiGroupRepository;
 import com.poivredesiles.fundraising.repository.PdiSellerRepository;
 import com.poivredesiles.fundraising.service.PdiSellerService;
@@ -29,6 +32,9 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 
 	@Autowired
 	private PdiGroupRepository pdiGroupRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public void importSellers(List<Seller> sellers, List<GroupLink> groupLinks) {
@@ -71,10 +77,59 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			pdiSeller.setNumber(seller.getNumber());
 			pdiSeller.setName(seller.getName());
 			updateSellerGroup(pdiSeller, groupLink);
+			updateUsers(pdiSeller, seller);			
 			pdiSellerRepository.save(pdiSeller);
 		} else {
 			log.error("Did not save invalid seller: {}", seller.toString());
 		}
+	}
+
+	/**
+	 * Create/Update the seller users : the "me" user (i.e. the seller) and the "buyer" user
+	 * @param pdiSeller
+	 * @param seller
+	 */
+	private void updateUsers(PdiSeller pdiSeller, Seller seller) {
+		if(seller.hasUserInfo()) {
+			// First set seller's user
+			User sellerAsUser = pdiSeller.getMe();			
+			if(sellerAsUser == null) {
+				sellerAsUser = new User();
+				sellerAsUser.setCreatedBy("system");
+			}	
+			// Seller can buy too
+			sellerAsUser.clearRoles();
+			sellerAsUser.addRole(RoleEnum.BUYER);
+			sellerAsUser.addRole(RoleEnum.SELLER);
+			if(seller.getAuthorization().equalsIgnoreCase("Responsable")) {
+				sellerAsUser.addRole(RoleEnum.LEAD);
+			}			
+			String[] firstAndLastName = seller.getName().split(" ");
+			if(firstAndLastName.length > 1) {
+				sellerAsUser.setFirstname(firstAndLastName[0]);
+				sellerAsUser.setLastname(firstAndLastName[1]);
+			} else {
+				sellerAsUser.setFirstname(seller.getName());
+				sellerAsUser.setLastname("");
+			}
+			sellerAsUser.setUsername(seller.getCampaignCode());
+			sellerAsUser.setPassword(passwordEncoder.encode(seller.getPassword()));
+//			sellerAsUser.setLanguage(null); ??? TODO
+			pdiSeller.setMe(sellerAsUser);		
+			
+			// Then set the seller's buyer user = the same for all users
+			User buyer = pdiSeller.getBuyer();
+			if(buyer == null) {
+				buyer = new User();
+				buyer.setCreatedBy("system");
+			}		
+			buyer.clearRoles();
+			buyer.addRole(RoleEnum.BUYER);
+			// Buyer has username equal to password
+			buyer.setUsername(seller.getBuyerCode());
+			buyer.setPassword(passwordEncoder.encode(seller.getBuyerCode()));
+			pdiSeller.setBuyer(buyer);
+		}		
 	}
 
 	/**

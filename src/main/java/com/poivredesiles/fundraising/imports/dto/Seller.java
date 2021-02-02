@@ -15,6 +15,7 @@ public class Seller {
 	
 	private String password;
 	
+	// Is Vendeur | Responsable
 	private String authorization;
 
 	public boolean valid() {
@@ -23,5 +24,15 @@ public class Seller {
 		} 
 		return true;
 	}
+
+	public boolean hasUserInfo() {
+		if(buyerCode == null || buyerCode.isBlank() ||
+		   campaignCode == null || campaignCode.isBlank() ||
+		   password == null || password.isBlank() ||
+		   authorization == null || authorization.isBlank()) {
+			return false;
+		}
+		return true;
+	}		
 	
 }

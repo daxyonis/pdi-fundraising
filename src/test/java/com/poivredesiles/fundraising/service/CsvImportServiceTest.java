@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.imports.dto.Group;
+import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Product;
 import com.poivredesiles.fundraising.imports.dto.Section;
+import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.imports.dto.TypeBC;
 
 public class CsvImportServiceTest {
@@ -24,7 +26,7 @@ public class CsvImportServiceTest {
 	private final int NUM_TYPE_BC_PRODUCTS = 99;
 	private final int NUM_CAMPAIGN = 1;
 	private final int NUM_GROUPS = 6;
-	private final int NUM_SELLERS = 27;
+	private final int NUM_SELLERS = 28;
 	
 	Logger log = LoggerFactory.getLogger(CsvImportServiceTest.class);
 
@@ -68,5 +70,21 @@ public class CsvImportServiceTest {
 		List<Group> groups = csvImportService.readGroups(FILEMAKER_CSV_FOLDER + "groupe.csv");				
 		log.info(groups.toString());
 		assertEquals(NUM_GROUPS, groups.size());
+	}
+	
+	@Test
+	public void readSellersTest() {
+		log.info("---------- CSV Read Sellers ------------");
+		List<Seller> sellers = csvImportService.readSellers(FILEMAKER_CSV_FOLDER + "vendeur.csv");				
+		log.info(sellers.toString());
+		assertEquals(NUM_SELLERS, sellers.size());
+	}
+	
+	@Test
+	public void readGroupLinksTest() {
+		log.info("---------- CSV Read GroupLink ------------");
+		List<GroupLink> groupLinks = csvImportService.readGroupLinks(FILEMAKER_CSV_FOLDER + "liengroupe.csv");				
+		log.info(groupLinks.toString());
+		assertEquals(NUM_SELLERS-1, groupLinks.size());
 	}
 }

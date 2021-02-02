@@ -18,6 +18,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.imports.dto.Group;
+import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Product;
 import com.poivredesiles.fundraising.imports.dto.Section;
 import com.poivredesiles.fundraising.imports.dto.Seller;
@@ -89,6 +90,18 @@ public class CsvImportService {
 		pdiCampaignService.importCampaigns(campaigns);
 	}
 	
+	public void importGroups(String filename) {
+		List<Group> groups = readGroups(filename);
+		pdiGroupService.importGroups(groups);
+	}
+	
+	public void importSellers(String sellersFilename, String groupLinksFilename) {
+		List<Seller> sellers = readSellers(sellersFilename);
+		List<GroupLink> groupLinks = readGroupLinks(groupLinksFilename);
+		pdiSellerService.importSellers(sellers, groupLinks);
+	}
+		
+
 	/**
 	 * Read the section CSV file and build the object array
 	 * Fields order:
@@ -224,7 +237,7 @@ public class CsvImportService {
 	 * Read the group CSV file and build the object array
 	 * Field order: Groupe, NoCampagne, NoGroupe, NoResponsable
 	 * @param filename
-	 * @return
+	 * @return a list of groups
 	 */
 	public List<Group> readGroups(String filename){
 		List<Group> groups = new ArrayList<>();
@@ -254,7 +267,7 @@ public class CsvImportService {
 	 * Read the seller CSV file and build the object array
 	 * Field order: Autorisation, CodeAcheteur, CodeCampagne, MotDePasse, NomVendeur, NoVendeur 
 	 * @param filename
-	 * @return
+	 * @return a list of sellers
 	 */
 	public List<Seller> readSellers(String filename){
 		List<Seller> sellers = new ArrayList<>();		
@@ -280,5 +293,33 @@ public class CsvImportService {
 			throw new PdiImportDataException("Could not open seller csv file !");
 		  }
 		return sellers;
+	}
+	
+	/**
+	 * Read the group link CSV file and build the object array
+	 * Field order: NoGroupe, NoVendeur
+	 * @param groupLinksFilename
+	 * @return a list of group links
+	 */
+	public List<GroupLink> readGroupLinks(String groupLinksFilename) {
+		List<GroupLink> groupLinks = new ArrayList<>();
+		try (CSVReader reader = new CSVReader(new FileReader(groupLinksFilename))) {
+		      String[] lineInArray;
+		      try {
+				while ((lineInArray = reader.readNext()) != null) {
+					GroupLink groupLink = new GroupLink();
+					groupLink.setGroupNumber(Long.parseLong(lineInArray[0]));
+					groupLink.setSellerNumber(Long.parseLong(lineInArray[1]));
+					groupLinks.add(groupLink);
+				  }
+			} catch (CsvValidationException | IOException e) {
+				log.error("Error while reading csv file", e);
+				throw new PdiImportDataException("Could not import groupLink csv data !");
+			}
+		  } catch (IOException e1) {
+			log.error("Could not open file " + groupLinksFilename, e1);
+			throw new PdiImportDataException("Could not open groupLink csv file !");
+		  }
+		return groupLinks;
 	}
 }
