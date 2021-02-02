@@ -95,10 +95,14 @@ public class CsvImportService {
 		pdiGroupService.importGroups(groups);
 	}
 	
-	public void importSellers(String sellersFilename, String groupLinksFilename) {
-		List<Seller> sellers = readSellers(sellersFilename);
+	public void importSellers(String sellersFilename) {
+		List<Seller> sellers = readSellers(sellersFilename);		
+		pdiSellerService.importSellers(sellers);
+	}
+	
+	public void importGroupLinks(String groupLinksFilename) {
 		List<GroupLink> groupLinks = readGroupLinks(groupLinksFilename);
-		pdiSellerService.importSellers(sellers, groupLinks);
+		pdiSellerService.linkSellersToGroup(groupLinks);
 	}
 		
 

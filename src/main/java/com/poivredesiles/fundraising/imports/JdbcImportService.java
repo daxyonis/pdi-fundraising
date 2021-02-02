@@ -83,10 +83,12 @@ public class JdbcImportService {
 		
 		List<Group> groups = readGroups(jdbcTemplate);
 		pdiGroupService.importGroups(groups);
+				
+		List<Seller> sellers = readSellers(jdbcTemplate);
+		pdiSellerService.importSellers(sellers);
 		
 		List<GroupLink> groupLinks = readGroupLinks(jdbcTemplate);
-		List<Seller> sellers = readSellers(jdbcTemplate);
-		pdiSellerService.importSellers(sellers, groupLinks);
+		pdiSellerService.linkSellersToGroup(groupLinks);
 	}	
 
 	/**

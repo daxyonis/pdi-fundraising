@@ -32,37 +32,44 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 
 	@Autowired
 	private PdiGroupRepository pdiGroupRepository;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	public void importSellers(List<Seller> sellers, List<GroupLink> groupLinks) {
+	public void importSellers(List<Seller> sellers) {
 		if (sellers != null) {
 			log.info("Importing {} sellers", sellers.size());
 			for (Seller seller : sellers) {
-				// Get the group link for this seller
-				Optional<GroupLink> groupLinkForSeller = groupLinks.stream()
-						.filter(gl -> gl.getSellerNumber().equals(seller.getNumber())).findFirst();
-				if (groupLinkForSeller.isPresent()) {
-					// Then get the PdiSeller
-					Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByNumber(seller.getNumber());
-					if (pdiSeller.isPresent()) {
-						updateSeller(pdiSeller.get(), seller, groupLinkForSeller.get());
-					} else {
-						// Create new PdiSeller
-						PdiSeller newPdiSeller = new PdiSeller();
-						newPdiSeller.setCreatedBy("system");
-						updateSeller(newPdiSeller, seller, groupLinkForSeller.get());
-					}
+				// Get the PdiSeller
+				Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByNumber(seller.getNumber());
+				if (pdiSeller.isPresent()) {
+					updateSeller(pdiSeller.get(), seller);
 				} else {
-					// This seller will not be saved
-					log.error("Group Link not found for seller(number={})", seller.getNumber());
-					// throw new PdiImportDataException("Cannot link Seller to Group");
+					// Create new PdiSeller
+					PdiSeller newPdiSeller = new PdiSeller();
+					newPdiSeller.setCreatedBy("system");
+					updateSeller(newPdiSeller, seller);
 				}
 			}
 		}
 
+	}
+
+	@Override	
+	public void linkSellersToGroup(List<GroupLink> groupLinks) {
+		if (groupLinks != null) {
+			log.info("Importing {} groupLinks", groupLinks.size());
+			for (GroupLink groupLink : groupLinks) {
+				Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByNumber(groupLink.getSellerNumber());
+				if (pdiSeller.isPresent()) {
+					updateSellerGroup(pdiSeller.get(), groupLink);
+				} else {
+					log.warn("Did not find seller for groupLink {}", groupLink.toString());
+//					throw new ResourceNotFoundException("PdiSeller not found.");
+				}
+			}
+		}
 	}
 
 	/**
@@ -70,42 +77,42 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	 * 
 	 * @param pdiSeller the entity to update
 	 * @param seller    the input seller data
-	 * @param groupLink the input group link for this seller
 	 */
-	private void updateSeller(PdiSeller pdiSeller, Seller seller, GroupLink groupLink) {
+	private void updateSeller(PdiSeller pdiSeller, Seller seller) {
 		if (seller.valid()) {
 			pdiSeller.setNumber(seller.getNumber());
-			pdiSeller.setName(seller.getName());
-			updateSellerGroup(pdiSeller, groupLink);
-			updateUsers(pdiSeller, seller);			
+			pdiSeller.setName(seller.getName());			
+			updateUsers(pdiSeller, seller);
 			pdiSellerRepository.save(pdiSeller);
 		} else {
-			log.error("Did not save invalid seller: {}", seller.toString());
+			log.warn("Did not save invalid seller: {}", seller.toString());
 		}
 	}
 
 	/**
-	 * Create/Update the seller users : the "me" user (i.e. the seller) and the "buyer" user
+	 * Create/Update the seller users : the "me" user (i.e. the seller) and the
+	 * "buyer" user
+	 * 
 	 * @param pdiSeller
 	 * @param seller
 	 */
 	private void updateUsers(PdiSeller pdiSeller, Seller seller) {
-		if(seller.hasUserInfo()) {
+		if (seller.hasUserInfo()) {
 			// First set seller's user
-			User sellerAsUser = pdiSeller.getMe();			
-			if(sellerAsUser == null) {
+			User sellerAsUser = pdiSeller.getMe();
+			if (sellerAsUser == null) {
 				sellerAsUser = new User();
 				sellerAsUser.setCreatedBy("system");
-			}	
+			}
 			// Seller can buy too
 			sellerAsUser.clearRoles();
 			sellerAsUser.addRole(RoleEnum.BUYER);
 			sellerAsUser.addRole(RoleEnum.SELLER);
-			if(seller.getAuthorization().equalsIgnoreCase("Responsable")) {
+			if (seller.getAuthorization().equalsIgnoreCase("Responsable")) {
 				sellerAsUser.addRole(RoleEnum.LEAD);
-			}			
+			}
 			String[] firstAndLastName = seller.getName().split(" ");
-			if(firstAndLastName.length > 1) {
+			if (firstAndLastName.length > 1) {
 				sellerAsUser.setFirstname(firstAndLastName[0]);
 				sellerAsUser.setLastname(firstAndLastName[1]);
 			} else {
@@ -115,21 +122,21 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			sellerAsUser.setUsername(seller.getCampaignCode());
 			sellerAsUser.setPassword(passwordEncoder.encode(seller.getPassword()));
 //			sellerAsUser.setLanguage(null); ??? TODO
-			pdiSeller.setMe(sellerAsUser);		
-			
+			pdiSeller.setMe(sellerAsUser);
+
 			// Then set the seller's buyer user = the same for all users
 			User buyer = pdiSeller.getBuyer();
-			if(buyer == null) {
+			if (buyer == null) {
 				buyer = new User();
 				buyer.setCreatedBy("system");
-			}		
+			}
 			buyer.clearRoles();
 			buyer.addRole(RoleEnum.BUYER);
 			// Buyer has username equal to password
 			buyer.setUsername(seller.getBuyerCode());
 			buyer.setPassword(passwordEncoder.encode(seller.getBuyerCode()));
 			pdiSeller.setBuyer(buyer);
-		}		
+		}
 	}
 
 	/**

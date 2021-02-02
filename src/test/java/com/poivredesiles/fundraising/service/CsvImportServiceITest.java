@@ -85,10 +85,18 @@ public class CsvImportServiceITest {
 	@Test
 	@Order(6)
 	public void importSellersTest() {
-		csvImportService.importSellers(FILEMAKER_CSV_FOLDER + "vendeur.csv", FILEMAKER_CSV_FOLDER + "liengroupe.csv");
-		int numSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller", Integer.class);
+		csvImportService.importSellers(FILEMAKER_CSV_FOLDER + "vendeur.csv");
+		int numSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller where pdi_group_id is null", Integer.class);
 		int numUsers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user", Integer.class);
 		assertEquals(NUM_SELLERS, numSellers);
 		assertEquals(4, numUsers);	// 2 Admins + 1 buyer and 1 seller
+	}
+	
+	@Test
+	@Order(7)
+	public void importGroupLinksTest() {
+		csvImportService.importGroupLinks(FILEMAKER_CSV_FOLDER + "liengroupe.csv");
+		int numLinkedSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller where pdi_group_id is not null", Integer.class);
+		assertEquals(NUM_SELLERS, numLinkedSellers);
 	}
 }

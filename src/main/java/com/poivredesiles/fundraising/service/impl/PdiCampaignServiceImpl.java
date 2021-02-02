@@ -70,7 +70,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			updateOrderType(pdiCampaign);
 			pdiCampaignRepository.save(pdiCampaign);
 		} else {
-			log.error("Did not save invalid campaign: {}", campaign.toString());
+			log.warn("Did not save invalid campaign: {}", campaign.toString());
 		}
 	}
 
@@ -78,6 +78,8 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		Optional<OrderType> orderType = orderTypeRepository.findByNumber(pdiCampaign.getOrderTypeNum());
 		if (orderType.isPresent()) {
 			pdiCampaign.setOrderType(orderType.get());
+		} else {
+			log.warn("Did not find orderType for orderTypeNum={}", pdiCampaign.getOrderTypeNum());			
 		}
 	}
 

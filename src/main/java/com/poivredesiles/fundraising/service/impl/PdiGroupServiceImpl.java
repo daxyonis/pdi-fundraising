@@ -61,7 +61,7 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 			updateCampaign(pdiGroup, group.getCampaignNumber());
 			pdiGroupRepository.save(pdiGroup);
 		} else {
-			log.error("Did not save invalid group: {}", group.toString());
+			log.warn("Did not save invalid group: {}", group.toString());
 		}
 	}
 

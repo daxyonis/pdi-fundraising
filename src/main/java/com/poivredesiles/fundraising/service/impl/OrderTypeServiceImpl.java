@@ -50,28 +50,6 @@ public class OrderTypeServiceImpl implements OrderTypeService {
 		return orderTypeMapper.toDto(orderType);
 	}
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<OrderTypeDTO> findAll() {
-//        log.debug("Request to get all OrderTypes");
-//        return orderTypeRepository.findAllWithEagerRelationships().stream()
-//            .map(orderTypeMapper::toDto)
-//            .collect(Collectors.toCollection(LinkedList::new));
-//    }
-//
-//
-//    public Page<OrderTypeDTO> findAllWithEagerRelationships(Pageable pageable) {
-//        return orderTypeRepository.findAllWithEagerRelationships(pageable).map(orderTypeMapper::toDto);
-//    }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Optional<OrderTypeDTO> findOne(Long id) {
-//        log.debug("Request to get OrderType : {}", id);
-//        return orderTypeRepository.findOneWithEagerRelationships(id)
-//            .map(orderTypeMapper::toDto);
-//    }
-
 	@Override
 	public void delete(Long id) {
 		log.debug("Request to delete OrderType : {}", id);

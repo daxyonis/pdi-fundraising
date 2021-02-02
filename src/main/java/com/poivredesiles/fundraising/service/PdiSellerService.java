@@ -7,6 +7,8 @@ import com.poivredesiles.fundraising.imports.dto.Seller;
 
 public interface PdiSellerService {
 
-	void importSellers(List<Seller> sellers, List<GroupLink> groupLinks);
+	void importSellers(List<Seller> sellers);		
+
+	void linkSellersToGroup(List<GroupLink> groupLinks);
 
 }
