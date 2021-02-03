@@ -7,7 +7,7 @@
   	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
   	<link rel="stylesheet" href="/css/theme_1612382526464.css">
   	<script src="/webjars/jquery/jquery.min.js"></script>
-  	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+  	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>  	
 </head>
 <body>
   <header>
@@ -24,11 +24,14 @@
   <section layout:fragment="content">
     <p>Page content goes here</p>
   </section>
-  <footer>
-  	<div class="container">
-    	<p class="text-center"></p>
-    	<p layout:fragment="custom-footer">Custom footer here</p>
-    </div>
+  <footer>  	
+  		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">  						
+	  			<div class="container">  				
+	  					<span class="navbar-text">&copy; Copyright 2021 - Poivre des Îles</span>
+	  					<span class="navbar-text" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>  				
+	  			</div>	  		
+		</nav>    	
+    	<!-- <p layout:fragment="custom-footer">Custom footer here</p> -->    
   </footer>  
 </body>
 </html>
