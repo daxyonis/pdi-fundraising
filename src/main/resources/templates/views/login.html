@@ -14,28 +14,29 @@
   			<div class="col-lg-4">
   				<img th:src="@{/image/LogoPDI.png}" class="img-logo mx-auto img-fluid"></img>
   			</div>
-  			<div class="col-lg-6">  				  				
-  				<h1 class="text-center pt-4" th:text="#{login.titre}">Campagnes de financement</h1>  				
+  			<div class="col-lg-4">  								  			
+  				<h1 class="text-center pt-5" th:text="#{login.titre}">Campagnes de financement</h1>  				
   			</div>  			
   		</div>
   		<div class="row">
-  			<div class="col-lg-4 offset-lg-4">
+  			<div class="col-lg-4"></div>
+  			<div class="col-lg-4">
   				<div class="card">
   					<div class="card-body">
 			  			 <form th:action="@{/login}" method="post">
 				            <div class="form-group">
-				            	<label for="username">Username</label>
-				            	<input type="text" name="username" id="username" placeholder="Username" class="form-control"/>
+				            	<label for="username" th:text="#{login.username}">Username</label>
+				            	<input type="text" name="username" id="username" th:placeholder="#{login.username.placeholder}" class="form-control"/>
 				            </div>
 				            <div class="form-group">
-				            	<label for="password">Password</label>
-				            	<input type="password" name="password" id="password" placeholder="Password" class="form-control"/>
+				            	<label for="password" th:text="#{login.password}">Password</label>
+				            	<input type="password" name="password" id="password" th:placeholder="#{login.password.placeholder}" class="form-control"/>
 				            </div>
 				            <div class="text-center mt-3">
-				            	<button type="submit" class="btn btn-primary">Enter</button>
+				            	<button type="submit" class="btn btn-primary" th:text="#{login.button}">Enter</button>
 				            </div>
 				            <div class="text-center mt-3">
-				            	<a href="/">Cancel</a>
+				            	<a href="/" th:text="#{login.cancel}">Cancel</a>
 				            </div>
 				        </form>
 			       	</div>

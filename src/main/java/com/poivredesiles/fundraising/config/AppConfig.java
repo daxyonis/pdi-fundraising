@@ -8,6 +8,10 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 @Configuration
 public class AppConfig {
 
+	/**
+	 * Thymeleaf Layout Dialect to use layouts
+	 * @return
+	 */
 	@Bean
 	public LayoutDialect layoutDialect() {
 		return new LayoutDialect();

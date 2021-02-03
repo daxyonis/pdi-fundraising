@@ -4,16 +4,21 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   	<title>Layout page</title>  	
-  	<link rel='stylesheet' href='/webjars/bootstrap/css/bootstrap.min.css'>
+  	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+  	<link rel="stylesheet" href="/css/theme_1612382526464.css">
   	<script src="/webjars/jquery/jquery.min.js"></script>
-  	<script src='/webjars/bootstrap/js/bootstrap.min.js'></script>
+  	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
   <header>
-  	<div class="container">
-	  	<div class="float-right">
-	  		<a th:href="@{/}" th:text="#{lang.change}">English</a>
-	  	</div>
+  	<div class="container-fluid">
+  		<div class="row">
+  			<div class="col-lg-12">
+		  		<div class="float-right">
+			  		<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:text="#{lang.change}">English</a>
+			  	</div>
+  			</div>
+  		</div>	  		  	
   	</div>
   </header>
   <section layout:fragment="content">
@@ -21,7 +26,7 @@
   </section>
   <footer>
   	<div class="container">
-    	<p>My footer</p>
+    	<p class="text-center"></p>
     	<p layout:fragment="custom-footer">Custom footer here</p>
     </div>
   </footer>  
