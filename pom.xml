@@ -122,6 +122,27 @@
 		  <artifactId>opencsv</artifactId>
 		  <version>5.3</version>
 		</dependency>
+		<!-- Thymeleaf Layout Dialect -->
+		<dependency>
+		  <groupId>nz.net.ultraq.thymeleaf</groupId>
+		  <artifactId>thymeleaf-layout-dialect</artifactId>
+		 </dependency>
+		 <!-- Webjars -->
+		 <dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>bootstrap</artifactId>
+		    <version>4.6.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>jquery</artifactId>
+		    <version>3.5.1</version>
+		</dependency>				
+	    <dependency>
+	        <groupId>org.webjars</groupId>
+	        <artifactId>webjars-locator</artifactId>
+	        <version>0.30</version>
+	    </dependency>
 	</dependencies>
 
 	<build>
