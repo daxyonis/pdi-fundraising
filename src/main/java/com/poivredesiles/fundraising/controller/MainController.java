@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 @PropertySource("classpath:git.properties")
-
-public class HomeController {
+public class MainController {
 	
-	private final Logger log = LoggerFactory.getLogger(HomeController.class);
+	private final Logger log = LoggerFactory.getLogger(MainController.class);
 
 	@Value("${git.commit.id.abbrev}")
 	private String gitCommitId;	
@@ -38,5 +37,11 @@ public class HomeController {
 	public String login() {
 		log.info("Requested Login Page");
 		return "views/login";
+	}
+	
+	@GetMapping("/admin")
+	public String admin() {
+		log.info("Requested Admin Page");
+		return "views/admin";
 	}
 }

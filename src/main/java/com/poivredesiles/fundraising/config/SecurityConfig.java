@@ -14,13 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	// The public endpoints
-	private static final String[] PUBLIC = new String[]{"/error", "/login", "/logout"};
-
+	private static final String[] PUBLIC = new String[]{"/error", "/login", "/logout"}; 
+	
 	// Provide a bean for the password encoder
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
+	}	 
 
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,11 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
             .and()
             .formLogin()
-            		.loginPage("/login?lang=fr")            		            	
+            	.loginPage("/login?lang=fr")  // force it to French
+            	.loginProcessingUrl("/login")
             .and()
             .logout()           
-            	.logoutUrl("/logout")
-            	.logoutSuccessUrl("/login?logged-out");
+            	.logoutUrl("/logout");            	
     }
 	
 	@Override
