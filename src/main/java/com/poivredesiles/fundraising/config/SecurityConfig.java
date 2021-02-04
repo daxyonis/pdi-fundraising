@@ -30,8 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated()
             .and()
             .formLogin()
-            	.loginPage("/login?lang=fr")  // force it to French
-            	.loginProcessingUrl("/login")
+            	.loginPage("/login")
             .and()
             .logout()           
             	.logoutUrl("/logout");            	

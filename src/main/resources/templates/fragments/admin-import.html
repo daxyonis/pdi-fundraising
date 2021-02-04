@@ -1,0 +1,35 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	</head>
+	<body>
+		<div th:fragment="import">
+			<div class="row mt-3">
+				<div class="col-md-12">
+					<div class="alert alert-info d-none" id="msg-success">L'importation des nouveaux groupes a reussi</div>
+					<div class="alert alert-warning d-none" id="msg-error">L'importation des nouveaux groupes a echoue</div>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-md-12">
+					<h4 th:text="#{admin.import.products}">importer des sections</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 pt-2">					
+					<p th:text="#{admin.import.last}">Dernier import le 12/12/12</p>									
+				</div>				
+				<div class="col-md-3 pt-2">					
+					<span th:text="#{admin.import.file}">importer par fichier</span>
+				</div>
+				<div class="col-md-5">
+					<div class="btn-group" role="group" aria-label="Import files">
+					  <button type="button" class="btn btn-outline-success px-3" th:text="Section">Left</button>
+					  <button type="button" class="btn btn-outline-success px-3" th:text="Produit">Middle</button>
+					  <button type="button" class="btn btn-outline-success px-3" th:text="TypeBC">Right</button>
+					</div>
+				</div>
+			</div>	
+		</div>		
+	</body>
+</html>
