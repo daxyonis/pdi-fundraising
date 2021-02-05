@@ -1,0 +1,45 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	</head>
+	<body>
+		<div th:fragment="export">
+			<!--/* Messages */-->
+			<div class="row mt-3">
+				<div class="col-md-12">
+					<div class="alert alert-info d-none" id="msg-success">L'exportation des bons de commande a reussi</div>
+					<div class="alert alert-warning d-none" id="msg-error">L'exportation des bons de commande a echoue</div>
+				</div>
+			</div>
+			<!-- /* Export */ -->
+			<div class="row mt-3">
+				<div class="col-md-12">
+					<h4 th:text="#{admin.export.subtitle}">exporter les BC</h4>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-lg-10 offset-lg-2">
+					<h5 class="text-center" th:text="#{campaigns.closed}">campagnes terminees</h5>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-10 offset-lg-2">
+					<!-- /* Use Datatables for Ajax display */ -->
+					<table id="closedCamp2" class="table table-bordered table-striped">
+						<thead class="thead-light">
+							<tr>
+								<th th:text="#{campaign.duedate}">date limite</th>
+								<th th:text="#{campaign.closeddate}">date terminee</th>
+								<th th:text="#{campaign.number}">numero</th>
+								<th th:text="#{campaign.organization}">organisme</th>
+								<th th:text="#{campaign.project}">projet</th>
+								<th th:text="#{admin.action}">action</th>
+								<th th:text="#{campaign.lastexport}">dernier export</th>
+							</tr>
+						</thead>						
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
