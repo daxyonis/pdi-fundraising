@@ -40,8 +40,11 @@ public class MainController {
 	}
 	
 	@GetMapping("/admin")
-	public String admin() {
+	public String admin(Model model) {
 		log.info("Requested Admin Page");
+		model.addAttribute("homeUrl", "/admin");
+		model.addAttribute("menuShowSales", false);
+		model.addAttribute("menuShowOrder", false);
 		return "views/admin";
 	}
 }
