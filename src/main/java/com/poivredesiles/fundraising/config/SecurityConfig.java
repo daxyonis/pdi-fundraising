@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	// The public endpoints
@@ -25,8 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-        	.antMatchers(PUBLIC).permitAll()
-            .antMatchers("/").hasAnyAuthority("BUYER", "SELLER", "LEAD", "ADMIN")            
+        	.antMatchers(PUBLIC).permitAll()      
+        	.antMatchers("/").hasAnyAuthority("BUYER", "SELLER", "SUPERVISOR", "ADMIN")
+            .antMatchers("/api/**").hasAnyAuthority("ROLE_ADMIN")
             .anyRequest().authenticated()
             .and()
             .formLogin()

@@ -1,50 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  	<title>Layout page</title>  	
-  	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
-  	<link rel="stylesheet" href="/css/theme_1612382526464.css">
-  	<script src="/webjars/jquery/jquery.min.js"></script>
-  	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>  	
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="_csrf" th:attr="content=${_csrf.token}" />
+	<meta name="_csrf_header" th:attr="content=${_csrf.headerName}" />
+	<title>Layout page</title>
+	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/theme_1612382526464.css">
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/js/main.js"></script>
 </head>
 <body>
-  <header>
-  	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    		<span class="navbar-toggler-icon"></span>
-    	</button>
-    	<div class="collapse navbar-collapse" id="navbarSupportedContent">		    
-	    	<ul class="navbar-nav mr-auto">
-     				<li class="nav-item active">
-	      			<a class="nav-link active" th:href="@{${homeUrl}}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a>
-	      		</li>
-	      		<li class="nav-item" th:if="${menuShowSales}">
-	      			<a class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
-	      		</li>
-	      		<li class="nav-item" th:if="${menuShowOrder}">
-	      			<a class="nav-link" th:href="@{/commander}">Order</a>
-	      		</li>
-	      	</ul>		    
-		    <form class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
-		      <a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:text="#{lang.change}">English</a>
-		      <button class="btn btn-link my-2 my-sm-0" type="submit">Logout</button>
-		    </form>		     
-		  </div>
-      </nav>  	  	
-  </header>
-  <section layout:fragment="content">
-    <p>Page content goes here</p>
-  </section>
-  <footer>  	
-  		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">  						
-	  			<div class="container">  				
-	  					<span class="navbar-text">&copy; Copyright 2021 - Poivre des Îles</span>
-	  					<span class="navbar-text" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>  				
-	  			</div>	  		
-		</nav>    	
-    	<!-- <p layout:fragment="custom-footer">Custom footer here</p> -->    
-  </footer>  
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><a class="nav-link active"
+						th:href="@{${homeUrl}}" th:text="#{menu.home}">Home <span
+							class="sr-only">(current)</span></a></li>
+					<li class="nav-item" th:if="${menuShowSales}"><a
+						class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
+					</li>
+					<li class="nav-item" th:if="${menuShowOrder}"><a
+						class="nav-link" th:href="@{/commander}">Order</a></li>
+				</ul>
+				<form class="form-inline my-2 my-lg-0" th:action="@{/logout}"
+					method="post">
+					<a
+						th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}"
+						th:text="#{lang.change}">English</a>
+					<button class="btn btn-link my-2 my-sm-0" type="submit">Logout</button>
+				</form>
+			</div>
+		</nav>
+	</header>
+	<script th:inline="javascript">
+	$(function(){		
+		// Add CSRF token for all ajax calls
+		var token = $("meta[name='_csrf']").attr("content");
+   	    var header = $("meta[name='_csrf_header']").attr("content");
+   	    $(document).ajaxSend(function (e, xhr, options) {
+   	        xhr.setRequestHeader(header, token);
+   	    });
+	});
+	</script>
+	<section layout:fragment="content">
+		<p>Page content goes here</p>
+	</section>
+	<footer>
+		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">
+			<div class="container">
+				<span class="navbar-text">&copy; Copyright 2021 - Poivre des
+					Îles</span> <span class="navbar-text"
+					th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
+			</div>
+		</nav>
+		<!-- <p layout:fragment="custom-footer">Custom footer here</p> -->
+	</footer>
 </body>
 </html>

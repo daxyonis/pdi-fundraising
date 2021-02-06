@@ -106,10 +106,10 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			}
 			// Seller can buy too
 			sellerAsUser.clearRoles();
-			sellerAsUser.addRole(RoleEnum.BUYER);
-			sellerAsUser.addRole(RoleEnum.SELLER);
+			sellerAsUser.addRole(RoleEnum.ROLE_BUYER);
+			sellerAsUser.addRole(RoleEnum.ROLE_SELLER);
 			if (seller.getAuthorization().equalsIgnoreCase("Responsable")) {
-				sellerAsUser.addRole(RoleEnum.LEAD);
+				sellerAsUser.addRole(RoleEnum.ROLE_SUPERVISOR);
 			}
 			String[] firstAndLastName = seller.getName().split(" ");
 			if (firstAndLastName.length > 1) {
@@ -131,7 +131,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 				buyer.setCreatedBy("system");
 			}
 			buyer.clearRoles();
-			buyer.addRole(RoleEnum.BUYER);
+			buyer.addRole(RoleEnum.ROLE_BUYER);
 			// Buyer has username equal to password
 			buyer.setUsername(seller.getBuyerCode());
 			buyer.setPassword(passwordEncoder.encode(seller.getBuyerCode()));

@@ -48,7 +48,7 @@ public class AppStartup implements CommandLineRunner {
 	private void createAdminUsers() {
 		// Create ADMIN users
 		Set<Role> roles = new HashSet<>();
-		roles.add(new Role(RoleEnum.ADMIN));
+		roles.add(new Role(RoleEnum.ROLE_ADMIN));
 		int index = 0;
 		for (String username : adminUsernames) {
 			if (userRepository.countByUsername(username) < 1) {

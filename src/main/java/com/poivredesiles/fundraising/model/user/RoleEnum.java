@@ -1,5 +1,5 @@
 package com.poivredesiles.fundraising.model.user;
 
 public enum RoleEnum {
-	BUYER, SELLER, LEAD, ADMIN
+	ROLE_BUYER, ROLE_SELLER, ROLE_SUPERVISOR, ROLE_ADMIN
 }

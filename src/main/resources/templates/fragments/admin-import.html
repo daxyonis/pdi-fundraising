@@ -24,14 +24,23 @@
 				<div class="col-md-3 pt-2">					
 					<span th:text="#{admin.import.file}">importer par fichier</span>
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-5">														
 					<div class="btn-group" role="group" aria-label="Import files">
-					  <button type="button" class="btn btn-outline-success px-lg-3" th:text="Section">Left</button>
-					  <button type="button" class="btn btn-outline-success px-lg-3" th:text="Produit">Middle</button>
-					  <button type="button" class="btn btn-outline-success px-lg-3" th:text="TypeBC">Right</button>
-					</div>
+						<div class="btn btn-outline-success px-lg-3">
+							<label for="sectionFile">Section</label>
+							<input id="sectionFile" class="upload d-none" type="file" data-file-type="SECTION">
+						</div>					  
+						<div class="btn btn-outline-success px-lg-3">
+							<label for="productFile">Produit</label>
+							<input id=productFile class="upload d-none" type="file" data-file-type="PRODUCT">
+						</div>
+						<div class="btn btn-outline-success px-lg-3">
+							<label for="typeBcFile">TypeBC</label>
+							<input id=typeBcFile class="upload d-none" type="file" data-file-type="ORDERTYPE">
+						</div>					  
+					</div>					
 				</div>
-			</div>	
+			</div>				
 			<div class="row">
 				<div class="col-md-5 offset-md-7">
 					<i class="fas fa-arrow-right"></i>&nbsp;<span th:text="#{admin.import.inorder}">Suivez l'ordre</span>
@@ -52,10 +61,22 @@
 				</div>
 				<div class="col-md-5">
 					<div class="btn-group" role="group" aria-label="Import files">
-					  <button type="button" class="btn btn-outline-success px-3" th:text="Campagne">Left</button>
-					  <button type="button" class="btn btn-outline-success px-3" th:text="Groupe">Middle</button>
-					  <button type="button" class="btn btn-outline-success px-3" th:text="Vendeur">Right</button>
-					  <button type="button" class="btn btn-outline-success px-3" th:text="LienGroupe">Right</button>
+					  <div class="btn btn-outline-success px-lg-3">
+					  	<label for="campaignFile">Campagne</label>
+						<input id="campaignFile" class="upload d-none" type="file" data-file-type="CAMPAIGN">
+					  </div>
+					  <div class="btn btn-outline-success px-lg-3">
+					  	<label for="groupFile">Groupe</label>
+						<input id="groupFile" class="upload d-none" type="file" data-file-type="GROUP">
+					  </div>
+					  <div class="btn btn-outline-success px-lg-3">
+					  	<label for="sellerFile">Vendeur</label>
+						<input id="sellerFile" class="upload d-none" type="file" data-file-type="SELLER">
+					  </div>
+					  <div class="btn btn-outline-success px-lg-3">
+					  	<label for="groupLinkFile">LienGroupe</label>
+						<input id="groupLinkFile" class="upload d-none" type="file" data-file-type="GROUPLINK">
+					  </div>					  
 					</div>
 				</div>
 			</div>	
@@ -64,6 +85,28 @@
 					<i class="fas fa-arrow-right"></i>&nbsp;<span th:text="#{admin.import.inorder}">Suivez l'ordre</span>
 				</div>
 			</div>
+			
+			<script th:inline="javascript">
+			$(function(){		   	    						   	    
+				$('.upload').change(function(){					
+					// Ajax call to upload this file					
+					let fileToUpload = this.files[0];
+					let fileType = $(this).data('fileType');
+					let fd = new FormData();
+					fd.append('file', fileToUpload);					
+					let url = /*[[@{/api/file/upload}]]*/
+					$.post({
+						url: `${url}?fileType=${fileType}`,
+						data: fd,
+						contentType: false,						
+						processData: false,
+						success: function(result) { displaySuccess('#msg-success', result); }
+					})
+					.fail(function(err){ displayError(err, '#msg-error', 'Erreur')});
+				});
+			});
+			</script>
+			
 		</div>		
 	</body>
 </html>
