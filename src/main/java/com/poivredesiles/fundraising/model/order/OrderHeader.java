@@ -20,7 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
-import com.poivredesiles.fundraising.model.PdiSeller;
+import com.poivredesiles.fundraising.model.group.PdiSeller;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

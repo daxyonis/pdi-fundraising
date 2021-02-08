@@ -3,11 +3,18 @@ package com.poivredesiles.fundraising.imports;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ImportsUtils {
+	
+	public static enum DataTypeEnum {
+		SECTION, PRODUCT, ORDERTYPE, CAMPAIGN, GROUP, SELLER, GROUPLINK
+	}
 	
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -39,6 +46,44 @@ public class ImportsUtils {
 			return dateToConvert.toInstant()
 				      .atZone(ZoneId.systemDefault())
 				      .toLocalDate();
+		}
+	}
+	
+	/**
+	 * Converts an Instant to LocalDate (handles null)
+	 * @param instant
+	 * @return
+	 */
+	public static LocalDate convertToLocalDate(Instant instant) {
+		if(instant == null) {
+			return null;
+		}
+		return instant.atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	
+	/**
+	 * Converts an Instant to LocalDateTime (handles null)
+	 * @param instant
+	 * @return
+	 */
+	public static LocalDateTime convertToLocalDateTime(Instant instant) {
+		if(instant == null) {
+			return null;
+		}
+		return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+	
+	/**
+	 * 
+	 * @param instant
+	 * @return
+	 */
+	public static String formatInstant(Instant instant) {
+		LocalDateTime localDateTime = convertToLocalDateTime(instant);
+		if(localDateTime != null) {
+			return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		} else {
+			return "-";
 		}
 	}
 	

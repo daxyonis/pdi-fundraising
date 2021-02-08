@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Seller;
-import com.poivredesiles.fundraising.model.PdiGroup;
-import com.poivredesiles.fundraising.model.PdiSeller;
+import com.poivredesiles.fundraising.model.group.PdiGroup;
+import com.poivredesiles.fundraising.model.group.PdiSeller;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
-import com.poivredesiles.fundraising.repository.PdiGroupRepository;
-import com.poivredesiles.fundraising.repository.PdiSellerRepository;
+import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
+import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 
 @Service

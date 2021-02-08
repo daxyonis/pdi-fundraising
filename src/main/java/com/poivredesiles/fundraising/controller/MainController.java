@@ -2,12 +2,15 @@ package com.poivredesiles.fundraising.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.poivredesiles.fundraising.imports.CsvImportService;
 
 @Controller
 @PropertySource("classpath:git.properties")
@@ -19,7 +22,10 @@ public class MainController {
 	private String gitCommitId;	
 	
 	@Value("${git.build.version}")
-	private String buildVersion; 
+	private String buildVersion;
+	
+	@Autowired
+	private CsvImportService csvImportService;
 	
 	@ModelAttribute
 	public void populateModel(Model model) {
@@ -45,6 +51,8 @@ public class MainController {
 		model.addAttribute("homeUrl", "/admin");
 		model.addAttribute("menuShowSales", false);
 		model.addAttribute("menuShowOrder", false);
+		model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
+		model.addAttribute("groupsAndSellersLastImport", csvImportService.getGroupsAndSellersLastImportDate());
 		return "views/admin";
 	}
 }

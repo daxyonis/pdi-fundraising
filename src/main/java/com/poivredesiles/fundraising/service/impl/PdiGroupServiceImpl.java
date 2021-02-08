@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.dto.Group;
-import com.poivredesiles.fundraising.model.PdiCampaign;
-import com.poivredesiles.fundraising.model.PdiGroup;
-import com.poivredesiles.fundraising.repository.PdiCampaignRepository;
-import com.poivredesiles.fundraising.repository.PdiGroupRepository;
+import com.poivredesiles.fundraising.model.group.PdiCampaign;
+import com.poivredesiles.fundraising.model.group.PdiGroup;
+import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
+import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
 import com.poivredesiles.fundraising.service.PdiGroupService;
 
 @Service

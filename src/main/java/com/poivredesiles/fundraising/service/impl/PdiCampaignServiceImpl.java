@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.poivredesiles.fundraising.imports.dto.Campaign;
-import com.poivredesiles.fundraising.model.PdiCampaign;
+import com.poivredesiles.fundraising.model.group.PdiCampaign;
 import com.poivredesiles.fundraising.model.order.OrderType;
-import com.poivredesiles.fundraising.repository.PdiCampaignRepository;
+import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 

@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.model;
+package com.poivredesiles.fundraising.model.group;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.user.User;
 

@@ -1,4 +1,4 @@
-package com.poivredesiles.fundraising.model;
+package com.poivredesiles.fundraising.model.group;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.order.OrderType;
 
 import lombok.Data;
