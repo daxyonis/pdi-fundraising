@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.poivredesiles.fundraising.imports.CsvImportService;
+import com.poivredesiles.fundraising.service.PdiCampaignService;
 
 @Controller
 @PropertySource("classpath:git.properties")
@@ -26,6 +27,9 @@ public class MainController {
 	
 	@Autowired
 	private CsvImportService csvImportService;
+	
+	@Autowired
+	private PdiCampaignService pdiCampaignService;
 	
 	@ModelAttribute
 	public void populateModel(Model model) {
@@ -53,6 +57,7 @@ public class MainController {
 		model.addAttribute("menuShowOrder", false);
 		model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
 		model.addAttribute("groupsAndSellersLastImport", csvImportService.getGroupsAndSellersLastImportDate());
+		model.addAttribute("showWarning", pdiCampaignService.thereAreActiveCampaigns());
 		return "views/admin";
 	}
 }

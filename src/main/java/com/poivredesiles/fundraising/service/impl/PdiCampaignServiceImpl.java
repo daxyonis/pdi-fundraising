@@ -83,4 +83,9 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		}
 	}
 
+	@Override
+	public boolean thereAreActiveCampaigns() {
+		return (pdiCampaignRepository.countByBlockedFalse() > 0);
+	}
+
 }

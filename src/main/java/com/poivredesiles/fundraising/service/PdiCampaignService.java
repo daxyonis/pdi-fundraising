@@ -8,4 +8,6 @@ public interface PdiCampaignService {
 
 	void importCampaigns(List<Campaign> campaigns);
 
+	boolean thereAreActiveCampaigns();
+
 }

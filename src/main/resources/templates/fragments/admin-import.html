@@ -46,6 +46,11 @@
 					<i class="fas fa-arrow-right"></i>&nbsp;<span th:text="#{admin.import.inorder}">Suivez l'ordre</span>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-md-8 offset-md-4">
+					<p class="text-primary" th:if="${showWarning}" th:text="#{admin.import.warning}">Attention: campagne(s) en cours...</p>					
+				</div>							
+			</div>
 			<!-- /* Groups and sellers import */ -->
 			<div class="row mt-5">
 				<div class="col-md-12">

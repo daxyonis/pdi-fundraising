@@ -9,4 +9,6 @@ import com.poivredesiles.fundraising.model.group.PdiCampaign;
 public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> {		
 
 	Optional<PdiCampaign> findOneByNumber(Long number);
+
+	int countByBlockedFalse();
 }
