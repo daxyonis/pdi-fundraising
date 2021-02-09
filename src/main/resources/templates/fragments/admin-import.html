@@ -115,7 +115,14 @@
 							$(selector).text(result.lastImportDate);
 						}
 					})
-					.fail(function(err){ displayError(err, '#msg-error', /*[[#{admin.import.error}]]*/'Erreur')});
+					.fail(function(err){ 						
+						console.log(err.responseJSON);
+						if(err.responseJSON && err.responseJSON.message){
+							displayError(err, '#msg-error', `ERREUR : ${err.responseJSON.message}`);	
+						} else {
+							displayError(err, '#msg-error', /*[[#{admin.import.error}]]*/'Erreur');
+						}
+					});
 				});
 			});
 			</script>

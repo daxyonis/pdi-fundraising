@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.imports.dto.Group;
@@ -33,7 +34,7 @@ public class CsvImportServiceTest {
 	private CsvImportService csvImportService = new CsvImportService();
 		
 	@Test
-	public void readSectionsTest() {
+	public void readSectionsTest() throws PdiImportDataException{
 		log.info("---------- CSV Read Sections ------------");
 		List<Section> sections = csvImportService.readSections(FILEMAKER_CSV_FOLDER + "section.csv");				
 		log.info(sections.toString());
@@ -41,7 +42,7 @@ public class CsvImportServiceTest {
 	}
 	
 	@Test
-	public void readProductsTest() {
+	public void readProductsTest() throws PdiImportDataException{
 		log.info("---------- CSV Read Products ------------");
 		List<Product> products = csvImportService.readProducts(FILEMAKER_CSV_FOLDER + "produit.csv");				
 		log.info(products.toString());
@@ -49,7 +50,7 @@ public class CsvImportServiceTest {
 	}
 	
 	@Test
-	public void readTypeBCTest() {
+	public void readTypeBCTest() throws PdiImportDataException{
 		log.info("---------- CSV Read TypeBC ------------");
 		List<TypeBC> typeBCs = csvImportService.readOrderTypes(FILEMAKER_CSV_FOLDER + "typebc.csv");				
 		log.info(typeBCs.toString());
@@ -57,7 +58,7 @@ public class CsvImportServiceTest {
 	}
 	
 	@Test
-	public void readCampaignsTest() {
+	public void readCampaignsTest() throws PdiImportDataException {
 		log.info("---------- CSV Read Campaigns ------------");
 		List<Campaign> campaigns = csvImportService.readCampaigns(FILEMAKER_CSV_FOLDER + "campagne.csv");				
 		log.info(campaigns.toString());
@@ -65,7 +66,7 @@ public class CsvImportServiceTest {
 	}
 	
 	@Test
-	public void readGroupsTest() {
+	public void readGroupsTest() throws PdiImportDataException{
 		log.info("---------- CSV Read Groups ------------");
 		List<Group> groups = csvImportService.readGroups(FILEMAKER_CSV_FOLDER + "groupe.csv");				
 		log.info(groups.toString());
@@ -73,7 +74,7 @@ public class CsvImportServiceTest {
 	}
 	
 	@Test
-	public void readSellersTest() {
+	public void readSellersTest() throws PdiImportDataException{
 		log.info("---------- CSV Read Sellers ------------");
 		List<Seller> sellers = csvImportService.readSellers(FILEMAKER_CSV_FOLDER + "vendeur.csv");				
 		log.info(sellers.toString());
@@ -81,7 +82,7 @@ public class CsvImportServiceTest {
 	}
 	
 	@Test
-	public void readGroupLinksTest() {
+	public void readGroupLinksTest() throws PdiImportDataException{
 		log.info("---------- CSV Read GroupLink ------------");
 		List<GroupLink> groupLinks = csvImportService.readGroupLinks(FILEMAKER_CSV_FOLDER + "liengroupe.csv");				
 		log.info(groupLinks.toString());

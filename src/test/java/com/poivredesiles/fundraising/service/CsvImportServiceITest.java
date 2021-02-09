@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.CsvImportService;
 
 @SpringBootTest
@@ -42,7 +43,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(1)
-	public void importSectionsTest() {
+	public void importSectionsTest() throws PdiImportDataException {
 		csvImportService.importSections(FILEMAKER_CSV_FOLDER + "section.csv");
 		int numCategories = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdicategory", Integer.class);
 		assertEquals(NUM_SECTIONS, numCategories);
@@ -50,7 +51,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(2)
-	public void importProductsTest() {
+	public void importProductsTest() throws PdiImportDataException {
 		csvImportService.importProducts(FILEMAKER_CSV_FOLDER + "produit.csv");
 		int numProducts = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiproduct", Integer.class);
 		assertEquals(NUM_PRODUCTS, numProducts);
@@ -58,7 +59,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(3)
-	public void importTypeBCTest() {
+	public void importTypeBCTest() throws PdiImportDataException {
 		csvImportService.importTypeBC(FILEMAKER_CSV_FOLDER + "typebc.csv");
 		int numOrderTypes = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ordertype", Integer.class);		
 		int numOrderTypePdiProducts = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM ordertype_pdiproduct", Integer.class);
@@ -68,7 +69,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(4)
-	public void importCampaignsTest() {
+	public void importCampaignsTest() throws PdiImportDataException {
 		csvImportService.importCampaigns(FILEMAKER_CSV_FOLDER + "campagne.csv");
 		int numCampaigns = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdicampaign", Integer.class);
 		assertEquals(NUM_CAMPAIGN, numCampaigns);
@@ -76,7 +77,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(5)
-	public void importGroupsTest() {
+	public void importGroupsTest() throws PdiImportDataException {
 		csvImportService.importGroups(FILEMAKER_CSV_FOLDER + "groupe.csv");
 		int numGroups = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdigroup", Integer.class);
 		assertEquals(NUM_GROUPS,numGroups);
@@ -84,7 +85,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(6)
-	public void importSellersTest() {
+	public void importSellersTest() throws PdiImportDataException {
 		csvImportService.importSellers(FILEMAKER_CSV_FOLDER + "vendeur.csv");
 		int numSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller where pdi_group_id is null", Integer.class);
 		int numUsers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user", Integer.class);
@@ -94,7 +95,7 @@ public class CsvImportServiceITest {
 	
 	@Test
 	@Order(7)
-	public void importGroupLinksTest() {
+	public void importGroupLinksTest() throws PdiImportDataException {
 		csvImportService.importGroupLinks(FILEMAKER_CSV_FOLDER + "liengroupe.csv");
 		int numLinkedSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller where pdi_group_id is not null", Integer.class);
 		assertEquals(NUM_SELLERS, numLinkedSellers);

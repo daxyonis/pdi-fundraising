@@ -22,9 +22,10 @@ public class JdbcImportServiceITest{
 	private final int NUM_PRODUCTS = 99;
 	private final int NUM_TYPE_BC = 1;
 	private final int NUM_TYPE_BC_PRODUCTS = 99;
-	private final int NUM_CAMPAIGN = 1;
-	private final int NUM_GROUPS = 6;
-	private final int NUM_SELLERS = 27;
+	private final int NUM_CAMPAIGN = 2;
+	private final int NUM_GROUPS = 10;
+	private final int NUM_SELLERS = 36;
+	private final int NUM_USERS = 22;
 	
 	private JdbcTemplate jdbcTemplate;			
 	
@@ -63,6 +64,6 @@ public class JdbcImportServiceITest{
 		assertEquals(NUM_CAMPAIGN, numCampaigns);
 		assertEquals(NUM_GROUPS,numGroups);
 		assertEquals(NUM_SELLERS, numSellers);
-		assertEquals(4, numUsers);	// 2 Admins + 1 buyer and 1 seller
+		assertEquals(NUM_USERS, numUsers);
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.imports.ImportsUtils.DataTypeEnum;
 
@@ -33,10 +34,13 @@ public class FileController {
 	
 	@PostMapping("/upload")	
 	@Secured("ROLE_ADMIN")
-	public Map<String, String> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType, HttpServletRequest request) throws IllegalStateException, IOException {
+	public Map<String, String> handleFileUpload(@RequestParam("file") MultipartFile file, 
+												@RequestParam("fileType") String fileType, 
+												HttpServletRequest request) 
+														throws IllegalStateException, IOException, PdiImportDataException {
 //		String fileName = file.getOriginalFilename();	    
 //	    file.transferTo( new File("C:\\upload\\" + fileName));
-		
+				
 		String lastImportDate = csvImportService.dispatchImport(file, DataTypeEnum.valueOf(fileType));	    
 	    String message = messageSource.getMessage("admin.import.success", new Object[] {fileType}, localeResolver.resolveLocale(request));
 	    Map<String, String> map = Map.of("lastImportDate",lastImportDate, "message", message);

@@ -7,7 +7,7 @@ function displayDisappear(selector, message) {
 	$(selector).removeClass("d-none");
 	setTimeout(function() {
 		$(selector).addClass("d-none");
-	}, 3000);
+	}, 5000);
 }
 
 function displaySuccess(selector, message) {
