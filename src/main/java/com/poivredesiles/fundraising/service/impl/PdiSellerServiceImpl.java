@@ -178,4 +178,9 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			log.error("Did not get the campaign leader number for seller", e);
 		}
 	}
+
+	@Override
+	public PdiSeller save(PdiSeller pdiSeller) {
+		return pdiSellerRepository.save(pdiSeller);
+	}
 }

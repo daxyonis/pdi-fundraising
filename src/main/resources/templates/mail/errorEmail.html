@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+	<head>		
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style>
+        	.ital {
+        		font-style: italic;
+        	}
+        	.bold {
+        		font-weight: bold;
+        	}
+        	.blue {
+        		color: blue;
+        	}
+        </style>
+	</head>
+	<body>
+		<p class="bold" th:text="${error.subject}">AN ERROR HAPPENED</p>		
+    	<p th:text="${error.intro}">
+    		An error happened.
+    	</p>
+    	<p th:text="#{email.error.exceptions}">Exceptions</p>
+    	<ul>
+    		<li th:each="except : ${error.exceptions}">
+    			<span class="ital" th:text="${except}"></span>
+    		</li>
+    	</ul>    	    	
+    	<p th:text="${error.message}">
+    		The following errors happened : AAA, BBB, CCC
+    	</p>
+    	<p class="ital" th:text="#{email.noreply}">Veuillez ne pas repondre a ce message.</p>
+    	<p class="ital" th:text="#{email.generated}">
+    		Ce courriel a ete genere automatiquement par la plateforme Autos Autos.
+    	</p>
+	</body>
+</html>

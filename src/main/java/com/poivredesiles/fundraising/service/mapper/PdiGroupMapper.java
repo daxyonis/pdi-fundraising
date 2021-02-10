@@ -12,11 +12,11 @@ import com.poivredesiles.fundraising.service.dto.PdiGroupDTO;
 @Mapper(componentModel = "spring", uses = {PdiCampaignMapper.class})
 public interface PdiGroupMapper extends EntityMapper<PdiGroupDTO, PdiGroup> {
 
-    @Mapping(source = "pdiCampaign.id", target = "pdiCampaignId")
+    @Mapping(source = "pdiCampaign.id", target = "pdiCampaignId")    
     PdiGroupDTO toDto(PdiGroup pdiGroup);
 
-    @Mapping(target = "pdiSellers", ignore = true)
-    @Mapping(target = "removePdiSeller", ignore = true)
+    @Mapping(target = "pdiSellers", ignore = true)   
+    @Mapping(target = "orderType", ignore = true)
     @Mapping(source = "pdiCampaignId", target = "pdiCampaign")
     PdiGroup toEntity(PdiGroupDTO pdiGroupDTO);
 

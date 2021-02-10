@@ -7,10 +7,46 @@ import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 
 public interface PdiCampaignService {
 
+	/**
+	 * Import a list of campaigns to PDI campaign
+	 * @param campaigns
+	 */
 	void importCampaigns(List<Campaign> campaigns);
 
+	/**
+	 * Queries whether there are active PDI campaigns (not blocked, not closed)
+	 * @return
+	 */
 	boolean thereAreActiveCampaigns();
 
-	PdiCampaignDTO close(PdiCampaignDTO campaign);
+	/**
+	 * Close a PDI campaign
+	 * This causes the following actions:
+	 *   - User disabling : disables all campaign users except the campaign leader
+	 *   - Email sending : send to the campaign leader the sales recap
+	 *   - Set the campaign closed flag to true; set the campaign closed date
+	 * @param id
+	 * @return
+	 */
+	PdiCampaignDTO close(Long id);
+
+	/**
+	 * Find all PDI campaigns
+	 * @param active	if true, filters only the campaigns that are not closed
+	 * 					if false, filters only the closed campaigns
+	 * @return
+	 */
+	List<PdiCampaignDTO> findAll(boolean active);
+
+	/**
+	 * Block a PDI campaign
+	 * This causes the following actions:
+	 * 		- User disabling : disables all campaign users including the campaign leader
+	 * 	    - Set the campaign blocked flag to true; set the campaign blocked date
+	 * A scheduled job will run that will erase all data for blocked campaigns after 1 year
+	 * @param id
+	 * @return
+	 */
+	PdiCampaignDTO block(Long id);
 
 }

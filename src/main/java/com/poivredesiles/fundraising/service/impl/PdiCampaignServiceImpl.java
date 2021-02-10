@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.service.impl;
 
 import static com.poivredesiles.fundraising.imports.ImportsUtils.convertToLocalDate;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
+import com.poivredesiles.fundraising.model.group.PdiGroup;
+import com.poivredesiles.fundraising.model.group.PdiSeller;
 import com.poivredesiles.fundraising.model.order.OrderType;
+import com.poivredesiles.fundraising.model.user.Role;
+import com.poivredesiles.fundraising.model.user.RoleEnum;
+import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
+import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
+import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
+import com.poivredesiles.fundraising.service.mapper.PdiCampaignMapper;
 
 @Service
 @Transactional
@@ -29,6 +40,15 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 
 	@Autowired
 	private OrderTypeRepository orderTypeRepository;
+	
+	@Autowired
+	private PdiCampaignMapper pdiCampaignMapper;
+	
+	@Autowired
+	private PdiSellerService pdiSellerService;
+	
+	@Autowired
+	private MailService mailService;
 
 	@Override
 	public void importCampaigns(List<Campaign> campaigns) {
@@ -88,4 +108,68 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		return (pdiCampaignRepository.countByBlockedFalse() > 0);
 	}
 
+	@Override
+	public PdiCampaignDTO close(Long id) {
+		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
+		if(campaign.isPresent()) {
+			PdiCampaign pdiCampaign = campaign.get(); 
+			disableCampaignUsers(pdiCampaign, false);
+			sendEmailToLeader(pdiCampaign);
+			pdiCampaign.setClosed(true);
+			pdiCampaign.setClosedDate(LocalDate.now());
+			pdiCampaign = pdiCampaignRepository.save(pdiCampaign);
+			return pdiCampaignMapper.toDto(pdiCampaign); 
+		} else {
+			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+		}
+	}
+
+	private void disableCampaignUsers(PdiCampaign pdiCampaign, boolean disableAll) {
+		Role campaignLeader = new Role(RoleEnum.ROLE_CAMPAIGN_LEADER);
+		for(PdiGroup pdiGroup : pdiCampaign.getPdiGroups()) {
+			for(PdiSeller pdiSeller : pdiGroup.getPdiSellers()) {
+				User me = pdiSeller.getMe();
+				// Disable this user if he is not null AND (we disable all OR this user is not a campaign leader) 
+				boolean disableMe = (me!= null) && (disableAll || !me.getRoles().contains(campaignLeader)); 
+				if(disableMe) {																		
+					pdiSeller.getMe().setDisabled(true);					
+				}
+				// Always disable the buyer
+				if(pdiSeller.getBuyer() != null) {
+					pdiSeller.getBuyer().setDisabled(true);
+				}
+				pdiSeller = pdiSellerService.save(pdiSeller);
+			}
+		}		
+	}
+
+	// TODO !!!
+	private void sendEmailToLeader(PdiCampaign pdiCampaign) {
+		//mailService.send		
+		// send the same page as sales recap
+	}
+
+	@Override
+	public List<PdiCampaignDTO> findAll(boolean active) {
+		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findAllByClosedAndBlockedFalse(!active);		
+		return pdiCampaignMapper.toDto(pdiCampaigns);
+	}
+
+	@Override
+	public PdiCampaignDTO block(Long id) {
+		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
+		if(campaign.isPresent()) {
+			PdiCampaign pdiCampaign = campaign.get(); 
+			disableCampaignUsers(pdiCampaign, true);			
+			pdiCampaign.setBlocked(true);
+			pdiCampaign.setBlockedDate(LocalDate.now());
+			pdiCampaign = pdiCampaignRepository.save(pdiCampaign);
+			return pdiCampaignMapper.toDto(pdiCampaign); 
+		} else {
+			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+		}
+	}
+	
+	
+	
 }

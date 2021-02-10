@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.repository.group;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,7 @@ public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> 
 
 	Optional<PdiCampaign> findOneByNumber(Long number);
 
-	int countByBlockedFalse();
+	int countByBlockedFalse();	
+
+	List<PdiCampaign> findAllByClosedAndBlockedFalse(boolean closed);
 }

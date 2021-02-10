@@ -7,8 +7,8 @@
 			<!--/* Messages */-->
 			<div class="row mt-3">
 				<div class="col-md-12">
-					<div class="alert alert-info d-none" id="msg-success">L'importation des nouveaux groupes a reussi</div>
-					<div class="alert alert-warning d-none" id="msg-error">L'importation des nouveaux groupes a echoue</div>
+					<div class="alert alert-info d-none" id="import-msg-success">L'importation des nouveaux groupes a reussi</div>
+					<div class="alert alert-warning d-none" id="import-msg-error">L'importation des nouveaux groupes a echoue</div>
 				</div>
 			</div>
 			<!-- /* Sections and products import */ -->
@@ -99,14 +99,14 @@
 					let fileType = $(this).data('fileType');
 					let fd = new FormData();
 					fd.append('file', fileToUpload);					
-					let url = /*[[@{/api/file/upload}]]*/
+					let url = /*[[@{/api/file/upload}]]*/ '';
 					$.post({
 						url: `${url}?fileType=${fileType}`,
 						data: fd,
 						contentType: false,						
 						processData: false,
 						success: function(result) { 
-							displaySuccess('#msg-success', result.message);
+							displaySuccess('#import-msg-success', result.message);
 							var updatedDate = new Date();
 							var selector = 'span#groupLastImport';
 							if(fileType === "SECTION" || fileType === "PRODUCT" || fileType === "ORDERTYPE"){								
@@ -118,9 +118,9 @@
 					.fail(function(err){ 						
 						console.log(err.responseJSON);
 						if(err.responseJSON && err.responseJSON.message){
-							displayError(err, '#msg-error', `ERREUR : ${err.responseJSON.message}`);	
+							displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
 						} else {
-							displayError(err, '#msg-error', /*[[#{admin.import.error}]]*/'Erreur');
+							displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
 						}
 					});
 				});

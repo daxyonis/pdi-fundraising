@@ -103,4 +103,17 @@ public class ImportsUtils {
 			return myDateFormat.parse(dateToParse);
 		}
 	}
+
+	/**
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static String formatLocalDate(LocalDate date) {
+		if(date != null) {
+			return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		} else {
+			return "";
+		}	
+	}
 }

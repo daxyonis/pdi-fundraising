@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head></head>
+	<head>		
+	</head>
 	<body>
 		<div th:fragment="terminate">
 		<!--/* Messages */-->
 			<div class="row mt-3">
 				<div class="col-md-12">
-					<div class="alert alert-info d-none" id="msg-success">La campagne a ete terminee</div>
-					<div class="alert alert-warning d-none" id="msg-error">La campagne n'a pu etre terminee : l'operation a echoue</div>
+					<div class="alert alert-info d-none" id="close-msg-success">La campagne a ete terminee</div>
+					<div class="alert alert-warning d-none" id="close-msg-error">La campagne n'a pu etre terminee : l'operation a echoue</div>
 				</div>
 			</div>
 			<div class="row mt-3">
@@ -18,7 +19,7 @@
 			<div class="row">
 				<div class="col-lg-10 offset-lg-2">
 					<!-- /* Use Datatables for Ajax display */ -->
-					<table id="activeCamp1" class="table table-bordered table-striped">
+					<table id="activeCamp1" class="table table-bordered table-striped" style="width:100%">
 						<thead class="thead-light">
 							<tr>
 								<th th:text="#{campaign.duedate}">date limite</th>
@@ -39,7 +40,7 @@
 			<div class="row">
 				<div class="col-lg-10 offset-lg-2">
 					<!-- /* Use Datatables for Ajax display */ -->
-					<table id="closedCamp1" class="table table-bordered table-striped">
+					<table id="closedCamp1" class="table table-bordered table-striped" style="width:100%">
 						<thead class="thead-light">
 							<tr>
 								<th th:text="#{campaign.duedate}">date limite</th>
@@ -53,6 +54,125 @@
 					</table>
 				</div>
 			</div>
+			
+			<script th:inline="javascript">
+			// options common to all datatables
+			var datatablesOptions = {
+					paging: false,
+					searching : false,
+					responsive: true,
+					info: false,
+					language: {
+						url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/French.json'
+					}
+			};
+			
+			var closeButtonLabel = /*[[#{admin.terminate}]]*/'terminer';
+			var blockButtonLabel = /*[[#{admin.block}]]*/'bloquer';
+			
+			// Link button event handlers
+			function initCloseButtonHandlers(){
+				$('button.action-close').off();
+				$('button.action-close').on('click', function(){
+					let campaignId = $(this).data('id');
+					$('#closeCampaignConfirmed').data('id', campaignId);
+					$('#closeConfirm').modal('show');
+				});
+			}
+			
+			function initBlockButtonHandlers(){
+				$('button.action-block').off();
+				$('button.action-block').on('click', function(){
+					let campaignId = $(this).data('id');
+					$('#blockCampaignConfirmed').data('id', campaignId);
+					$('#blockConfirm').modal('show');
+				});
+			}
+			
+			function closeCampaign(){
+				let campaignId = $(this).data('id');
+				let url = /*[[@{/api/campaign}]]*/'/api/campaign';
+				$.post(`${url}/${campaignId}/close`, function(){		
+					$('#closeConfirm').modal('hide');
+					displaySuccess('#close-msg-success', /*[[#{admin.terminate.success}]]*/'succes!');					
+					reloadAll();
+				})
+				.fail(terminateFailureHandler)
+				.done(function(){
+					$('#closeConfirm').modal('hide');
+				});
+			}
+			
+			function blockCampaign(){
+				let campaignId = $(this).data('id');
+				let url = /*[[@{/api/campaign}]]*/'/api/campaign';
+				$.post(`${url}/${campaignId}/block`, function(){		
+					$('#blockConfirm').modal('hide');
+					displaySuccess('#block-msg-success', /*[[#{admin.block.success}]]*/'succes!');					
+					reloadAll();
+				})
+				.fail(terminateFailureHandler)
+				.done(function(){
+					$('#blockConfirm').modal('hide');
+				});
+			}
+			
+			
+			function terminateFailureHandler (err){ 						
+				console.log(err.responseJSON);
+				if(err.responseJSON && err.responseJSON.message){
+					displayError(err, '#close-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+				} else {
+					displayError(err, '#close-msg-error', /*[[#{admin.action.error}]]*/'Erreur');
+				}
+			}
+			
+			function reloadAll(){
+				activeCampaignsDTable.ajax.reload();
+				closedCampaignsDTable.ajax.reload();
+			}
+			
+			
+			var activeCampaignsDTable = $('#activeCamp1')
+				.on('draw.dt', initCloseButtonHandlers)
+				.DataTable( 
+					Object.assign({
+					    ajax: {
+					        url: /*[[@{/api/campaign/?active=true}]]*/'/api/campaign/',
+					        dataSrc: ''
+					    },
+					    columns: [ 
+					    	{data: 'formattedDueDate'},
+					    	{data: 'number'},
+					    	{data: 'organizationName'},
+					    	{data: 'project'},
+					    	{data: 'id', orderable: false, render: function(data, type, row){
+					    		return `<button type='button' class='btn btn-primary action-close' data-id='${data}'>${closeButtonLabel}</button>`;
+					    	}}
+					    ]
+					},  datatablesOptions));
+			
+			var closedCampaignsDTable = $('#closedCamp1')
+				.on('draw.dt', initBlockButtonHandlers)
+				.DataTable( 
+					Object.assign({
+					    ajax: {
+					        url: /*[[@{/api/campaign/?active=false}]]*/'/api/campaign/',
+					        dataSrc: ''
+					    },
+					    columns: [ 
+					    	{data: 'formattedDueDate'},
+					    	{data: 'formattedClosedDate'},
+					    	{data: 'number'},
+					    	{data: 'organizationName'},
+					    	{data: 'project'},
+					    	{data: 'id', orderable: false, render: function(data, type, row){
+					    		return `<button class='btn btn-primary action-block' data-id='${data}'>${blockButtonLabel}</button>`;
+					    	}}
+					    ]
+					}, datatablesOptions));
+			</script>
+			
 		</div>
 	</body>
 </html>
