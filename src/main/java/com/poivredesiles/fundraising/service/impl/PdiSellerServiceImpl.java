@@ -15,6 +15,7 @@ import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
+import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
@@ -43,18 +44,22 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			for (Seller seller : sellers) {
 				// Get the PdiSeller
 				Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByNumber(seller.getNumber());
+				PdiSeller currentPdiSeller = null;
 				if (pdiSeller.isPresent()) {
 					updateSeller(pdiSeller.get(), seller);
+					currentPdiSeller = pdiSeller.get();
 				} else {
 					// Create new PdiSeller
 					PdiSeller newPdiSeller = new PdiSeller();
 					newPdiSeller.setCreatedBy("system");
 					updateSeller(newPdiSeller, seller);
+					currentPdiSeller = newPdiSeller;
 				}
-			}
+				updateCampaignLeadership(currentPdiSeller);
+			}			
 		}
 
-	}
+	}	
 
 	@Override	
 	public void linkSellersToGroup(List<GroupLink> groupLinks) {
@@ -83,7 +88,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			pdiSeller.setNumber(seller.getNumber());
 			pdiSeller.setName(seller.getName());			
 			updateUsers(pdiSeller, seller);
-			pdiSellerRepository.save(pdiSeller);
+			pdiSellerRepository.save(pdiSeller);			
 		} else {
 			log.warn("Did not save invalid seller: {}", seller.toString());
 		}
@@ -109,8 +114,9 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			sellerAsUser.addRole(RoleEnum.ROLE_BUYER);
 			sellerAsUser.addRole(RoleEnum.ROLE_SELLER);
 			if (seller.getAuthorization().equalsIgnoreCase("Responsable")) {
-				sellerAsUser.addRole(RoleEnum.ROLE_SUPERVISOR);
-			}
+				sellerAsUser.addRole(RoleEnum.ROLE_GROUP_LEADER);
+			}			
+			
 			String[] firstAndLastName = seller.getName().split(" ");
 			if (firstAndLastName.length > 1) {
 				sellerAsUser.setFirstname(firstAndLastName[0]);
@@ -156,4 +162,20 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 		}
 	}
 
+	/**
+	 * Check if the seller has the campaign leadership and if so, add the role
+	 * @param currentPdiSeller
+	 */
+	private void updateCampaignLeadership(PdiSeller currentPdiSeller) {
+		Long sellerNumber = currentPdiSeller.getNumber();
+		try{
+			String leaderNum = currentPdiSeller.getPdiGroup().getPdiCampaign().getLeaderNum();
+			if(Long.valueOf(leaderNum).equals(sellerNumber) && !currentPdiSeller.getMe().getRoles().contains(new Role(RoleEnum.ROLE_CAMPAIGN_LEADER))) {
+				currentPdiSeller.getMe().addRole(RoleEnum.ROLE_CAMPAIGN_LEADER);
+				pdiSellerRepository.save(currentPdiSeller);
+			}
+		} catch (NullPointerException e) {
+			log.error("Did not get the campaign leader number for seller", e);
+		}
+	}
 }

@@ -4,6 +4,7 @@
 * @author Eva Maciejko
 */
 entity PdiCampaign {
+	number Long,
 	organizationNum Long,
     organizationName String,
     project String,
@@ -12,7 +13,9 @@ entity PdiCampaign {
     dueDate LocalDate,
     orderTypeNum Integer,
     blocked Boolean,
-    terminationDate LocalDate
+    closed Boolean,
+    blockedDate LocalDate,
+    closedDate LocalDate
 }
 
 /**
@@ -29,31 +32,9 @@ entity PdiGroup {
 * Seller entity
 * @author Eva Maciejko
 */
-entity Seller {
+entity PdiSeller {
 	number Long,
     name String    
-}
-
-/**
-* WebUser entity
-* Represents the web user accessing the application
-* @author Eva Maciejko
-*/
-entity WebUser {
-	username String,
-    password String,
-    firstName String,
-    lastName String,
-    language String,
-    disabled Boolean
-}
-
-enum RoleEnum {
-    BUYER, SELLER, LEAD, ADMIN
-}
-
-entity Role {
-	name RoleEnum
 }
 
 enum OrderStatusEnum {
@@ -99,27 +80,26 @@ entity OrderType {
 }
 
 relationship OneToOne {
-	Seller{me} to WebUser,
-    Seller{buyer} to WebUser,
-    OrderItem{product} to PdiProduct
+	PdiSeller{me} to User,
+    PdiSeller{buyer} to User,
+    OrderItem{pdiProduct} to PdiProduct
 }
 
-relationship ManyToMany {
-	WebUser{roles} to Role{webUsers},
+relationship ManyToMany {	
     OrderType{pdiProducts required} to PdiProduct{orderTypes}
 }
 
 relationship OneToMany {
-	PdiCampaign to PdiGroup{campaign},
-	PdiGroup to Seller{group},
-    Seller to OrderHeader{seller},
+	PdiCampaign to PdiGroup{pdiCampaign},
+	PdiGroup to PdiSeller{pdiGroup},
+    PdiSeller to OrderHeader{pdiSeller},
     OrderHeader to OrderItem{header},
-    PdiCategory to PdiProduct{category},    
+    PdiCategory to PdiProduct{pdiCategory},    
     OrderType to PdiCampaign{orderType}
 }
 
 // Use Data Transfer Objects (DTO)
 dto * with mapstruct
 
-// Set service options to all except few
-service all with serviceImpl except Role
+// Set service options to all
+service all with serviceImpl

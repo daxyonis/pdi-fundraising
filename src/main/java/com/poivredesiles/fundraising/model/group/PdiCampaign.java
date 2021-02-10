@@ -60,12 +60,18 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     @Column(name = "order_type_num")
     private Long orderTypeNum;
 
-    @Column(name = "blocked")
+    @Column(name = "blocked", columnDefinition = "BIT DEFAULT 0")
     private boolean blocked = false;
+    
+    @Column(name = "closed", columnDefinition = "BIT DEFAULT 0")
+    private boolean closed = false;
+       
+    @Column(name = "blocked_date")
+    private LocalDate blockedDate;
 
     @Column(name = "closed_date")
     private LocalDate closedDate;
-
+    
     @OneToMany(mappedBy = "pdiCampaign", fetch = FetchType.LAZY)    
     private Set<PdiGroup> pdiGroups = new HashSet<>();  
     
