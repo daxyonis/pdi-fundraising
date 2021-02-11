@@ -23,6 +23,7 @@ import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
+import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
@@ -150,8 +151,18 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	}
 
 	@Override
-	public List<PdiCampaignDTO> findAll(boolean active) {
-		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findAllByClosedAndBlockedFalse(!active);		
+	public List<PdiCampaignDTO> findAll(Boolean active, Boolean blocked) {
+		List<PdiCampaign> pdiCampaigns;
+		if (active != null) {
+			if (blocked == null) {
+				pdiCampaigns = pdiCampaignRepository.findAllByClosed(!active);
+			} else {
+				pdiCampaigns = pdiCampaignRepository.findAllByClosedAndBlocked(!active, blocked);
+			}
+		} else {
+			throw new UnsupportedOperationException("This findAll not implemented !");
+		}
+		
 		return pdiCampaignMapper.toDto(pdiCampaigns);
 	}
 
@@ -168,6 +179,12 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		} else {
 			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
 		}
+	}
+
+	@Override
+	public PdiCampaignDTO export(Long id, ExportFileNames exportFileNames) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

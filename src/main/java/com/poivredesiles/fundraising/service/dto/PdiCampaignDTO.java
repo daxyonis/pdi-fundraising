@@ -3,6 +3,9 @@ package com.poivredesiles.fundraising.service.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.poivredesiles.fundraising.imports.ImportsUtils;
+
 import lombok.Data;
 
 /**
@@ -47,6 +50,23 @@ public class PdiCampaignDTO implements Serializable {
     private LocalDate closedDate;
     
     private String formattedClosedDate;
+    
+    private String formattedExportDate;
 
     private Long orderTypeId;      
+    
+    @JsonProperty("campaignInfo")
+    public String getCampaignInfo() {
+    	return String.format("%d %s - %s", organizationNum, organizationName, project);
+    }
+    
+    @JsonProperty("orderHeaderFilename")
+    public String getOrderHeaderFilename() {    	
+    	return String.format("%d_enteteBC_%s.csv", organizationNum, ImportsUtils.formatLocalDate(LocalDate.now(), "dd-MM-yyyy"));
+    }
+    
+    @JsonProperty("orderDetailFilename")
+    public String getOrderDetailFilename() {    	
+    	return String.format("%d_detailBC_%s.csv", organizationNum, ImportsUtils.formatLocalDate(LocalDate.now(), "dd-MM-yyyy"));
+    }
 }

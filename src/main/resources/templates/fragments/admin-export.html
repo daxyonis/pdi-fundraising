@@ -7,8 +7,8 @@
 			<!--/* Messages */-->
 			<div class="row mt-3">
 				<div class="col-md-12">
-					<div class="alert alert-info d-none" id="msg-success">L'exportation des bons de commande a reussi</div>
-					<div class="alert alert-warning d-none" id="msg-error">L'exportation des bons de commande a echoue</div>
+					<div class="alert alert-info d-none" id="export-msg-success">L'exportation des bons de commande a reussi</div>
+					<div class="alert alert-warning d-none" id="export-msg-error">L'exportation des bons de commande a echoue</div>
 				</div>
 			</div>
 			<!-- /* Export */ -->
@@ -40,6 +40,90 @@
 					</table>
 				</div>
 			</div>
+			
+			<script th:inline="javascript">
+				// options common to all datatables
+				var datatablesOptions = {
+						paging: false,
+						searching : false,
+						responsive: true,
+						info: false,
+						language: {
+							url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/French.json'
+						}
+				};
+				
+				var exportButtonLabel = /*[[#{admin.export}]]*/'exporter';
+				
+				// Link button event handlers
+				function initExportButtonHandlers(){
+					$('button.action-export').off();
+					$('button.action-export').on('click', function(){
+						let campaign = $(this).data('campaign');
+						$('#campaignInfo').text(campaign.campaignInfo);
+						$('#orderHeaderFilename').val(campaign.orderHeaderFilename);
+						$('#orderDetailFilename').val(campaign.orderDetailFilename);
+						$('#exportCampaignConfirmed').data('id', campaign.id);
+						$('#exportConfirm').modal('show');
+					});
+				}
+				
+				function exportCampaign(){
+					$('#exportConfirm').modal('hide');
+					let campaignId = $(this).data('id');
+					let url = /*[[@{/api/campaign/}]]*/'/api/campaign/';
+					url = url + campaignId + '/export';
+					let fd = {};
+					fd['headerFilename'] = $('#orderHeaderFilename').val();
+					fd['detailFilename'] = $('#orderDetailFilename').val();
+					$.post({'url': url, 
+							'data': JSON.stringify(fd), 
+							'contentType' : 'application/json',
+							'success': function(){										
+											displaySuccess('#export-msg-success', /*[[#{admin.export.success}]]*/'succes!');					
+											reloadAll();
+									}
+							})
+							.fail(exportFailureHandler);	
+				}
+				
+				function exportFailureHandler (err){ 						
+					console.log(err.responseJSON);
+					if(err.responseJSON && err.responseJSON.message){
+						displayError(err, '#export-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+					} else {
+						displayError(err, '#export-msg-error', /*[[#{admin.action.error}]]*/'Erreur');
+					}
+				}
+				
+				function reloadAll(){					
+					closedCampaignsDTable2.ajax.reload();
+				}
+				
+				
+				var closedCampaignsDTable2 = $('#closedCamp2')
+					.on('draw.dt', initExportButtonHandlers)
+					.DataTable( 
+						Object.assign({
+						    ajax: {
+						        url: /*[[@{/api/campaign/?active=false}]]*/'/api/campaign/',
+						        dataSrc: ''
+						    },
+						    columns: [ 
+						    	{data: 'formattedDueDate'},
+						    	{data: 'formattedClosedDate'},
+						    	{data: 'number'},
+						    	{data: 'organizationName'},
+						    	{data: 'project'},
+						    	{data: 'id', orderable: false, render: function(data, type, row){
+						    		return `<button type='button' class='btn btn-primary action-export' data-campaign='${JSON.stringify(row)}'>${exportButtonLabel}</button>`;
+						    	}},
+						    	{data: 'formattedExportDate'}
+						    ]
+						},  datatablesOptions));
+				
+			</script>
+			
 		</div>
 	</body>
 </html>

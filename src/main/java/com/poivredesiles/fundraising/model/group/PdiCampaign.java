@@ -72,6 +72,9 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     @Column(name = "closed_date")
     private LocalDate closedDate;
     
+    @Column(name = "export_date")
+    private LocalDate exportDate;
+    
     @OneToMany(mappedBy = "pdiCampaign", fetch = FetchType.LAZY)    
     private Set<PdiGroup> pdiGroups = new HashSet<>();  
     

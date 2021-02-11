@@ -109,9 +109,9 @@ public class ImportsUtils {
 	 * @param date
 	 * @return
 	 */
-	public static String formatLocalDate(LocalDate date) {
+	public static String formatLocalDate(LocalDate date, String pattern) {
 		if(date != null) {
-			return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			return date.format(DateTimeFormatter.ofPattern(pattern));
 		} else {
 			return "";
 		}	

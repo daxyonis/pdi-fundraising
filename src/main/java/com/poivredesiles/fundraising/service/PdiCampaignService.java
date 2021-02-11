@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.service;
 import java.util.List;
 
 import com.poivredesiles.fundraising.imports.dto.Campaign;
+import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 
 public interface PdiCampaignService {
@@ -34,9 +35,11 @@ public interface PdiCampaignService {
 	 * Find all PDI campaigns
 	 * @param active	if true, filters only the campaigns that are not closed
 	 * 					if false, filters only the closed campaigns
+	 * 					if null, does not filter over the closed state
+	 * @param blocked   if set, filters over the blocked state
 	 * @return
 	 */
-	List<PdiCampaignDTO> findAll(boolean active);
+	List<PdiCampaignDTO> findAll(Boolean active, Boolean blocked);
 
 	/**
 	 * Block a PDI campaign
@@ -48,5 +51,13 @@ public interface PdiCampaignService {
 	 * @return
 	 */
 	PdiCampaignDTO block(Long id);
+
+	/**
+	 * Export the sales results for a given PDI campaign
+	 * @param id the PDI campaign id
+	 * @param exportFileNames the filenames for export
+	 * @return
+	 */
+	PdiCampaignDTO export(Long id, ExportFileNames exportFileNames);
 
 }

@@ -20,6 +20,7 @@ public interface PdiCampaignMapper extends EntityMapper<PdiCampaignDTO, PdiCampa
     @Mapping(source = "dueDate", target = "formattedDueDate", qualifiedByName="formatDate")
     @Mapping(source = "closedDate", target = "formattedClosedDate", qualifiedByName="formatDate")
     @Mapping(source = "blockedDate", target = "formattedBlockedDate", qualifiedByName="formatDate")
+    @Mapping(source = "exportDate", target = "formattedExportDate", qualifiedByName="formatDate")
     PdiCampaignDTO toDto(PdiCampaign pdiCampaign);
 
     @Mapping(target = "pdiGroups", ignore = true)    
@@ -28,7 +29,7 @@ public interface PdiCampaignMapper extends EntityMapper<PdiCampaignDTO, PdiCampa
 
     @Named("formatDate")
     public static String formatDate(LocalDate date) {  
-    	return ImportsUtils.formatLocalDate(date);
+    	return ImportsUtils.formatLocalDate(date, "dd/MM/yyyy");
     }
     
     default PdiCampaign fromId(Long id) {

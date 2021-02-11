@@ -52,12 +52,8 @@
 	      		<h4 th:text="#{admin.terminate.confirm.question}">etes-vous certain de vouloir terminer ?</h4>	      			      		 
 	      </div>
 	      <div class="modal-footer">
-	      	<div class="float-left">
 	      		<button type="button" id="closeCampaignConfirmed" class="btn btn-primary" th:text="#{admin.terminate.yes}">oui</button>
-	      	</div>	      	
-	      	<div class="float-right">
 	        	<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{admin.cancel}">annuler</button>
-	        </div>	        
 	      </div>
 	    </div>
 	  </div>
@@ -80,12 +76,50 @@
 	      		<h4 th:text="#{admin.block.confirm.question}">etes-vous certain de vouloir terminer ?</h4>	      			      		 
 	      </div>
 	      <div class="modal-footer">
-	      	<div class="float-left">
-	      		<button type="button" id="blockCampaignConfirmed" class="btn btn-primary" th:text="#{admin.block.yes}">oui</button>
-	      	</div>	      	
-	      	<div class="float-right">
-	        	<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{admin.cancel}">annuler</button>
-	        </div>	        
+	      		<button type="button" id="blockCampaignConfirmed" class="btn btn-primary" th:text="#{admin.block.yes}">oui</button>  	
+	        	<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{admin.cancel}">annuler</button>        
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- /* Export Campaign Confirmation Modal */ -->
+	<div class="modal fade" id="exportConfirm" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="exportConfirmLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">	      	
+	        <h5 class="modal-title" id="exportConfirmLabel" th:text="#{admin.export.modal.title}">Modal title</h5>		               
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	      	<div class="container-fluid">
+	      		<div class="row text-center">
+	      			<div class="col-md-12"><h5 id="campaignInfo">1025 Ecole LMNO - Financement des activites scolaires</h5></div>
+	      		</div>
+    			<div class="row mt-3">
+    				<div class="col-md-6 font-weight-bold" th:text="#{admin.export.modal.description}">exporter par CSV</div>
+    			</div>
+    			<form>
+    				<div class="form-group row">
+					    <label for="orderHeaderFilename" class="col-sm-4 col-form-label" th:text="#{admin.export.modal.filename.header}">fichier des entetes bc</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="orderHeaderFilename"/>
+					    </div>
+					 </div>
+					 <div class="form-group row">
+					    <label for="orderDetailFilename" class="col-sm-4 col-form-label" th:text="#{admin.export.modal.filename.detail}">fichier des details bc</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="orderDetailFilename"/>
+					    </div>
+					  </div>
+    			</form>    			
+    		</div>  		 
+	      </div>
+	      <div class="modal-footer">	      	
+	      		<button type="button" id="exportCampaignConfirmed" class="btn btn-primary" th:text="#{admin.export.modal.button}">oui</button>	      	
+	        	<button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{admin.cancel}">annuler</button>	        	        
 	      </div>
 	    </div>
 	  </div>
@@ -95,6 +129,7 @@
 		$(function(){
 			$('#closeCampaignConfirmed').on('click', closeCampaign);
 			$('#blockCampaignConfirmed').on('click', blockCampaign);
+			$('#exportCampaignConfirmed').on('click', exportCampaign);
 		});
 	</script>
   </section>
