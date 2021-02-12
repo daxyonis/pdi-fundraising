@@ -37,6 +37,7 @@ public class MainController extends BaseController {
 	public String admin(Model model) {
 		log.info("Requested Admin Page");
 		model.addAttribute("homeUrl", "/admin");
+		model.addAttribute("menuShowHome", true);
 		model.addAttribute("menuShowSales", false);
 		model.addAttribute("menuShowOrder", false);
 		model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());

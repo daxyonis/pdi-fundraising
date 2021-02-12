@@ -7,6 +7,7 @@ import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
 public interface PdiSellerService {
 
@@ -17,10 +18,18 @@ public interface PdiSellerService {
 	PdiSeller save(PdiSeller pdiSeller);
 
 	/**
-	 * Get the list of products available to order for the given user
-	 * @param userDetails user info
+	 * Get the list of products available to order for the current user
+	 * @param userDetails current user info
 	 * @return a list of products available
 	 */
 	List<PdiProductDTO> getProductsForUser(MyUserDetails userDetails);
+
+	/**
+	 * Get the seller for the current user : the user himself can be a seller,
+	 * or the user can be a buyer associated to a seller
+	 * @param userDetails current user info
+	 * @return the seller info corresponding to the current user
+	 */
+	PdiSellerDTO getSellerForUser(MyUserDetails userDetails);
 
 }

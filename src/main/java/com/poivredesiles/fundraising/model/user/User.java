@@ -55,4 +55,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		roles.clear();		
 	}
 	
+	public boolean hasRole(RoleEnum roleEnum) {
+		if(roles == null) {
+			return false;
+		} else {
+			return roles.contains(new Role(roleEnum));
+		}
+	}
 }

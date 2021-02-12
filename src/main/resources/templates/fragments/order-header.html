@@ -3,7 +3,7 @@
 	<head>
 	</head>
 	<body>		
-	<div class="container-fluid" th:fragment="header">  		
+	<th:block th:fragment="header">  		
   		<div class="row">
   			<div class="col-md-12">
   				<h3 th:text="#{order.new}">nouvelle commande</h3>
@@ -39,26 +39,27 @@
 	  		<div class="row">
 	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.name} :|">nom:</label>
 	  			<div class="col-md-4" >
-	  				<input type="text" readonly class="form-control-plaintext" id="sellerName" value="ppp">
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerName" th:value="${seller.name}">
 	  			</div>
-	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.group} :|">groupe:</label>
-	  			<div class="col-md-4" >
-	  				<input type="text" readonly class="form-control-plaintext" id="sellerGroup" value="groupe G">
+	  			<!-- /* Display group name only if it exists */ -->
+	  			<label th:if="${seller.pdiGroupName}" class="col-md-2 col-form-label" th:text="|#{order.seller.group} :|">groupe:</label>
+	  			<div th:if="${seller.pdiGroupName}" class="col-md-4" >
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerGroup" th:value="${seller.pdiGroupName}">
 	  			</div>
 	  		</div>
 	  		<div class="row">
 	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.organization} :|">organisme:</label>
 	  			<div class="col-md-4" >
-	  				<input type="text" readonly class="form-control-plaintext" id="sellerOrganization" value="ABC">	  				
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerOrganization" th:value="${seller.pdiCampaignOrganization}">	  				
 	  			</div>
 	  		</div>
 	  		<div class="row">
 	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.project} :|">projet:</label>
 	  			<div class="col-md-4" >
-	  				<input type="text" readonly class="form-control-plaintext" id="sellerProject" value="ABC">	  				
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerProject" th:value="${seller.pdiCampaignProject}">	  				
 	  			</div>
 	  		</div>
   		</form>
-  	</div>
+  	</th:block>
 	</body>
 </html>

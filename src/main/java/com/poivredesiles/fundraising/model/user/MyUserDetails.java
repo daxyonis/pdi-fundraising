@@ -27,6 +27,18 @@ public class MyUserDetails implements UserDetails {
 	public Long getUserId() {
 		return user.getId();
 	}
+	
+	public boolean hasAnyAuthority(RoleEnum... values) {
+		boolean hasOneAuthority = false;
+		if(values.length > 0) {
+			for(RoleEnum value : values) {
+				if(user.hasRole(value)) {
+					return true;
+				}
+			}
+		}
+		return hasOneAuthority;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

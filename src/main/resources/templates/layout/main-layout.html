@@ -25,14 +25,17 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active"><a class="nav-link active"
-						th:href="@{${homeUrl}}" th:text="#{menu.home}">Home <span
-							class="sr-only">(current)</span></a></li>
-					<li class="nav-item" th:if="${menuShowSales}"><a
-						class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
+					<li class="nav-item active" th:if="${menuShowHome}">
+						<a class="nav-link active" th:href="@{${homeUrl}}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a></li>
+					<li class="nav-item" th:if="${menuShowSales}">
+						<a class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
 					</li>
-					<li class="nav-item" th:if="${menuShowOrder}"><a
-						class="nav-link" th:href="@{/commander}">Order</a></li>
+					<li class="nav-item" th:if="${menuShowOrder}" th:classappend="(${#request.getServletPath()} == '/commande')? 'active' : ''">						
+						<a class="nav-link" th:href="@{/commande}" th:text="#{menu.order}">Order</a>
+					</li>
+				</ul>
+				<ul th:if="${seller}" class="navbar-nav mr-auto">
+					<li class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.formattedPdiCampaignDueDate}|">date de fin de campagne prevue: 15/09/2021</li>					
 				</ul>
 				<form class="form-inline my-2 my-lg-0" th:action="@{/logout}"
 					method="post">
@@ -60,9 +63,8 @@
 	<footer>
 		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">
 			<div class="container">
-				<span class="navbar-text">&copy; Copyright 2021 - Poivre des
-					Îles</span> <span class="navbar-text"
-					th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
+				<span class="navbar-text">&copy; Copyright 2021 - Poivre des Îles</span> 
+				<span class="navbar-text" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
 			</div>
 		</nav>
 		<!-- <p layout:fragment="custom-footer">Custom footer here</p> -->

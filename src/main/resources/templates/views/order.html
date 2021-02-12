@@ -4,10 +4,11 @@
   <title th:text="pdi.order">pdi commande</title>  
 </head>
 <body>
-  <section layout:fragment="content">
-  	<div th:replace="fragments/order-header :: header"></div>
-  	<div th:replace="fragments/order-items :: items"></div>
-  	
+  <section class="p-lg-3" layout:fragment="content">
+  	<div class="container-fluid"> 
+  		<div th:replace="fragments/order-header :: header"></div>
+  		<div th:replace="fragments/order-items :: items"></div>
+  	</div>
   </section>
  </body>
  </html>

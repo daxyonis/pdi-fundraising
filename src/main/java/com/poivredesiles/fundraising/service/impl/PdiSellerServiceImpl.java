@@ -29,7 +29,9 @@ import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.UserService;
 import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import com.poivredesiles.fundraising.service.mapper.PdiProductMapper;
+import com.poivredesiles.fundraising.service.mapper.PdiSellerMapper;
 
 @Service
 @Transactional
@@ -51,6 +53,9 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	
 	@Autowired
 	private PdiProductMapper pdiProductMapper;
+	
+	@Autowired
+	private PdiSellerMapper pdiSellerMapper;
 	
 	private static Comparator<PdiProduct> compareByCategory = (p1, p2) -> p1.getCategory().getNumber().compareTo(p2.getCategory().getNumber());
 	private static Comparator<PdiProduct> compareByName = Comparator.comparing(PdiProduct::getNameFr);
@@ -220,5 +225,20 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 		} else {
 			throw new ResourceNotFoundException("Unknown user !");
 		}		
+	}
+
+	@Override
+	public PdiSellerDTO getSellerForUser(MyUserDetails userDetails) {
+		Optional<User> user = userService.findUserById(userDetails.getUserId());
+		if(user.isPresent()) {
+			Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByMeOrBuyer(user.get(), user.get());
+			if(pdiSeller.isPresent()) {
+				return pdiSellerMapper.toDto(pdiSeller.get());
+			} else {
+				throw new ResourceNotFoundException("Seller not found !");
+			}
+		} else {
+			throw new ResourceNotFoundException("Unknown user !");
+		}	
 	}
 }
