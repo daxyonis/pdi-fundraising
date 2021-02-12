@@ -1,0 +1,53 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	</head>
+	<body>
+		<div class="container-fluid" th:fragment="items">
+			<div class="row">
+	  			<div class="col-md-12">
+	  				<h3 th:text="#{order.detail.title}">bon de commande</h3>
+	  			</div>
+	  		</div>
+	  		<div class="sticky-top">
+	  			<div class="row">
+	  				<div class="col-sm-12 text-right">
+	  					<span class="font-weight-bold mr-4">0.00$</span>
+	  					<button class="btn btn-warning btn-lg" disabled th:text="#{order.pay}">Payer</button>
+	  				</div>
+	  			</div>
+	  		</div>
+	  		<div class="row">
+	  			<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
+	  		</div>
+	  		<th:block th:each="product, iterStatus : ${products}">	  			
+	  			<th:block th:with="previousCategory=${iterStatus.index < 1 ? -1 : products[iterStatus.index-1].categoryId}">
+	  				<th:block th:if="${previousCategory != product.categoryId}">
+	  					<!-- /* Print the category info */ -->
+	  					<div class="row bg-primary p-3" th:switch="${#locale.language}">
+	  						<div th:case="'en'" class="col-md-12 text-center" th:text="${product.categoryDescEn}">category</div>
+	  						<div th:case="*" class="col-md-12 text-center" th:text="${product.categoryDescFr}">categorie</div>
+	  					</div>
+	  				</th:block>
+	  				<!-- /* Print the product info */ -->
+	  				<div class="row py-1">
+	  					<div class="col-md-1" th:text="${product.labelNumber}">#12</div>
+	  					<div class="col-md-1">
+	  						<input type="number" th:placeholder="#{order.quantity}" class="form-control">
+	  					</div>
+	  					<div class="col-md-1" th:text="${#numbers.formatCurrency(product.unitPrice)}">5.00$</div>
+	  					<div class="col-md-3" th:switch="${#locale.language}">
+	  						<span th:case="'en'" th:text="${product.nameEn}">Black Pepper</span>
+	  						<span th:case="*" th:text="${product.nameFr}">Poivre blanc</span>
+	  					</div>
+	  					<div class="col-md-4" th:switch="${#locale.language}">
+	  						<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
+	  						<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
+	  					</div>
+	  					<div class="col-md-2" th:text="${product.weight}"></div> 
+	  				</div>
+	  			</th:block>
+	  		</th:block>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="pdi.order">pdi commande</title>  
+</head>
+<body>
+  <section layout:fragment="content">
+  	<div th:replace="fragments/order-header :: header"></div>
+  	<div th:replace="fragments/order-items :: items"></div>
+  	
+  </section>
+ </body>
+ </html>

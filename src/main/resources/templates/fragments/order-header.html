@@ -1,0 +1,64 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	</head>
+	<body>		
+	<div class="container-fluid" th:fragment="header">  		
+  		<div class="row">
+  			<div class="col-md-12">
+  				<h3 th:text="#{order.new}">nouvelle commande</h3>
+  			</div>
+  		</div>
+  		<form>  		
+	  		<div class="row">
+	  			<div class="col-md-12">
+	  				<h5 class="font-weight-bold" th:text="#{order.buyer.infos}">infos de l'acheteur</h5>	  				
+	  			</div>
+	  		</div>
+	  		<div class="form-group row">
+	  			<label for="name" class="col-md-2 col-form-label" th:text="|#{order.buyer.name} :|">nom:</label>
+	  			<div class="col-md-4">
+	  				<input type="text" class="form-control" id="name" name="name" th:placeholder="#{order.buyer.name.help}">
+	  			</div>
+	  			<label for="phone" class="col-md-2 col-form-label" th:text="|#{order.buyer.phone} :|">telephone:</label>
+	  			<div class="col-md-4">
+	  				<input type="text" class="form-control" id="phone" name="phone" th:placeholder="#{order.buyer.phone.help}">
+	  			</div>
+	  		</div>
+	  		<div class="form-group row">
+	  			<label for="note" class="col-md-2 col-form-label" th:text="|#{order.buyer.note} :|">nom:</label>
+	  			<div class="col-md-10">
+	  				<input type="text" class="form-control" id="note" name="note" th:placeholder="#{order.buyer.note.help}">
+	  			</div>
+	  		</div>
+	  		<div class="row">
+	  			<div class="col-md-12">
+	  				<h5 class="font-weight-bold" th:text="#{order.seller.infos}">infos du vendeur</h5>	  				
+	  			</div>
+	  		</div>
+	  		<div class="row">
+	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.name} :|">nom:</label>
+	  			<div class="col-md-4" >
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerName" value="ppp">
+	  			</div>
+	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.group} :|">groupe:</label>
+	  			<div class="col-md-4" >
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerGroup" value="groupe G">
+	  			</div>
+	  		</div>
+	  		<div class="row">
+	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.organization} :|">organisme:</label>
+	  			<div class="col-md-4" >
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerOrganization" value="ABC">	  				
+	  			</div>
+	  		</div>
+	  		<div class="row">
+	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.project} :|">projet:</label>
+	  			<div class="col-md-4" >
+	  				<input type="text" readonly class="form-control-plaintext" id="sellerProject" value="ABC">	  				
+	  			</div>
+	  		</div>
+  		</form>
+  	</div>
+	</body>
+</html>

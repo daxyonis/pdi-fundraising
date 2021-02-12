@@ -13,9 +13,12 @@ import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
 public interface PdiProductMapper extends EntityMapper<PdiProductDTO, PdiProduct> {
 
     @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "category.unitPrice", target = "unitPrice")
+    @Mapping(source = "category.descriptionFr", target = "categoryDescFr")
+    @Mapping(source = "category.descriptionEn", target = "categoryDescEn")
     PdiProductDTO toDto(PdiProduct pdiProduct);
-
-    @Mapping(source = "categoryId", target = "category")
+    
+    @Mapping(target="category", ignore=true)
     PdiProduct toEntity(PdiProductDTO pdiProductDTO);
 
     default PdiProduct fromId(Long id) {

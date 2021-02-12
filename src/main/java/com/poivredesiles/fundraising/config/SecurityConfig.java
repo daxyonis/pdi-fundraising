@@ -28,8 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
         	.antMatchers(PUBLIC).permitAll()      
-        	.antMatchers("/").hasAnyAuthority("BUYER", "SELLER", "SUPERVISOR", "ADMIN")
-            .antMatchers("/api/**").hasAnyAuthority("ROLE_ADMIN")
+        	.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN") 
+        	.antMatchers("/commande/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER")
+            .antMatchers("/api/**").hasAnyRole("ADMIN")
             .anyRequest().authenticated()
             .and()
             .formLogin()

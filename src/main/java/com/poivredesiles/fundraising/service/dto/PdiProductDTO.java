@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import lombok.Data;
 
@@ -27,5 +28,11 @@ public class PdiProductDTO implements Serializable {
     private String weight;
 
     private Long categoryId;
+    
+    private String categoryDescEn;
+    
+    private String categoryDescFr;
+    
+    private BigDecimal unitPrice;
     
 }

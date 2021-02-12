@@ -1,7 +1,10 @@
 package com.poivredesiles.fundraising.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +18,18 @@ import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
+import com.poivredesiles.fundraising.model.order.OrderType;
+import com.poivredesiles.fundraising.model.product.PdiProduct;
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.UserService;
+import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
+import com.poivredesiles.fundraising.service.mapper.PdiProductMapper;
 
 @Service
 @Transactional
@@ -36,6 +45,16 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private PdiProductMapper pdiProductMapper;
+	
+	private static Comparator<PdiProduct> compareByCategory = (p1, p2) -> p1.getCategory().getNumber().compareTo(p2.getCategory().getNumber());
+	private static Comparator<PdiProduct> compareByName = Comparator.comparing(PdiProduct::getNameFr);
+	private static Comparator<PdiProduct> compareByCategoryAndName = compareByCategory.thenComparing(compareByName);
 
 	@Override
 	public void importSellers(List<Seller> sellers) {
@@ -182,5 +201,24 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	@Override
 	public PdiSeller save(PdiSeller pdiSeller) {
 		return pdiSellerRepository.save(pdiSeller);
+	}
+
+	@Override
+	public List<PdiProductDTO> getProductsForUser(MyUserDetails userDetails) {
+		Optional<User> user = userService.findUserById(userDetails.getUserId());
+		if(user.isPresent()) {
+			Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByMeOrBuyer(user.get(), user.get());
+			if(pdiSeller.isPresent()) {
+				// Get the products for the order type of the group that the seller is part of
+				PdiGroup pdiGroup = pdiSeller.get().getPdiGroup();
+				OrderType orderType = pdiGroup.getOrderType();
+				Set<PdiProduct> pdiProducts = orderType.getPdiProducts();					
+				return pdiProductMapper.toDto(pdiProducts.stream().sorted(compareByCategoryAndName).collect(Collectors.toList()));
+			} else {
+				throw new ResourceNotFoundException("Seller not found !");
+			}
+		} else {
+			throw new ResourceNotFoundException("Unknown user !");
+		}		
 	}
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>PDI</title>
+  	<style>
+    	.jumbotron{
+    		margin-top: 30px;
+    	}
+    </style>	
+</head>	    
+	<body>
+	<section layout:fragment="content">  			
+		<div class="container">
+			<div class="jumbotron center">
+			  <h1 th:text="#{error.forbidden}">Acces refuse</h1>
+			  <p th:text="#{error.forbidden.message}">Vous n'avez pas acces a cette page</p>
+			  <p><a class="btn btn-primary btn-lg" th:href="@{/}" role="button" th:text="#{menu.home}">Accueil</a></p>
+			</div>
+		</div>	
+	</section>
+	</body>
+</html>

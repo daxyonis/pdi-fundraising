@@ -39,7 +39,7 @@
 					<a
 						th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}"
 						th:text="#{lang.change}">English</a>
-					<button class="btn btn-link my-2 my-sm-0" type="submit">Logout</button>
+					<button class="btn btn-link my-2 my-sm-0" type="submit" th:text="#{logout}">Logout</button>
 				</form>
 			</div>
 		</nav>
