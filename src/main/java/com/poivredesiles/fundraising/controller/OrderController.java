@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
@@ -24,8 +24,8 @@ public class OrderController extends BaseController {
 	@Autowired
 	private PdiSellerService pdiSellerService;
 	
-	@RequestMapping("/commande")
-	public String commande(Authentication authentication, Model model) {
+	@GetMapping("/commande")
+	public String order(Authentication authentication, Model model) {
 		log.info("Requested Order Page");		
 		MyUserDetails userDetails = (MyUserDetails)authentication.getPrincipal();
 		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
@@ -38,5 +38,10 @@ public class OrderController extends BaseController {
 		model.addAttribute("menuShowOrder", userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER, RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
 		
 		return "views/order";
+	}
+	
+	@GetMapping("/commande/succes")
+	public String successfulOrder() {
+		return "views/order-success";
 	}
 }

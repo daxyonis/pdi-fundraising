@@ -143,6 +143,12 @@
 	        <artifactId>webjars-locator</artifactId>
 	        <version>0.30</version>
 	    </dependency>
+	    <!-- Stripe -->
+	    <dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>20.37.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

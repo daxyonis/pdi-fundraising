@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 public class ApplicationProperties {
 
 	private Mail mail;
+	
+	private String url;	
 
 	public static class Mail {
 
@@ -66,4 +68,14 @@ public class ApplicationProperties {
 	public void setMail(Mail mail) {
 		this.mail = mail;
 	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+	
 }

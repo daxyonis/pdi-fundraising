@@ -13,8 +13,9 @@
 	  			<div class="row">
 	  				<div class="col-sm-12 text-right">
 	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>
-	  					<button id="payBtn" class="btn btn-warning btn-lg" disabled th:text="#{order.pay}">Payer</button>
-	  				</div>
+					<button id="checkout-button" class="btn btn-warning btn-lg" disabled
+						th:text="#{order.pay}">Payer</button>
+				</div>
 	  			</div>
 	  		</div>
 	  		<div class="row">
@@ -52,7 +53,7 @@
 	  		<script th:inline="javascript">
 	  			var total = 0.0;
 	  			var products = /*[[${products}]]*/ null;
-	  			var chosenProducts = [];
+	  			var chosenProducts = [];	  			
 	  			
 	  			function saveChosenProduct(chosenProduct){
 	  				let found = chosenProducts.find(p => p.id == chosenProduct.id);
@@ -74,9 +75,9 @@
 	  				total = chosenProducts.map(p => p.qty * p.unitPrice).reduce((acc,price) => acc + price, 0.0);
   					$('#total').text(total.toFixed(2) + '$');
   					if(total > 0){
-  						$('#payBtn').attr('disabled', false);
+  						$('#checkout-button').attr('disabled', false);
   					} else {
-  						$('#payBtn').attr('disabled', true);
+  						$('#checkout-button').attr('disabled', true);
   					}
 	  			}
 	  			
@@ -98,6 +99,33 @@
 	  					}	  				  					
 	  					updateTotal();
 	  				});
+	  			});
+	  			
+	  			// STRIPE stuff
+	  			var stripe = Stripe("pk_test_51IL5MAJ0w9lZKg8mwIN5GdOPWT9YzhZB12pQHq5fE5Uvb1UdmEuiNnYdzb5PNTWXfaB3AZknV5hZWzv7kdaEAKsJ00UjeoF68H");
+	  			
+	  			$('#checkout-button').on('click', function(){	  				
+	  				$.post({
+	  					url: /*[[@{/api/checkout/session}]]*/ '/api/checkout/session',
+	  					data: JSON.stringify(chosenProducts),
+	  					contentType: 'application/json'	  					
+	  				})	  				
+	  				.then(function(session){
+	  					return stripe.redirectToCheckout({sessionId: session.id});
+	  				})
+	  				.then(function(result){
+	  					if(result.error){
+	  						alert(result.error.message);
+	  					}
+	  				})
+	  				.fail(function(err){ 						
+						console.log(err.responseJSON);
+						if(err.responseJSON && err.responseJSON.message){
+							displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+						} else {
+							displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
+						}
+					});
 	  			});
 	  		</script>
 	  			  		
