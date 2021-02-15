@@ -12,8 +12,8 @@
 	  		<div class="sticky-top">
 	  			<div class="row">
 	  				<div class="col-sm-12 text-right">
-	  					<span class="font-weight-bold mr-4">0.00$</span>
-	  					<button class="btn btn-warning btn-lg" disabled th:text="#{order.pay}">Payer</button>
+	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>
+	  					<button id="payBtn" class="btn btn-warning btn-lg" disabled th:text="#{order.pay}">Payer</button>
 	  				</div>
 	  			</div>
 	  		</div>
@@ -33,7 +33,7 @@
 	  				<div class="row my-1">
 	  					<div class="col-sm-1" th:text="${product.labelNumber}">#12</div>
 	  					<div class="col-sm-2">
-	  						<input type="number" th:placeholder="#{order.quantity}" class="form-control text-right">
+	  						<input type="number" min="0" th:placeholder="#{order.quantity}" class="form-control text-right qty" th:attr="data-id=${product.id}">
 	  					</div>
 	  					<div class="col-sm-1" th:text="|${#numbers.formatDecimal(product.unitPrice, 2, 2,'COMMA')}$|">5.00$</div>
 	  					<div class="col-sm-3" th:switch="${#locale.language}">
@@ -47,7 +47,60 @@
 	  					<div class="col-sm-2" th:text="${product.weight}">28 g</div> 	  					
 	  				</div>
 	  			</th:block>
-	  		</th:block>	  		  		
+	  		</th:block>	  	
+	  		
+	  		<script th:inline="javascript">
+	  			var total = 0.0;
+	  			var products = /*[[${products}]]*/ null;
+	  			var chosenProducts = [];
+	  			
+	  			function saveChosenProduct(chosenProduct){
+	  				let found = chosenProducts.find(p => p.id == chosenProduct.id);
+	  				if(found){
+	  					found.qty = chosenProduct.qty;
+	  				} else {
+	  					chosenProducts = [...chosenProducts, chosenProduct];
+	  				}	  				
+	  			}
+	  			
+	  			function removeChosenProduct(chosenProduct){
+	  				let foundIndex = chosenProducts.findIndex(p => p.id == chosenProduct.id);
+	  				if(foundIndex >= 0){
+	  					chosenProducts.splice(foundIndex,1);
+	  				}
+	  			}
+	  			
+	  			function updateTotal(){
+	  				total = chosenProducts.map(p => p.qty * p.unitPrice).reduce((acc,price) => acc + price, 0.0);
+  					$('#total').text(total.toFixed(2) + '$');
+  					if(total > 0){
+  						$('#payBtn').attr('disabled', false);
+  					} else {
+  						$('#payBtn').attr('disabled', true);
+  					}
+	  			}
+	  			
+	  			$(function(){
+	  				$('.qty').on('change', function(){
+	  					// Add/updat product in lookup table	  				  					
+	  					let qty = Number($(this).val());
+	  					let productId = $(this).data('id');
+	  					let product = products.filter( p => p.id === productId);
+	  					let chosenProduct = {
+	  							id: productId,
+	  							unitPrice: product[0].unitPrice,
+	  							qty: qty
+	  					};
+	  					if(qty > 0){	  	  					
+	  						saveChosenProduct(chosenProduct);
+	  					} else {
+	  						removeChosenProduct(chosenProduct);
+	  					}	  				  					
+	  					updateTotal();
+	  				});
+	  			});
+	  		</script>
+	  			  		
 		</th:block>
 	</body>
 </html>
