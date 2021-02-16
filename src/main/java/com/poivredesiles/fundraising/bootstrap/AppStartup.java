@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.poivredesiles.fundraising.model.business.BusinessNumber;
+import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
 import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
+import com.poivredesiles.fundraising.repository.business.BusinessNumberRepository;
 import com.poivredesiles.fundraising.repository.user.RoleRepository;
 import com.poivredesiles.fundraising.repository.user.UserRepository;
 
@@ -30,10 +33,13 @@ public class AppStartup implements CommandLineRunner {
 	private UserRepository userRepository;
 
 	private RoleRepository roleRepository;
+	
+	private BusinessNumberRepository businessNumberRepository;
 
-	public AppStartup(UserRepository userRepository, RoleRepository roleRepository) {
+	public AppStartup(UserRepository userRepository, RoleRepository roleRepository, BusinessNumberRepository businessNumberRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
+		this.businessNumberRepository = businessNumberRepository;
 	}
 
 	@Override
@@ -42,6 +48,8 @@ public class AppStartup implements CommandLineRunner {
 		createRoles();
 
 		createAdminUsers();
+		
+		createBusinessNumbers();
 
 	}
 
@@ -76,5 +84,15 @@ public class AppStartup implements CommandLineRunner {
 			numRoles = roleRepository.count();
 			assert (numRoles == (long) RoleEnum.values().length);
 		}
+	}
+	
+	private void createBusinessNumbers() {
+		for(BusinessNumberTypeEnum type : BusinessNumberTypeEnum.values()) {
+			if(businessNumberRepository.countByType(type) == 0) {
+				businessNumberRepository.save(new BusinessNumber(type));
+			}
+		}
+		long numBusinessNums = businessNumberRepository.count();
+		assert(numBusinessNums == (long) BusinessNumberTypeEnum.values().length);
 	}
 }

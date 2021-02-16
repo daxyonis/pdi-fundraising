@@ -2,7 +2,6 @@ package com.poivredesiles.fundraising.resource;
 
 import lombok.Data;
 
-@Data
 /**
  * Resource representing a buyer order item
  * id: product id
@@ -10,6 +9,7 @@ import lombok.Data;
  * @author evita
  *
  */
+@Data
 public class OrderItemResource {
 
 	private Long id;

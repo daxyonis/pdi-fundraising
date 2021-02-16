@@ -3,20 +3,9 @@
 	<head>
 	</head>
 	<body>
-		<th:block th:fragment="items">
-			<div class="row">
-	  			<div class="col-md-12">
-	  				<h3 id="orderTitle" th:text="#{order.detail.title}">bon de commande</h3>
-	  			</div>
-	  		</div>
-	  		<div class="sticky-top">
-	  			<div class="row">
-	  				<div class="col-sm-12 text-right">
-	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>
-					<button id="checkout-button" class="btn btn-warning btn-lg" disabled
-						th:text="#{order.pay}">Payer</button>
-				</div>
-	  			</div>
+		<th:block th:fragment="items">			
+	  		<div class="row">			
+	  			<div class="col-sm-12 text-right"><small th:text="#{order.total.note}" class="d-none" id="totalNote">Lorsque votre total est inferieur a 10.00$ nous ajoutons des frais...</small></div>
 	  		</div>
 	  		<div class="row">
 	  			<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
@@ -73,15 +62,36 @@
 	  			
 	  			function updateTotal(){
 	  				total = chosenProducts.map(p => p.qty * p.unitPrice).reduce((acc,price) => acc + price, 0.0);
-  					$('#total').text(total.toFixed(2) + '$');
+	  				if(total > 0.0 && total < 10.0){
+  						total += 0.30;
+  						$('#totalNote').removeClass('d-none');
+  					} else {
+  						$('#totalNote').addClass('d-none');
+  					}
+	  				$('#total').text(total.toFixed(2) + '$');
   					if(total > 0){
-  						$('#checkout-button').attr('disabled', false);
+  						$('#checkout-button').attr('disabled', false);  						  						
   					} else {
   						$('#checkout-button').attr('disabled', true);
-  					}
+  					}  					
 	  			}
 	  			
+	  			//***********************************************
+	  			// DOM READY
 	  			$(function(){
+	  				//var requiredMessage = /*[[#{field.required}]]*/'required';
+	  				
+	  				/* var validator = $('#buyerForm').validate({
+	  					rules: {
+	  						name: { required: true},
+	  						phone:{ required: true}
+	  					},
+	  					messages: {
+	  						name: { required: requiredMessage},
+	  						phone: { required: requiredMessage}
+	  					}
+	  				}); */	  					  					  					  				
+	  				
 	  				$('.qty').on('change', function(){
 	  					// Add/updat product in lookup table	  				  					
 	  					let qty = Number($(this).val());
@@ -98,35 +108,51 @@
 	  						removeChosenProduct(chosenProduct);
 	  					}	  				  					
 	  					updateTotal();
-	  				});
-	  			});
+	  				});	  			
 	  			
-	  			// STRIPE stuff
-	  			var stripe = Stripe("pk_test_51IL5MAJ0w9lZKg8mwIN5GdOPWT9YzhZB12pQHq5fE5Uvb1UdmEuiNnYdzb5PNTWXfaB3AZknV5hZWzv7kdaEAKsJ00UjeoF68H");
-	  			
-	  			$('#checkout-button').on('click', function(){	  				
-	  				$.post({
-	  					url: /*[[@{/api/checkout/session}]]*/ '/api/checkout/session',
-	  					data: JSON.stringify(chosenProducts),
-	  					contentType: 'application/json'	  					
-	  				})	  				
-	  				.then(function(session){
-	  					return stripe.redirectToCheckout({sessionId: session.id});
-	  				})
-	  				.then(function(result){
-	  					if(result.error){
-	  						alert(result.error.message);
-	  					}
-	  				})
-	  				.fail(function(err){ 						
-						console.log(err.responseJSON);
-						if(err.responseJSON && err.responseJSON.message){
-							displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
-						} else {
-							displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
-						}
-					});
+		  			// STRIPE stuff
+		  			var stripe = Stripe(/*[[${stripePublicApiKey}]]*/ '1234');
+		  			
+		  			//$('#checkout-button').on('click', function(){
+		  				
+		  			$('#buyerForm').on('submit', function(event){
+		  				event.preventDefault();
+		  		        event.stopPropagation();
+		  			
+		  				if (this.checkValidity() === false) {
+		  					this.classList.add('was-validated');		  				
+		  		          	return false;
+		  		        }
+		  				this.classList.add('was-validated');	  				
+		  				
+	  					// Validated, go !		  				
+		  				let orderData = {
+		  					name: $('input[name="name"]').val(),
+		  					phone: $('input[name="phone"]').val(),
+		  					note: $('input[name="note"]').val(),
+		  					sellerId: /*[[${seller.id}]]*/ '0',
+		  					items: chosenProducts
+		  				};
+		  				$.post({
+		  					url: /*[[@{/api/checkout/session}]]*/ '/api/checkout/session',
+		  					data: JSON.stringify(orderData),
+		  					contentType: 'application/json'	  					
+		  				})	  				
+		  				.then(function(session){
+		  					return stripe.redirectToCheckout({sessionId: session.id});
+		  				})	  				
+		  				.fail(function(err){ 						
+							console.log(err.responseJSON);
+							if(err.responseJSON && err.responseJSON.message){
+								displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+							} else {
+								displayError(err, '#order-msg-error', /*[[#{order.checkout.error}]]*/'Erreur');
+							}
+						});		  				
+		  			});
+		  			
 	  			});
+	  			//***********************************************
 	  		</script>
 	  			  		
 		</th:block>

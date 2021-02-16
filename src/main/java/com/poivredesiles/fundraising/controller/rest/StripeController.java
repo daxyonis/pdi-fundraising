@@ -1,7 +1,6 @@
 package com.poivredesiles.fundraising.controller.rest;
 
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.poivredesiles.fundraising.resource.OrderItemResource;
+import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.OrderProcessingException;
+import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.StripeService;
-import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 
 @RestController
@@ -30,8 +30,8 @@ public class StripeController {
 
 	@PostMapping("/session")
 	@Secured({"ROLE_BUYER"})
-	public HashMap<String, String> createCheckoutSession(@RequestBody List<OrderItemResource> orderItems, HttpServletRequest request) throws StripeException {
-		Session session = stripeService.createSession(orderItems, localeResolver.resolveLocale(request));            
+	public HashMap<String, String> createCheckoutSession(@RequestBody OrderResource orderResource, HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {
+		Session session = stripeService.createCheckoutSession(orderResource, localeResolver.resolveLocale(request));            
 		HashMap<String, String> responseData = new HashMap<String, String>();
 	    responseData.put("id", session.getId());
 	    return responseData;

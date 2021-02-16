@@ -1,22 +1,22 @@
 package com.poivredesiles.fundraising.model.order;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
@@ -31,7 +31,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "orderheader")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude = {"orderItems", "pdiSeller"})
 public class OrderHeader extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,7 +41,7 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
     private Long id;
 
     @Column(name = "order_number")
-    private String orderNumber;
+    private Long orderNumber;
 
     @Column(name = "buyer_name")
     private String buyerName;
@@ -57,13 +57,15 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    private OrderStatusEnum orderStatus;
+    private OrderStatusEnum orderStatus = OrderStatusEnum.PENDING;
 
     @Column(name = "confirmation_number")
     private String confirmationNumber;
+    
+    @Column(name = "session_id")
+    private String stripeSessionId;
 
-    @OneToMany(mappedBy = "header")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})    
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne
@@ -82,4 +84,8 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
         orderItem.setHeader(null);
         return this;
     }
+
+	public BigDecimal total() {
+		return orderItems.stream().map(oi -> oi.getUnitPrice().multiply(BigDecimal.valueOf(oi.getQuantity()))).reduce(BigDecimal.ZERO, (a,b) -> a.add(b));
+	}
 }

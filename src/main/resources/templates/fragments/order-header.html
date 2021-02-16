@@ -9,28 +9,36 @@
   				<h3 th:text="#{order.new}">nouvelle commande</h3>
   			</div>
   		</div>
-  		<form>  		
+  		<!--/* Messages */-->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
+			</div>
+		</div>
+  		<form id="buyerForm" class="needs-validation" novalidate>  		
 	  		<div class="row">
 	  			<div class="col-md-12">
 	  				<h5 class="font-weight-bold" th:text="#{order.buyer.infos}">infos de l'acheteur</h5>	  				
 	  			</div>
-	  		</div>
-	  		<div class="form-group row">
-	  			<label for="name" class="col-md-2 col-form-label" th:text="|#{order.buyer.name} :|">nom:</label>
-	  			<div class="col-md-4">
-	  				<input type="text" class="form-control" id="name" name="name" th:placeholder="#{order.buyer.name.help}">
-	  			</div>
-	  			<label for="phone" class="col-md-2 col-form-label" th:text="|#{order.buyer.phone} :|">telephone:</label>
-	  			<div class="col-md-4">
-	  				<input type="text" class="form-control" id="phone" name="phone" th:placeholder="#{order.buyer.phone.help}">
-	  			</div>
-	  		</div>
-	  		<div class="form-group row">
-	  			<label for="note" class="col-md-2 col-form-label" th:text="|#{order.buyer.note} :|">nom:</label>
-	  			<div class="col-md-10">
-	  				<input type="text" class="form-control" id="note" name="note" th:placeholder="#{order.buyer.note.help}">
-	  			</div>
-	  		</div>
+	  		</div>	  		
+		  		<div class="form-group row">
+		  			<label for="name" class="col-md-2 col-form-label" th:text="|#{order.buyer.name} :|">nom:</label>
+		  			<div class="col-md-4">
+		  				<input type="text" class="form-control" id="name" name="name" th:placeholder="#{order.buyer.name.help}" required>
+		  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+		  			</div>
+		  			<label for="phone" class="col-md-2 col-form-label" th:text="|#{order.buyer.phone} :|">telephone:</label>
+		  			<div class="col-md-4">
+		  				<input type="text" class="form-control" id="phone" name="phone" th:placeholder="#{order.buyer.phone.help}" required>
+		  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+		  			</div>
+		  		</div>
+		  		<div class="form-group row">
+		  			<label for="note" class="col-md-2 col-form-label" th:text="|#{order.buyer.note} :|">note:</label>
+		  			<div class="col-md-10">
+		  				<input type="text" class="form-control" id="note" name="note" th:placeholder="#{order.buyer.note.help}">
+		  			</div>
+		  		</div>	  		
 	  		<div class="row">
 	  			<div class="col-md-12">
 	  				<h5 class="font-weight-bold" th:text="#{order.seller.infos}">infos du vendeur</h5>	  				
@@ -57,6 +65,19 @@
 	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.project} :|">projet:</label>
 	  			<div class="col-md-4" >
 	  				<input type="text" readonly class="form-control-plaintext" id="sellerProject" th:value="${seller.pdiCampaignProject}">	  				
+	  			</div>
+	  		</div>
+	  		<div class="row">
+	  			<div class="col-md-12">
+	  				<h3 id="orderTitle" th:text="#{order.detail.title}">bon de commande</h3>
+	  			</div>
+	  		</div>
+	  		<div class="sticky-top">
+	  			<div class="row">
+	  				<div class="col-sm-12 text-right">
+	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
+						<button id="checkout-button" class="btn btn-warning btn-lg" type="submit" disabled th:text="#{order.pay}">Payer</button>
+					</div>
 	  			</div>
 	  		</div>
   		</form>

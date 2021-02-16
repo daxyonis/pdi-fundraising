@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -26,7 +25,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "orderitem")
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=false, exclude = {"product", "header"})
 public class OrderItem extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,19 +35,18 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @Column(name = "order_number")
-    private String orderNumber;
+    private Long orderNumber;
 
     @Column(name = "product_number")
     private String productNumber;
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private Long quantity;
 
     @Column(name = "unit_price", precision = 21, scale = 2)
     private BigDecimal unitPrice;
 
-    @OneToOne
-    @JoinColumn(unique = true)
+    @OneToOne    
     private PdiProduct product;
 
     @ManyToOne

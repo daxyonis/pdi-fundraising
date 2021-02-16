@@ -5,10 +5,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
@@ -24,6 +26,9 @@ public class OrderController extends BaseController {
 	@Autowired
 	private PdiSellerService pdiSellerService;
 	
+	@Value("${stripe.publicKey}")	
+	private String stripePublicKey;
+	
 	@GetMapping("/commande")
 	public String order(Authentication authentication, Model model) {
 		log.info("Requested Order Page");		
@@ -37,11 +42,13 @@ public class OrderController extends BaseController {
 		model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
 		model.addAttribute("menuShowOrder", userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER, RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
 		
+		model.addAttribute("stripePublicApiKey", stripePublicKey);
+		
 		return "views/order";
 	}
 	
 	@GetMapping("/commande/succes")
-	public String successfulOrder() {
+	public String successfulOrder(@RequestParam("session_id") String sessionId) {		
 		return "views/order-success";
 	}
 }

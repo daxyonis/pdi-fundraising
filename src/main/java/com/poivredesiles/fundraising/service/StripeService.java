@@ -4,39 +4,64 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
-import com.poivredesiles.fundraising.resource.OrderItemResource;
-import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
+import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.OrderProcessingException;
+import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.model.order.OrderItem;
+import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
+import com.poivredesiles.fundraising.resource.OrderResource;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
 @Service
+@Transactional
 public class StripeService {
-
+	
 	@Autowired
-	private PdiProductService pdiProductService;
+	private OrderService orderService;
 	
 	@Autowired
 	private ApplicationProperties applicationProperties;
 	
-	@Value("${STRIPE_API_TEST_KEY}")
+	@Autowired
+	private MessageSource messageSource;
+	
+	@Value("${stripe.privateKey}")
     private String stripeApiKey;
+	
+	@Value("${application.minAmountForNoFee}")
+	private BigDecimal minAmountForNoFee;
+	
+	@Value("${application.transactionFee}")
+	private Long transactionFee;
 	
 	private final Logger log = LoggerFactory.getLogger(StripeService.class);
 	
-	private final BigDecimal HUNDRED = BigDecimal.valueOf(100);
+	private final BigDecimal HUNDRED = BigDecimal.valueOf(100);	
 	
-	public Session createSession(List<OrderItemResource> orderItems, Locale locale) throws StripeException {
+	/**
+	 * Create Stripe Checkout Session
+	 * @param orderItems
+	 * @param locale
+	 * @return
+	 * @throws StripeException
+	 * @throws InvalidOrderException 
+	 * @throws OrderProcessingException 
+	 */
+	public Session createCheckoutSession(OrderResource orderResource, Locale locale) throws InvalidOrderException, OrderProcessingException {
+		log.info("Creating new Stripe checkout session");
 		final String YOUR_DOMAIN = applicationProperties.getUrl();
 				
 		Stripe.apiKey = stripeApiKey;	
@@ -45,47 +70,65 @@ public class StripeService {
 			sessionLocale = SessionCreateParams.Locale.EN;
 		}
 		
+		OrderHeader pendingOrder = orderService.createNewOrder(orderResource, locale);
+		
 		// Create the list of LineItem
 		List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
-		for(OrderItemResource orderItem : orderItems) {
-			// Get original product referenced
-			Optional<PdiProductDTO> pdiProduct = pdiProductService.findOne(orderItem.getId());
-			if(pdiProduct.isPresent()) {
-				// Set name and description
-				String name = pdiProduct.get().getNameFr();
-				String description = pdiProduct.get().getDescriptionFr();
-				if(locale.getLanguage().equalsIgnoreCase("en")) {
-					name = pdiProduct.get().getNameEn();
-					description = pdiProduct.get().getDescriptionEn();
-				}
+		for(OrderItem orderItem : pendingOrder.getOrderItems()) {
+			
+			// Set name and description
+			String name = orderItem.getProduct().getNameFr();
+			String description = orderItem.getProduct().getDescriptionFr();
+			if(locale.getLanguage().equalsIgnoreCase("en")) {
+				name = orderItem.getProduct().getNameEn();
+				description = orderItem.getProduct().getDescriptionEn();
+			}
 			// Build the line item info
 			lineItems.add(SessionCreateParams.LineItem.builder()
-					.setQuantity(orderItem.getQty())
+					.setQuantity(orderItem.getQuantity())
 					.setPriceData(
 							SessionCreateParams.LineItem.PriceData.builder()
 							.setCurrency("cad")
-							.setUnitAmount(pdiProduct.get().getUnitPrice().multiply(HUNDRED).longValue())
+							.setUnitAmount(orderItem.getProduct().getCategory().getUnitPrice().multiply(HUNDRED).longValue())
 							.setProductData(
 									SessionCreateParams.LineItem.PriceData.ProductData.builder()
 		                              .setName(name)
 		                              .setDescription(description)
 		                              .build())
 							.build())
+					.build());			
+		}
+		
+		if(pendingOrder.total().compareTo(minAmountForNoFee) < 0) {
+			// Add line item for transaction fee
+			lineItems.add(SessionCreateParams.LineItem.builder()
+					.setQuantity(1L)
+					.setAmount(transactionFee)
+					.setName(messageSource.getMessage("order.transaction.fee", null, locale))
 					.build());
-			}
 		}
 	      
         SessionCreateParams params =
            SessionCreateParams.builder()
                   .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                  .setBillingAddressCollection(SessionCreateParams.BillingAddressCollection.REQUIRED)
                   .setMode(SessionCreateParams.Mode.PAYMENT)
-                  .setSuccessUrl(YOUR_DOMAIN + "/commande/succes")
+                  .setSuccessUrl(YOUR_DOMAIN + "/commande/succes?session_id={CHECKOUT_SESSION_ID}")
                   .setCancelUrl(YOUR_DOMAIN + "/commande")
                   .setLocale(sessionLocale)
                   .addAllLineItem(lineItems)
                   .build();
-
-        Session session = Session.create(params);
-        return session;
+         
+		try {
+			Session session = Session.create(params);
+			pendingOrder.setStripeSessionId(session.getId());
+	        orderService.save(pendingOrder);        
+	        return session;
+		} catch (StripeException e) {
+			pendingOrder.setOrderStatus(OrderStatusEnum.ERROR);
+			orderService.save(pendingOrder);
+			throw new OrderProcessingException(e.getLocalizedMessage());
+		}  
+                
 	}
 }
