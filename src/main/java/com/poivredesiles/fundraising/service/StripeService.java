@@ -42,11 +42,11 @@ public class StripeService {
     private String stripeApiKey;
 
 	// Minimal total amount (in dollars) for which there is no transaction fee
-	@Value("${application.minAmountForNoFee}")
+	@Value("${application.order.minAmountForNoFee}")
 	private BigDecimal minAmountForNoFee;
 	
 	// Transaction fee (in cents)
-	@Value("${application.transactionFee}")
+	@Value("${application.order.transactionFee}")
 	private Long transactionFee;
 	
 	private final Logger log = LoggerFactory.getLogger(StripeService.class);

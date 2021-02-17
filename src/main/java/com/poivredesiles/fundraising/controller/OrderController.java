@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
+import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
@@ -25,6 +27,9 @@ public class OrderController extends BaseController {
 	
 	@Autowired
 	private PdiSellerService pdiSellerService;
+	
+	@Autowired
+	private OrderService orderService; 
 	
 	@Value("${stripe.publicKey}")	
 	private String stripePublicKey;
@@ -48,7 +53,9 @@ public class OrderController extends BaseController {
 	}
 	
 	@GetMapping("/commande/succes")
-	public String successfulOrder(@RequestParam("session_id") String sessionId) {		
+	public String successfulOrder(@RequestParam("session_id") String sessionId, Model model) {
+		OrderHeaderDTO order = orderService.getConfirmedOrder(sessionId);
+		model.addAttribute("order", order);
 		return "views/order-success";
 	}
 }

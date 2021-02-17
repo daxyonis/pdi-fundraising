@@ -2,10 +2,12 @@ package com.poivredesiles.fundraising.service.impl;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderItem;
+import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
@@ -22,6 +25,8 @@ import com.poivredesiles.fundraising.resource.OrderItemResource;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.BusinessNumberService;
 import com.poivredesiles.fundraising.service.OrderService;
+import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
+import com.poivredesiles.fundraising.service.mapper.OrderHeaderMapper;
 
 @Service
 @Transactional
@@ -41,6 +46,12 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private OrderHeaderMapper orderHeaderMapper;
+	
+	@Value("${application.order.confirmation}")
+	private String orderConfirmationFormat;
 	
 	private final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -93,6 +104,18 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderHeader save(OrderHeader order) {
 		return orderHeaderRepository.save(order);
+	}
+
+	@Override
+	public OrderHeaderDTO getConfirmedOrder(String sessionId) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findByStripeSessionId(sessionId);
+		OrderHeader order = optionalOrderHeader.orElseThrow();
+		if(order.getConfirmationNumber() == null) {
+			order.setConfirmationNumber(String.format(orderConfirmationFormat, order.getOrderNumber()));
+			order.setOrderStatus(OrderStatusEnum.PAID);
+		}
+		OrderHeaderDTO orderDTO = orderHeaderMapper.toDto(order);
+		return orderDTO;
 	}
 
 }

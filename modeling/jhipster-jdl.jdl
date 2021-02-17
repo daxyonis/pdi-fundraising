@@ -38,12 +38,13 @@ entity PdiSeller {
 }
 
 enum OrderStatusEnum {
+	PENDING,
 	PAID,
     ERROR
 }
 
 entity OrderHeader {
-	orderNumber String,
+	orderNumber Long,
     buyerName String,
     buyerPhone String,
     buyerNote String,
@@ -53,9 +54,9 @@ entity OrderHeader {
 }
 
 entity OrderItem {
-	orderNumber String,
+	orderNumber Long,
     productNumber String,
-    quantity Integer,
+    quantity Long,
     unitPrice BigDecimal    
 }
 

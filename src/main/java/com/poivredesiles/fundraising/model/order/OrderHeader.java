@@ -88,4 +88,8 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 	public BigDecimal total() {
 		return orderItems.stream().map(oi -> oi.getUnitPrice().multiply(BigDecimal.valueOf(oi.getQuantity()))).reduce(BigDecimal.ZERO, (a,b) -> a.add(b));
 	}
+	
+	public String getDetail() {		
+		return orderItems.stream().map(oi -> oi.getDetail(buyerLanguage)).reduce("", (a,b) -> a.isEmpty() ? b : (a + "; " + b));		
+	}
 }

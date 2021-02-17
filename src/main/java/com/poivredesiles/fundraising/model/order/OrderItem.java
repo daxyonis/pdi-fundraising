@@ -51,5 +51,13 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(value = "orderItems", allowSetters = true)
-    private OrderHeader header;   
+    private OrderHeader header;
+    
+    public String getDetail(String language) {    	
+		if(language.equals("fr")) {
+			return quantity.toString() + " " + product.getNameFr();
+		} else {
+			return quantity.toString() + " " + product.getNameEn();
+		}    	
+    }
 }

@@ -8,7 +8,7 @@
 	  			<div class="row">
 	  				<div class="col-sm-12 text-right">
 	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
-						<button id="checkout-button" class="btn btn-warning btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+						<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
 					</div>
 	  			</div>
 	  		</div>		
@@ -50,7 +50,8 @@
 	  		<script th:inline="javascript">
 	  			var total = 0.0;
 	  			var products = /*[[${products}]]*/ null;
-	  			var chosenProducts = [];	  			
+	  			// Array of objects
+	  			var chosenProducts = [];	 
 	  			
 	  			function saveChosenProduct(chosenProduct){
 	  				let found = chosenProducts.find(p => p.id == chosenProduct.id);
@@ -87,18 +88,19 @@
 	  			//***********************************************
 	  			// DOM READY
 	  			$(function(){
-	  				//var requiredMessage = /*[[#{field.required}]]*/'required';
-	  				
-	  				/* var validator = $('#buyerForm').validate({
-	  					rules: {
-	  						name: { required: true},
-	  						phone:{ required: true}
-	  					},
-	  					messages: {
-	  						name: { required: requiredMessage},
-	  						phone: { required: requiredMessage}
-	  					}
-	  				}); */	  					  					  					  				
+	  				if(sessionStorage.getItem('orderData')){
+	  					let orderData = JSON.parse(sessionStorage.getItem('orderData'));
+	  					// Fill in header info
+	  					$('input[name="name"]').val(orderData.name);
+	  					$('input[name="phone"]').val(orderData.phone);
+	  					$('input[name="note"]').val(orderData.note);
+	  					// Fill in item quantities
+	  					chosenProducts = orderData.items;
+	  					chosenProducts.forEach(function(item){
+	  						$('input.qty[data-id="' + item.id + '"]').val(item.qty);
+	  					});	
+	  					updateTotal();
+	  				}	  					  					  					  				
 	  				
 	  				$('.qty').on('change', function(){
 	  					// Add/updat product in lookup table	  				  					
@@ -128,14 +130,9 @@
 		  			$('#buyerForm').on('submit', function(event){
 		  				event.preventDefault();
 		  		        event.stopPropagation();
-		  			
-		  				if (this.checkValidity() === false) {
-		  					this.classList.add('was-validated');		  				
-		  		          	return false;
-		  		        }
-		  				this.classList.add('was-validated');	  				
+		  		      	sessionStorage.clear();
 		  				
-	  					// Validated, go !		  				
+		  		      	// Get the input data
 		  				let orderData = {
 		  					name: $('input[name="name"]').val(),
 		  					phone: $('input[name="phone"]').val(),
@@ -143,6 +140,18 @@
 		  					sellerId: /*[[${seller.id}]]*/ '0',
 		  					items: chosenProducts
 		  				};
+	  					
+	  					// Save them in session storage	  					
+	  					sessionStorage.setItem('orderData', JSON.stringify(orderData));
+	  					
+	  					// Check validity
+	  					if (this.checkValidity() === false) {
+		  					this.classList.add('was-validated');		  				
+		  		          	return false;
+		  		        }
+		  				this.classList.add('was-validated');
+		  				
+	  					// Validated, go !
 		  				$.post({
 		  					url: /*[[@{/api/checkout/session}]]*/ '/api/checkout/session',
 		  					data: JSON.stringify(orderData),
