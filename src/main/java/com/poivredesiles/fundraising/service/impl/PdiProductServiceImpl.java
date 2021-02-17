@@ -112,7 +112,8 @@ public class PdiProductServiceImpl implements PdiProductService {
 			if(category != null) {
 				pdiProduct.setCategory(category);
 			} else {
-				throw new ResourceNotFoundException("Product has unknown category");
+				log.error("Product number {} has unknown category: {}", product.getNumber(), product.getSectionNum());
+				throw new ResourceNotFoundException(String.format("Le produit numéro %s a une catégorie inconnue", product.getNumber()));
 			}
 		}
 		pdiProduct.setLastModifiedBy("system");

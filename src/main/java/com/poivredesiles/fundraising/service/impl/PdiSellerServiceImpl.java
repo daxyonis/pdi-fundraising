@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +58,9 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	
 	@Autowired
 	private PdiSellerMapper pdiSellerMapper;
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	private static Comparator<PdiProduct> compareByCategory = (p1, p2) -> p1.getCategory().getNumber().compareTo(p2.getCategory().getNumber());
 	private static Comparator<PdiProduct> compareByName = Comparator.comparing(PdiProduct::getNameFr);
@@ -181,8 +186,8 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 		if (pdiGroup.isPresent()) {
 			pdiSeller.setPdiGroup(pdiGroup.get());
 		} else {
-			log.error("No PdiGroup found(number={})", groupLink.getGroupNumber());
-			throw new ResourceNotFoundException("PdiGroup not found for PdiSeller.");
+			log.error("No PdiGroup found(number={}) for seller #{}", groupLink.getGroupNumber(), pdiSeller.getNumber());
+			throw new ResourceNotFoundException(String.format("Aucun groupe (no=%d) trouvé pour le vendeur (no=%d)", groupLink.getGroupNumber(), pdiSeller.getNumber()));
 		}
 	}
 
@@ -220,9 +225,11 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 				Set<PdiProduct> pdiProducts = orderType.getPdiProducts();					
 				return pdiProductMapper.toDto(pdiProducts.stream().sorted(compareByCategoryAndName).collect(Collectors.toList()));
 			} else {
-				throw new ResourceNotFoundException("Seller not found !");
+				log.error("Seller not found for connected user id={}", user.get().getId());
+				throw new ResourceNotFoundException(messageSource.getMessage("seller.error.notfound", null, LocaleContextHolder.getLocale()));
 			}
 		} else {
+			log.error("User with id={}, username={} is unknown", userDetails.getUserId(), userDetails.getUsername());
 			throw new ResourceNotFoundException("Unknown user !");
 		}		
 	}
@@ -235,9 +242,11 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			if(pdiSeller.isPresent()) {
 				return pdiSellerMapper.toDto(pdiSeller.get());
 			} else {
-				throw new ResourceNotFoundException("Seller not found !");
+				log.error("Seller not found for connected user id={}", user.get().getId());
+				throw new ResourceNotFoundException(messageSource.getMessage("seller.error.notfound", null, LocaleContextHolder.getLocale()));
 			}
 		} else {
+			log.error("User with id={}, username={} is unknown", userDetails.getUserId(), userDetails.getUsername());
 			throw new ResourceNotFoundException("Unknown user !");
 		}	
 	}

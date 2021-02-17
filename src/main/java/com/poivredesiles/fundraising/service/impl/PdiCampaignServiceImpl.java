@@ -120,7 +120,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			pdiCampaign.setClosedDate(LocalDate.now());
 			pdiCampaign = pdiCampaignRepository.save(pdiCampaign);
 			return pdiCampaignMapper.toDto(pdiCampaign); 
-		} else {
+		} else {			
 			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
 		}
 	}
@@ -159,7 +159,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			} else {
 				pdiCampaigns = pdiCampaignRepository.findAllByClosedAndBlocked(!active, blocked);
 			}
-		} else {
+		} else {			
 			throw new UnsupportedOperationException("This findAll not implemented !");
 		}
 		

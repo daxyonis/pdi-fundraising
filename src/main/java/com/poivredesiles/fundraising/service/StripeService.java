@@ -103,8 +103,16 @@ public class StripeService {
 			// Add line item for transaction fee
 			lineItems.add(SessionCreateParams.LineItem.builder()
 					.setQuantity(1L)
-					.setAmount(transactionFee)
-					.setName(messageSource.getMessage("order.transaction.fee", null, locale))
+					.setPriceData(
+							SessionCreateParams.LineItem.PriceData.builder()
+							.setCurrency("cad")
+							.setUnitAmount(transactionFee)
+							.setProductData(
+									SessionCreateParams.LineItem.PriceData.ProductData.builder()
+									.setName(messageSource.getMessage("order.transaction.fee", null, locale))
+									.setDescription(messageSource.getMessage("order.transaction.feedescription", null, locale))
+									.build())							
+							.build())
 					.build());
 		}
 	      
@@ -127,7 +135,8 @@ public class StripeService {
 		} catch (StripeException e) {
 			pendingOrder.setOrderStatus(OrderStatusEnum.ERROR);
 			orderService.save(pendingOrder);
-			throw new OrderProcessingException(e.getLocalizedMessage());
+			log.error("Error trying to create Stripe checkout session : {}", e.getLocalizedMessage());
+			throw new OrderProcessingException(messageSource.getMessage("order.error.checkout", null, locale));
 		}  
                 
 	}

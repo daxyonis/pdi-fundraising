@@ -146,7 +146,7 @@
 							if(err.responseJSON && err.responseJSON.message){
 								displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);	
 							} else {
-								displayError(err, '#order-msg-error', /*[[#{order.checkout.error}]]*/'Erreur');
+								displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
 							}
 						});		  				
 		  			});

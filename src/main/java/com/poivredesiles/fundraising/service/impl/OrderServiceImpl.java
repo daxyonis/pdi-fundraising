@@ -3,7 +3,10 @@ package com.poivredesiles.fundraising.service.impl;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,11 +38,16 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired
 	private PdiProductRepository pdiProductRepository;
+	
+	@Autowired
+	private MessageSource messageSource;
+	
+	private final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Override
 	public OrderHeader createNewOrder(OrderResource orderResource, Locale locale) throws InvalidOrderException {
 		OrderHeader orderHeader = null;
-		if (validate(orderResource)) {
+		if (validate(orderResource, locale)) {
 			orderHeader = new OrderHeader();
 			orderHeader.setOrderNumber(businessNumberService.getNextNumber(BusinessNumberTypeEnum.ORDER));
 			orderHeader.setBuyerName(orderResource.getName());
@@ -70,10 +78,11 @@ public class OrderServiceImpl implements OrderService {
 		
 	}
 
-	private boolean validate(OrderResource orderResource) throws InvalidOrderException {
+	private boolean validate(OrderResource orderResource, Locale locale) throws InvalidOrderException {
 		boolean valid = true;
 		if(orderResource.getName().isBlank() || orderResource.getPhone().isBlank()) {
-			throw new InvalidOrderException("Name and phone number cannot be blank !");
+			log.error("Invalid name and/or phone field(s) in order.");
+			throw new InvalidOrderException(messageSource.getMessage("order.error.requiredfields", null, locale));
 		}
 //		if(!orderResource.getPhone().matches("/^\\(?\\d{3}\\)?\\s*(\\.|-)?\\d{3}\\s*(\\.|-)?\\d{4}.*$/")) {
 //			throw new InvalidOrderException("Invalid phone number format !");

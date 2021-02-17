@@ -77,7 +77,7 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 			pdiGroup.setOrderType(pdiCampaign.get().getOrderType());
 		} else {
 			log.error("Cannot find campaign(number={}) for group(number={})", campaignNumber, pdiGroup.getNumber());
-			throw new ResourceNotFoundException("Group has no associated Campaign.");
+			throw new ResourceNotFoundException(String.format("La campagne numéro %d associée au groupe numéro %d est introuvable", campaignNumber, pdiGroup.getNumber()));
 		}		
 	}
 
