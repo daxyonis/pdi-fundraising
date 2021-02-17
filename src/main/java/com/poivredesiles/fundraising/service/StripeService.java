@@ -40,10 +40,12 @@ public class StripeService {
 	
 	@Value("${stripe.privateKey}")
     private String stripeApiKey;
-	
+
+	// Minimal total amount (in dollars) for which there is no transaction fee
 	@Value("${application.minAmountForNoFee}")
 	private BigDecimal minAmountForNoFee;
 	
+	// Transaction fee (in cents)
 	@Value("${application.transactionFee}")
 	private Long transactionFee;
 	
@@ -53,6 +55,10 @@ public class StripeService {
 	
 	/**
 	 * Create Stripe Checkout Session
+	 * Creates a pending PDI order with order items from the orderResource
+	 * Then a Stripe session is created with information about the order items to charge.
+	 * If order total < 10.00$, the PDI transaction fee is added as a Stripe Line Item.
+	 *  
 	 * @param orderItems
 	 * @param locale
 	 * @return
@@ -84,6 +90,7 @@ public class StripeService {
 				description = orderItem.getProduct().getDescriptionEn();
 			}
 			// Build the line item info
+			// Note: need to provide Stripe the amount in cents			
 			lineItems.add(SessionCreateParams.LineItem.builder()
 					.setQuantity(orderItem.getQuantity())
 					.setPriceData(
@@ -100,7 +107,7 @@ public class StripeService {
 		}
 		
 		if(pendingOrder.total().compareTo(minAmountForNoFee) < 0) {
-			// Add line item for transaction fee
+			// Add line item for transaction fee : this is not saved into the PDI order 
 			lineItems.add(SessionCreateParams.LineItem.builder()
 					.setQuantity(1L)
 					.setPriceData(

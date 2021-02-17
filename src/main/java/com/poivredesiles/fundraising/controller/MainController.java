@@ -3,11 +3,14 @@ package com.poivredesiles.fundraising.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.poivredesiles.fundraising.imports.CsvImportService;
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 
 @Controller
@@ -22,9 +25,25 @@ public class MainController extends BaseController {
 	private PdiCampaignService pdiCampaignService;
 	
 	@GetMapping("/")
-	public String home() {
+	public String home(@AuthenticationPrincipal MyUserDetails user) {
 		log.info("Requested Home Page");
-		return "index";
+		
+		// Dispatch the home page according to the user role
+		if(user.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
+			// main page is admin dashboard
+			return "redirect:/admin";
+		} else if(user.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER)) {
+			return "index";
+		} else if(user.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER)) {
+			return "index";
+		} else if(user.hasAnyAuthority(RoleEnum.ROLE_SELLER)) {
+			return "index";
+		} else if(user.hasAnyAuthority(RoleEnum.ROLE_BUYER)) {
+			// buyer main page is order
+			return "redirect:/commande";
+		} else {
+			throw new IllegalStateException();
+		}		
 	}
 	
 	@GetMapping("/login")

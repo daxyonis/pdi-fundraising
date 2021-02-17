@@ -3,7 +3,15 @@
 	<head>
 	</head>
 	<body>
-		<th:block th:fragment="items">			
+		<th:block th:fragment="items">	
+			<div class="sticky-top">
+	  			<div class="row">
+	  				<div class="col-sm-12 text-right">
+	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
+						<button id="checkout-button" class="btn btn-warning btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+					</div>
+	  			</div>
+	  		</div>		
 	  		<div class="row">			
 	  			<div class="col-sm-12 text-right"><small th:text="#{order.total.note}" class="d-none" id="totalNote">Lorsque votre total est inferieur a 10.00$ nous ajoutons des frais...</small></div>
 	  		</div>
@@ -113,7 +121,9 @@
 		  			// STRIPE stuff
 		  			var stripe = Stripe(/*[[${stripePublicApiKey}]]*/ '1234');
 		  			
-		  			//$('#checkout-button').on('click', function(){
+		  			$('#checkout-button').on('click', function(){
+		  				$('#buyerForm').submit();
+		  			})
 		  				
 		  			$('#buyerForm').on('submit', function(event){
 		  				event.preventDefault();
