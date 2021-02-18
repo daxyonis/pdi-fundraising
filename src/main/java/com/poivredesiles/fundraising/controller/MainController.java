@@ -30,14 +30,14 @@ public class MainController extends BaseController {
 		
 		// Dispatch the home page according to the user role
 		if(user.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
-			// main page is admin dashboard
+			// admin main page is admin dashboard
 			return "redirect:/admin";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER)) {
 			return "index";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER)) {
 			return "index";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_SELLER)) {
-			return "index";
+			return "redirect:/ventes";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_BUYER)) {
 			// buyer main page is order
 			return "redirect:/commande";
@@ -54,14 +54,10 @@ public class MainController extends BaseController {
 	
 	@GetMapping("/admin")
 	public String admin(Model model) {
-		log.info("Requested Admin Page");
-		model.addAttribute("homeUrl", "/admin");
-		model.addAttribute("menuShowHome", true);
-		model.addAttribute("menuShowSales", false);
-		model.addAttribute("menuShowOrder", false);
+		log.info("Requested Admin Page");				
 		model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
 		model.addAttribute("groupsAndSellersLastImport", csvImportService.getGroupsAndSellersLastImportDate());
 		model.addAttribute("showWarning", pdiCampaignService.thereAreActiveCampaigns());
 		return "views/admin";
-	}
+	}		
 }

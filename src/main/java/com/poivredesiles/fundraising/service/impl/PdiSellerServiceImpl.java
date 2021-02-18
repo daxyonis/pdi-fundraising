@@ -197,14 +197,16 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	 */
 	private void updateCampaignLeadership(PdiSeller currentPdiSeller) {
 		Long sellerNumber = currentPdiSeller.getNumber();
-		try{
+		if(currentPdiSeller.getPdiGroup() != null) {
 			String leaderNum = currentPdiSeller.getPdiGroup().getPdiCampaign().getLeaderNum();
-			if(Long.valueOf(leaderNum).equals(sellerNumber) && !currentPdiSeller.getMe().getRoles().contains(new Role(RoleEnum.ROLE_CAMPAIGN_LEADER))) {
+			if(!leaderNum.isBlank() && 
+				Long.valueOf(leaderNum).equals(sellerNumber) && 
+				!currentPdiSeller.getMe().getRoles().contains(new Role(RoleEnum.ROLE_CAMPAIGN_LEADER))) {
 				currentPdiSeller.getMe().addRole(RoleEnum.ROLE_CAMPAIGN_LEADER);
 				pdiSellerRepository.save(currentPdiSeller);
 			}
-		} catch (NullPointerException e) {
-			log.error("Did not get the campaign leader number for seller", e);
+		} else {			
+			log.warn("Did not get the campaign leader number for seller number={}", sellerNumber);
 		}
 	}
 

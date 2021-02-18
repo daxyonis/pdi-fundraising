@@ -18,7 +18,6 @@ public class PdiSellerDTO implements Serializable {
 
     private String name;
 
-
     private Long meId;
 
     private Long buyerId;
@@ -34,4 +33,8 @@ public class PdiSellerDTO implements Serializable {
     private String pdiCampaignOrganization;
     
     private String pdiCampaignProject;
+    
+    private String formattedOrdersTotal;
+    
+    private Long numOrders;
 }

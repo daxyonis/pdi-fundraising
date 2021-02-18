@@ -1,8 +1,11 @@
 package com.poivredesiles.fundraising.service.impl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.BusinessNumberService;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import com.poivredesiles.fundraising.service.mapper.OrderHeaderMapper;
 
 @Service
@@ -116,6 +120,12 @@ public class OrderServiceImpl implements OrderService {
 		}
 		OrderHeaderDTO orderDTO = orderHeaderMapper.toDto(order);
 		return orderDTO;
+	}
+
+	@Override
+	public List<OrderHeaderDTO> getPaidOrdersForSeller(PdiSellerDTO seller) {
+		Set<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatusAndPdiSeller_id(OrderStatusEnum.PAID, seller.getId());
+		return orderHeaderMapper.toDto(orderHeaders.stream().sorted(Comparator.comparing(OrderHeader::getId)).collect(Collectors.toList()));
 	}
 
 }

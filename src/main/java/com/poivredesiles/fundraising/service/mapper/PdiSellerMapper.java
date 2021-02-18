@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.service.mapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.mapstruct.Mapper;
@@ -24,6 +25,7 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Mapping(source = "pdiGroup.pdiCampaign.dueDate", target = "formattedPdiCampaignDueDate", qualifiedByName="formatDate")
     @Mapping(source = "pdiGroup.pdiCampaign.organizationName", target = "pdiCampaignOrganization")
     @Mapping(source = "pdiGroup.pdiCampaign.project", target = "pdiCampaignProject")
+    @Mapping(source="ordersTotal", target="formattedOrdersTotal", qualifiedByName="formatCurrency")    
     PdiSellerDTO toDto(PdiSeller pdiSeller);
 
     @Mapping(source = "meId", target = "me")
@@ -36,6 +38,11 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Named("formatDate")
     public static String formatDate(LocalDate date) {  
     	return ImportsUtils.formatLocalDate(date, "dd/MM/yyyy");
+    }
+    
+    @Named("formatCurrency")
+    public static String formatCurrency(BigDecimal amount) {  
+    	return ImportsUtils.formatCurrency(amount);
     }
     
     default PdiSeller fromId(Long id) {

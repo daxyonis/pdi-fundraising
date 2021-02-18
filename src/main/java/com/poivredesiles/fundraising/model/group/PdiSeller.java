@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.model.group;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.user.User;
 
 import lombok.Data;
@@ -86,4 +88,16 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
         this.orderHeaders = orderHeaders;
     }    
    
+    public BigDecimal getOrdersTotal() {
+    	return orderHeaders.stream()
+    			.filter(o -> o.getOrderStatus() == OrderStatusEnum.PAID)
+    			.map(OrderHeader::getTotal)
+    			.reduce(BigDecimal.ZERO, (a,b) -> a.add(b));
+    }
+    
+    public Long getNumOrders() {
+    	return orderHeaders.stream()
+    			.filter(o -> o.getOrderStatus() == OrderStatusEnum.PAID)
+    			.count();
+    }
 }

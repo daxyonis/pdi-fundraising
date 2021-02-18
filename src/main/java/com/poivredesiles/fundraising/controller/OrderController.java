@@ -6,14 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
-import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
@@ -35,18 +34,12 @@ public class OrderController extends BaseController {
 	private String stripePublicKey;
 	
 	@GetMapping("/commande")
-	public String order(Authentication authentication, Model model) {
+	public String order(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
 		log.info("Requested Order Page");		
-		MyUserDetails userDetails = (MyUserDetails)authentication.getPrincipal();
 		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
 		model.addAttribute("seller", seller);
 		List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails);
-		model.addAttribute("products", products);
-				
-		model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
-		model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
-		model.addAttribute("menuShowOrder", userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER, RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
-		
+		model.addAttribute("products", products);						
 		model.addAttribute("stripePublicApiKey", stripePublicKey);
 		
 		return "views/order";

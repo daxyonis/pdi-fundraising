@@ -1,11 +1,13 @@
 package com.poivredesiles.fundraising.service;
 
+import java.util.List;
 import java.util.Locale;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
 public interface OrderService {
 
@@ -30,5 +32,12 @@ public interface OrderService {
 	 * @return the confirmed order
 	 */
 	OrderHeaderDTO getConfirmedOrder(String sessionId);
+
+	/**
+	 * Get the list of orders assigned to a given seller
+	 * @param seller the seller data transfer object
+	 * @return the list of orders for this seller
+	 */
+	List<OrderHeaderDTO> getPaidOrdersForSeller(PdiSellerDTO seller);
 	
 }

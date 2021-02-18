@@ -39,7 +39,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active" th:if="${menuShowHome}">
-						<a class="nav-link active" th:href="@{${homeUrl}}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a></li>
+						<a class="nav-link active" th:href="@{/}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a></li>
 					<li class="nav-item" th:if="${menuShowSales}">
 						<a class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
 					</li>
@@ -50,10 +50,8 @@
 				<ul th:if="${seller}" class="navbar-nav mr-auto">
 					<li class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.formattedPdiCampaignDueDate}|">date de fin de campagne prevue: 15/09/2021</li>					
 				</ul>
-				<form id="logoutForm" class="form-inline my-2 my-lg-0" th:action="@{/logout}"
-					method="post">
-					<a
-						th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}"
+				<form id="logoutForm" class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">
+					<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}"
 						th:text="#{lang.change}">English</a>
 					<button class="btn btn-link my-2 my-sm-0" type="submit" th:text="#{logout}">Logout</button>
 				</form>
