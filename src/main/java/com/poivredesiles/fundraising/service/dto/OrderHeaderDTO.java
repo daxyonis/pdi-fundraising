@@ -31,4 +31,6 @@ public class OrderHeaderDTO implements Serializable {
     private String confirmationNumber;    
     
     private String detail;
+    
+    private String formattedTotal;
 }

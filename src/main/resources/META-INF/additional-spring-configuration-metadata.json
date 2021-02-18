@@ -38,5 +38,35 @@
     "name": "application.mail.cc",
     "type": "java.lang.String",
     "description": "A description for 'application.mail.cc'"
+  },
+  {
+    "name": "application.order.confirmation",
+    "type": "java.lang.String",
+    "description": "A description for 'application.order.confirmation'"
+  },
+  {
+    "name": "application.order.minAmountForNoFee",
+    "type": "java.lang.String",
+    "description": "A description for 'application.order.minAmountForNoFee'"
+  },
+  {
+    "name": "application.order.transactionFee",
+    "type": "java.lang.String",
+    "description": "A description for 'application.order.transactionFee'"
+  },
+  {
+    "name": "stripe.publicKey",
+    "type": "java.lang.String",
+    "description": "A description for 'stripe.publicKey'"
+  },
+  {
+    "name": "stripe.privateKey",
+    "type": "java.lang.String",
+    "description": "A description for 'stripe.privateKey'"
+  },
+  {
+    "name": "application.url",
+    "type": "java.lang.String",
+    "description": "A description for 'application.url'"
   }
 ]}

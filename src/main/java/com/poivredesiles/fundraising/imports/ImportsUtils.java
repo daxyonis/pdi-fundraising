@@ -1,6 +1,8 @@
 package com.poivredesiles.fundraising.imports;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 public class ImportsUtils {
 	
@@ -17,6 +20,8 @@ public class ImportsUtils {
 	}
 	
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	
+	public static final NumberFormat currencyNf = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
 
 	/**
 	 * Stip blank spaces from a string (handles null)
@@ -116,4 +121,14 @@ public class ImportsUtils {
 			return "";
 		}	
 	}
+	
+	/**
+	 * Format an amount to currency string
+	 * @param amount
+	 * @return
+	 */
+	public static String formatCurrency(BigDecimal amount) {  
+    	currencyNf.setMaximumFractionDigits(2);
+    	return currencyNf.format(amount); 
+    }
 }

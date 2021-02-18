@@ -106,7 +106,7 @@ public class StripeService {
 					.build());			
 		}
 		
-		if(pendingOrder.total().compareTo(minAmountForNoFee) < 0) {
+		if(pendingOrder.getTotal().compareTo(minAmountForNoFee) < 0) {
 			// Add line item for transaction fee : this is not saved into the PDI order 
 			lineItems.add(SessionCreateParams.LineItem.builder()
 					.setQuantity(1L)

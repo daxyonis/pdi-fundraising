@@ -14,6 +14,12 @@
   		<div th:replace="fragments/order-header :: header"></div>
   		<div th:replace="fragments/order-items :: items"></div>
   	</div>
+  	<script th:inline="javascript">
+  		$('#logoutForm').on('submit', function(){
+  			sessionStorage.clear();
+  			return true;
+  		});
+  	</script>
   </section>
  </body>
  </html>

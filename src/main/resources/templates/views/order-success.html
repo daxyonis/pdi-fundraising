@@ -5,9 +5,42 @@
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">
-  	<div class="container-fluid"> 
-  		<h1>Succes !</h1>
+  	<div class="container">   	
+  		<h1 th:text="#{order.success.title}" class="pt-3 text-center">Succes !</h1>
+  		<h2 th:text="#{order.success.subtitle(${order.confirmationNumber})}" class="pt-3 text-center">Votre numero de confirmation est le ...</h2>
+  		<div class="row mt-5">
+  			<div class="col-md-12">
+  				<div class="row">
+  					<div class="col-md-3 text-right"><span th:text="#{order.success.buyer}">Acheteur</span> : </div>
+  					<div class="col-md-3">
+  						<span th:text="${order.buyerName}">Ginette Thibault</span>
+  					</div>
+  					<div class="col-md-3 text-center" th:text="${order.buyerPhone}">514-321-9876</div>
+  					<div class="col-md-3 text-center font-weight-bold" th:text=${order.formattedTotal}>18.00$</div>
+  				</div>
+  				<div class="row">
+  					<div class="col-md-3 text-right"><span th:text="#{order.success.detail}">Detail de la commande</span> : </div>
+  					<div class="col-md-9"><span th:text="${order.detail}">1 Poivre blanc, 2 Ail en poudre</span></div>
+  				</div>
+  			</div>
+  		</div>
+  		<div class="row mt-5">
+  			<div class="col-md-2"></div>
+  			<div class="col-md-8 text-center" th:text="#{order.success.message}">Votre commande sera livrée à l'organisme responsable...</div>
+  			<div class="col-md-2"></div>
+  		</div>
+  		<div class="row mt-5">
+  			<div class="col-md-12 text-center">
+  				<a id="newOrder" th:href="@{/commande}" class="btn btn-info" th:text="#{order.success.other}">Autre commande</a>
+  			</div>
+  		</div>
   	</div>
+  	<script th:inline="javascript">
+  		$('#newOrder').on('click', function(){
+  			sessionStorage.clear();
+  			return true;
+  		});
+  	</script>
   </section>
  </body>
  </html>

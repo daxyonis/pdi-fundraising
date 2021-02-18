@@ -14,7 +14,7 @@ public interface OrderItemMapper extends EntityMapper<OrderItemDTO, OrderItem> {
 
     OrderItemDTO toDto(OrderItem orderItem);
 
-    @Mapping(target = "pdiProduct", ignore=true)
+    @Mapping(target = "product", ignore=true)
     @Mapping(target = "header", ignore=true)
     OrderItem toEntity(OrderItemDTO orderItemDTO);
 
