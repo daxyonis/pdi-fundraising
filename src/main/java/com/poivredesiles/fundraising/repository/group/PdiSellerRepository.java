@@ -13,4 +13,6 @@ public interface PdiSellerRepository extends JpaRepository<PdiSeller, Long> {
 
 	Optional<PdiSeller> findOneByMeOrBuyer(User user, User user2);
 
+	Optional<PdiSeller> findByMe_id(Long userId);
+
 }

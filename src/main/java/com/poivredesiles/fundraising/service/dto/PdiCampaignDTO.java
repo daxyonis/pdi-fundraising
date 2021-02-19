@@ -30,6 +30,8 @@ public class PdiCampaignDTO implements Serializable {
     private String project;
 
     private String leaderNum;
+    
+    private String leaderName;
 
     private String leaderEmail;
 

@@ -16,4 +16,6 @@ public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> 
 	List<PdiCampaign> findAllByClosedAndBlocked(boolean b, boolean blocked);
 
 	List<PdiCampaign> findAllByClosed(boolean b);
+
+	Optional<PdiCampaign> findByLeaderNum(String number);
 }

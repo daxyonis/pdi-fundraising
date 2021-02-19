@@ -5,6 +5,7 @@ import java.util.List;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 
 public interface PdiCampaignService {
 
@@ -59,5 +60,13 @@ public interface PdiCampaignService {
 	 * @return
 	 */
 	PdiCampaignDTO export(Long id, ExportFileNames exportFileNames);
+
+	/**
+	 * Builds and returns the campaign recap (summary) including all groups,
+	 * sales per group and all sellers, sales per seller.
+	 * @param userId connected user (must be a campaign leader otherwise an exception is thrown)
+	 * @return the campaign recap DTO
+	 */
+	PdiCampaignRecapDTO getCampaignRecapForLeader(Long userId);
 
 }

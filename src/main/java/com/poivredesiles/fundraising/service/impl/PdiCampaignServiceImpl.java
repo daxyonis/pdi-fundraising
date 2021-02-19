@@ -22,13 +22,16 @@ import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
+import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
 import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 import com.poivredesiles.fundraising.service.mapper.PdiCampaignMapper;
+import com.poivredesiles.fundraising.service.mapper.PdiCampaignRecapMapper;
 
 @Service
 @Transactional
@@ -50,6 +53,12 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	
 	@Autowired
 	private MailService mailService;
+	
+	@Autowired
+	private PdiCampaignRecapMapper pdiCampaignRecapMapper;
+	
+	@Autowired
+	private PdiSellerRepository pdiSellerRepository;
 
 	@Override
 	public void importCampaigns(List<Campaign> campaigns) {
@@ -185,6 +194,22 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	public PdiCampaignDTO export(Long id, ExportFileNames exportFileNames) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public PdiCampaignRecapDTO getCampaignRecapForLeader(Long userId) {
+		// Get the seller(=leader) number
+		Optional<PdiSeller> pdiSeller = pdiSellerRepository.findByMe_id(userId);
+		if(pdiSeller.isEmpty()) {
+			throw new ResourceNotFoundException("Invalid user id");
+		}
+		// Then find the campaign for this leader
+		Optional<PdiCampaign> pdiCampaign = pdiCampaignRepository.findByLeaderNum(pdiSeller.get().getNumber().toString());
+		if(pdiCampaign.isEmpty()) {
+			throw new ResourceNotFoundException("Campaign not found!");			
+		}
+		// return the recap DTO
+		return pdiCampaignRecapMapper.toDto(pdiCampaign.get());		
 	}
 	
 	

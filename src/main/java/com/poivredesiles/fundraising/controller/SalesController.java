@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.service.OrderService;
+import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
 @Controller
@@ -25,8 +27,17 @@ public class SalesController extends BaseController {
 	private PdiSellerService pdiSellerService;
 	
 	@Autowired
+	private PdiCampaignService pdiCampaignService;
+	
+	@Autowired
 	private OrderService orderService;
 	
+	/**
+	 * Sales page for a seller : shows the orders for a seller
+	 * @param userDetails
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/ventes")
 	public String sales(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {		
 		log.info("Requested Sales Page");		
@@ -37,9 +48,18 @@ public class SalesController extends BaseController {
 		return "views/sales";
 	}
 	
+	/**
+	 * Summary page for a campaign leader
+	 * 
+	 * @param userDetails
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/synthese")
-	public String summary() {
+	public String summary(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
 		log.info("Requested Summary Page");
+		PdiCampaignRecapDTO campaignRecap = pdiCampaignService.getCampaignRecapForLeader(userDetails.getUserId());
+		model.addAttribute("campaignRecap", campaignRecap);
 		return "views/summary";
 	}
 }

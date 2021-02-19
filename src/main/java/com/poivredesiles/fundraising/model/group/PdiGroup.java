@@ -1,8 +1,10 @@
 package com.poivredesiles.fundraising.model.group;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,4 +56,16 @@ public class PdiGroup extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = "pdiProducts", allowSetters = true)
     private OrderType orderType;
+    
+    public BigDecimal getTotalSales() {
+    	return pdiSellers.stream().map(PdiSeller::getOrdersTotal).reduce(BigDecimal.ZERO, (a,b) -> a.add(b));
+    }
+    
+    public Long getNumPaidOrders() {
+    	return pdiSellers.stream().collect(Collectors.summingLong(PdiSeller::getNumOrders));
+    }
+    
+    public Long getNumSellers() {
+    	return (long) pdiSellers.size();
+    }
 }

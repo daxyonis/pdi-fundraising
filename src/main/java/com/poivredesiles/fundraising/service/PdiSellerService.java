@@ -30,6 +30,6 @@ public interface PdiSellerService {
 	 * @param userDetails current user info
 	 * @return the seller info corresponding to the current user
 	 */
-	PdiSellerDTO getSellerForUser(MyUserDetails userDetails);
+	PdiSellerDTO getSellerForUser(MyUserDetails userDetails);	
 
 }
