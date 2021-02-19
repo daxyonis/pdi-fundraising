@@ -33,7 +33,7 @@ public class MainController extends BaseController {
 			// admin main page is admin dashboard
 			return "redirect:/admin";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER)) {
-			return "index";
+			return "redirect:/synthese";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER)) {
 			return "index";
 		} else if(user.hasAnyAuthority(RoleEnum.ROLE_SELLER)) {

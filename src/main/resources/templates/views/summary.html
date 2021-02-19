@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{pdi.summary}">pdi synthese</title>  
+</head>
+<body>
+  <section class="p-lg-3" layout:fragment="content">
+  	<div class="container"> 
+  		<div class="row">
+  			<div class="col-md-7">
+  				<h2 th:text="#{summary.title}">Synthese des ventes</h2>
+  			</div>
+  			<div class="col-md-3 text-right"><span class="font-weight-bold">Montant total</span></div>
+  			<div class="col-md-2"></div>
+  		</div>  		
+  	</div>  	
+  </section>
+ </body>
+ </html>

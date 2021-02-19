@@ -36,4 +36,10 @@ public class SalesController extends BaseController {
 		model.addAttribute("orders", orders);
 		return "views/sales";
 	}
+	
+	@GetMapping("/synthese")
+	public String summary() {
+		log.info("Requested Summary Page");
+		return "views/summary";
+	}
 }
