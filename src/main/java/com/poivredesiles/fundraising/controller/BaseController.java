@@ -22,7 +22,8 @@ public class BaseController {
 	@ModelAttribute
 	public void populateModel(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
 		model.addAttribute("gitCommitId", gitCommitId);
-		model.addAttribute("buildVersion", buildVersion);	
+		model.addAttribute("buildVersion", buildVersion);
+		model.addAttribute("showLangChange", true); 
 		if(userDetails != null) {
 			model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 			model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));

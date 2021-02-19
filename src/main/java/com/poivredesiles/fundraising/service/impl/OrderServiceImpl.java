@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderItem;
@@ -113,13 +114,17 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderHeaderDTO getConfirmedOrder(String sessionId) {
 		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findByStripeSessionId(sessionId);
-		OrderHeader order = optionalOrderHeader.orElseThrow();
-		if(order.getConfirmationNumber() == null) {
-			order.setConfirmationNumber(String.format(orderConfirmationFormat, order.getOrderNumber()));
-			order.setOrderStatus(OrderStatusEnum.PAID);
+		if(optionalOrderHeader.isPresent()) {
+			OrderHeader order = optionalOrderHeader.get();
+			if(order.getConfirmationNumber() == null) {
+				order.setConfirmationNumber(String.format(orderConfirmationFormat, order.getOrderNumber()));
+				order.setOrderStatus(OrderStatusEnum.PAID);
+			}
+			OrderHeaderDTO orderDTO = orderHeaderMapper.toDto(order);
+			return orderDTO;
+		} else {
+			throw new ResourceNotFoundException("Invalid argument");
 		}
-		OrderHeaderDTO orderDTO = orderHeaderMapper.toDto(order);
-		return orderDTO;
 	}
 
 	@Override

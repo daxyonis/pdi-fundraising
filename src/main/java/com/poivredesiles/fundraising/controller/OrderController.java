@@ -46,9 +46,9 @@ public class OrderController extends BaseController {
 	}
 	
 	@GetMapping("/commande/succes")
-	public String successfulOrder(@RequestParam("session_id") String sessionId, Model model) {
+	public String successfulOrder(@RequestParam(name = "session_id", required = false) String sessionId, Model model) {
 		OrderHeaderDTO order = orderService.getConfirmedOrder(sessionId);
 		model.addAttribute("order", order);
-		return "views/order-success";
+		return "views/order-success";		
 	}
 }

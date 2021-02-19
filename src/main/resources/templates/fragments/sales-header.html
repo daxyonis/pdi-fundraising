@@ -9,7 +9,7 @@
 		<div class="row">
 			<div class="col-md-3" th:text="|#{sales.seller.name}:|">Nom:</div>
 			<div class="col-md-4" th:text="${seller.name}">Pierre Laliberte</div>	
-			<th:block th:if="${seller.pdiGroupId != null}">		
+			<th:block  th:unless="${#strings.isEmpty(seller.pdiGroupName)}">				
 				<div class="col-md-2 text-right" th:text="|#{sales.seller.group}:|">Groupe:</div>
 				<div class="col-md-3 text-right" th:text="${seller.pdiGroupName}">Classe 502</div>
 			</th:block>			
