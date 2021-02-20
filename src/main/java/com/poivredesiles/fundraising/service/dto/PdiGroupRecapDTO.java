@@ -11,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class PdiGroupRecapDTO {
+	
+	private Long groupId;
 
 	private String groupName;
 	

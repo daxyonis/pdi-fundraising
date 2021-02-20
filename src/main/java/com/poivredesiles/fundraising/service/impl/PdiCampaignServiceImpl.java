@@ -209,7 +209,10 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			throw new ResourceNotFoundException("Campaign not found!");			
 		}
 		// return the recap DTO
-		return pdiCampaignRecapMapper.toDto(pdiCampaign.get());		
+		PdiCampaignRecapDTO campaignRecap = pdiCampaignRecapMapper.toDto(pdiCampaign.get());
+		// Set the leader name as it is not in the entity
+		campaignRecap.setLeaderName(pdiSeller.get().getName());
+		return campaignRecap;
 	}
 	
 	

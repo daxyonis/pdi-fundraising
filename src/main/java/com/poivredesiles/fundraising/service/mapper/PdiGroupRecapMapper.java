@@ -14,6 +14,7 @@ import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 @Mapper(componentModel = "spring", uses = {PdiSellerRecapMapper.class, CurrencyFormattingMapper.class})
 public interface PdiGroupRecapMapper {
 
+	@Mapping(target = "groupId", source = "id")
 	@Mapping(target = "groupName", source = "name")
 	@Mapping(target = "formattedTotalSales", source = "totalSales", qualifiedByName="formatCurrency")
 	PdiGroupRecapDTO toDto(PdiGroup pdiGroup);

@@ -1,0 +1,23 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<table style="width: 100%" class="table table-bordered" th:fragment="summary-table">
+		<thead>
+			<tr class="text-center">
+				<th style="width: 33%" th:text="#{summary.groupName}">nom du groupe</th>
+				<th style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</th>
+				<th style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="groupRecap : ${campaignRecap.pdiGroupRecaps}">
+				<td class="text-center"><a th:href="@{'/synthese/groupe/'+${groupRecap.groupId}}" th:text="${groupRecap.groupName}">classe 501</a></td>
+				<td class="text-center" th:text="${groupRecap.numPaidOrders}">32</td>
+				<td class="text-center" th:text="${groupRecap.formattedTotalSales}">1100$</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="#{pdi.summary}">pdi synthese</title>  
+  <title th:text="#{pdi.summary}">pdi synthese</title>
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">
@@ -10,49 +10,73 @@
   			<div class="col-md-6">
   				<h2 th:text="#{summary.title}">synthese des ventes</h2>
   			</div>
-  			<div class="col-md-4 text-right"><h4><span class="font-weight-bold" th:text="#{summary.totalAmount}">montant total</span></h4></div>
+  			<div class="col-md-4 text-md-right"><h4><span class="font-weight-bold" th:text="#{summary.totalAmount}">montant total</span></h4></div>
   			<div class="col-md-2"><h4><span class="badge badge-success p-2" th:text="${campaignRecap.formattedTotalSales}">4500.00$</span></h4></div>
   		</div>  		
   		<div class="row">
   			<div class="col-md-6 offset-md-1">
   				<a href="http://www.poivredesiles.com/contact.html" target="_blank" class="btn btn-light" th:text="#{summary.contact}">contactez-nous</a>
   			</div>
-  			<div class="col-md-3 text-right"><h4><span class="font-weight-bold" th:text="#{summary.profit}">profit</span></h4></div>
+  			<div class="col-md-3 text-md-right"><h4><span class="font-weight-bold" th:text="#{summary.profit}">profit</span></h4></div>
   			<div class="col-md-2"><h4><span class="badge badge-info p-2" th:text="${campaignRecap.formattedTotalProfit}">2250.00$</span></h4></div>
   		</div>
-  		<div class="row mt-3">
+  		<div class="row py-4">
   			<div class="col-md-11 offset-md-1">  				
   				<h4><span class="font-weight-bold" th:text="#{summary.subtitle}">synthese de la campagne</span></h4>
   				<div class="row py-1">
-  					<div class="col-md-3 text-right font-weight-bold" th:text="#{summary.organization}">organisme:</div>
-  					<div class="col-md-9">Ecole ABC</div>
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.organization}">organisme:</div>
+  					<div class="col-md-9" th:text="${campaignRecap.organizationName}">Ecole ABC</div>
   				</div>
   				<div class="row py-1">
-  					<div class="col-md-3 text-right font-weight-bold" th:text="#{summary.project}">Projet</div>
-  					<div class="col-md-9">Financement voyage scolaire</div>
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.project}">Projet</div>
+  					<div class="col-md-9" th:text="${campaignRecap.project}">Financement voyage scolaire</div>
   				</div>
   				<div class="row py-1">
-  					<div class="col-md-3 text-right font-weight-bold" th:text="#{summary.leader}">Responsable de la campagne</div>
-  					<div class="col-md-9">Guy Lanctot</div>
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.leader}">Responsable de la campagne</div>
+  					<div class="col-md-9" th:text="${campaignRecap.leaderName}">Guy Lanctot</div>
   				</div>
   				<div class="row py-1">
-  					<div class="col-md-3 text-right font-weight-bold py-1" th:text="#{summary.close}"> terminer</div>
-  					<div class="col-md-9">
-  						<button role="button" class="btn btn-primary" th:text="#{summary.closeCampaign}">terminer la campange</button>
+  					<div class="col-md-3 text-md-right font-weight-bold py-1" th:text="#{summary.close}"> terminer</div>
+  					<div class="col-md-9">  						
+  						<button type="button" class="btn btn-primary" th:text="#{summary.closeCampaign}">terminer la campange</button>
+  						<button type="button" class="btn btn-lg" data-toggle="tooltip" data-placement="right" th:title="#{summary.closeCampaign.info}">
+  							<i class="fas fa-info-circle"></i>
+  						</button>  						
   					</div>
   					
   				</div>
-  				<div class="row py-1">
-  					<div class="col-md-3 text-right font-weight-bold" th:text="#{summary.details}">details</div>
-  					<div class="col-lg-9"></div>
+  				<div class="row py-2">
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.details}">details</div>
+  					<div class="col-lg-9">
+  						<th:block th:if="${campaignRecap.totalNumGroups > 1}">
+  							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
+  						</th:block>
+  					</div>
   				</div>
   				<div class="row py-1">
-  					<div class="col-md-3 text-right font-weight-bold" th:text="#{summary.campaignTotal}">total de la campagne</div>
-  					<div class="col-lg-9"></div>
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.campaignTotal}">total de la campagne</div>
+  					<div class="col-lg-9">
+  						<table style="width:100%" class="table table-bordered">
+  							<tfoot>
+  								<tr class="bg-info text-center">
+  									<th style="width:33%" th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</th>
+  									<th style="width:33%" th:text="${campaignRecap.totalNumPaidOrders}">562</th>
+  									<th style="width:33%" th:text="${campaignRecap.formattedTotalSales}">4500$</th>
+  								</tr>
+  							</tfoot>
+  						</table>
+  					</div>
   				</div>
   			</div>
   		</div>  	  		
   	</div>  	
+  	
+  	<script th:inline="javascript">
+  	$(function () {
+  	  $('[data-toggle="tooltip"]').tooltip()
+  	})
+  	</script>
+  	
   </section>
  </body>
  </html>
