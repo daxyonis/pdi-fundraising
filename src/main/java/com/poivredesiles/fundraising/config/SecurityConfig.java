@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/commande/**", "/api/checkout/**").hasRole("BUYER")
         	.antMatchers("/ventes").hasRole("SELLER")
         	.antMatchers("/synthese").hasRole("CAMPAIGN_LEADER")
-            .antMatchers("/admin", "/api/file/**", "/api/campaign/**").hasRole("ADMIN")            
+            .antMatchers("/admin", "/api/file/**").hasRole("ADMIN")            
             .anyRequest().authenticated()
             .and()
             .formLogin()

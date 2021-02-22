@@ -81,7 +81,7 @@
 							'contentType' : 'application/json',
 							'success': function(){										
 											displaySuccess('#export-msg-success', /*[[#{admin.export.success}]]*/'succes!');					
-											reloadAll();
+											reloadAllForExport();
 									}
 							})
 							.fail(exportFailureHandler);	
@@ -96,7 +96,7 @@
 					}
 				}
 				
-				function reloadAll(){					
+				function reloadAllForExport(){					
 					closedCampaignsDTable2.ajax.reload();
 				}
 				

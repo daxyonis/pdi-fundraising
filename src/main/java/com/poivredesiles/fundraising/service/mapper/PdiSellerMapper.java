@@ -25,6 +25,7 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Mapping(source = "pdiGroup.pdiCampaign.dueDate", target = "formattedPdiCampaignDueDate", qualifiedByName="formatDate")
     @Mapping(source = "pdiGroup.pdiCampaign.organizationName", target = "pdiCampaignOrganization")
     @Mapping(source = "pdiGroup.pdiCampaign.project", target = "pdiCampaignProject")
+    @Mapping(source = "pdiGroup.pdiCampaign.closed", target = "pdiCampaignClosed")
     @Mapping(source="ordersTotal", target="formattedOrdersTotal", qualifiedByName="formatCurrency")    
     PdiSellerDTO toDto(PdiSeller pdiSeller);
 

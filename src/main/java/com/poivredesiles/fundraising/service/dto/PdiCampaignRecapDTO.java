@@ -37,4 +37,6 @@ public class PdiCampaignRecapDTO {
     private Long totalNumPaidOrders;
     
     private List<PdiGroupRecapDTO> pdiGroupRecaps;
+    
+    private boolean closed;
 }

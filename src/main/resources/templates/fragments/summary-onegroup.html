@@ -11,7 +11,7 @@
 				<th style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</th>
 			</tr>
 		</thead>
-		<tbody th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}">
+		<tbody>
 			<tr th:each="sellerRecap : ${groupRecap.pdiSellerRecaps}">
 				<td class="text-center" th:text="${sellerRecap.sellerName}">classe 501</a></td>
 				<td class="text-center" th:text="${sellerRecap.numPaidOrders}">32</td>

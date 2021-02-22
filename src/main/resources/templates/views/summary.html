@@ -20,6 +20,12 @@
   			<div class="col-md-3 text-md-right"><h4><span class="font-weight-bold" th:text="#{summary.profit}">profit</span></h4></div>
   			<div class="col-md-2"><h4><span class="badge badge-info p-2" th:text="${campaignRecap.formattedTotalProfit}">2250.00$</span></h4></div>
   		</div>
+  		<div class="row pt-1" th:if="${campaignRecap.closed}" th:with="alertMsg = #{summary.closedAlert}">
+  			<div class="col-md-6 offset-md-3">
+  				<div class="alert alert-warning" th:text="${#strings.toUpperCase(alertMsg)}">campagne terminee - impossible de faire des commandes</div>
+  			</div>
+  		</div>
+  		</div>
   		<div class="row py-4">
   			<div class="col-md-11 offset-md-1">  				
   				<h4><span class="font-weight-bold" th:text="#{summary.subtitle}">synthese de la campagne</span></h4>
@@ -38,7 +44,7 @@
   				<div class="row py-1">
   					<div class="col-md-3 text-md-right font-weight-bold py-1" th:text="#{summary.close}"> terminer</div>
   					<div class="col-md-9">  						
-  						<button type="button" class="btn btn-primary" th:text="#{summary.closeCampaign}">terminer la campange</button>
+  						<button type="button" class="btn btn-primary" id="closeCampaignBtn" th:text="#{summary.closeCampaign}" th:disabled="${campaignRecap.closed}">terminer la campange</button>
   						<button type="button" class="btn btn-lg" data-toggle="tooltip" data-placement="right" th:title="#{summary.closeCampaign.info}">
   							<i class="fas fa-info-circle"></i>
   						</button>  						
@@ -52,7 +58,7 @@
   							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
   						</th:block>
   						<th:block th:if="${campaignRecap.totalNumGroups <= 1}">
-  							<div th:replace="fragments/summary-onegroup :: summary-table"></div>
+  							<div th:replace="fragments/summary-onegroup :: summary-table" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}"></div>
   						</th:block>
   					</div>
   				</div>
@@ -76,9 +82,21 @@
   		</div>  	  		
   	</div>  	
   	
+  	<div th:replace="fragments/modal-terminate :: modal"></div>
+  	
   	<script th:inline="javascript">
   	$(function () {
-  	  $('[data-toggle="tooltip"]').tooltip()
+  	  $('[data-toggle="tooltip"]').tooltip();
+  	  
+  	  $('#closeCampaignBtn').on('click', function(){  		
+		$('#closeCampaignConfirmed').data('id', /*[[${campaignRecap.campaignId}]]*/'0');
+		$('#closeConfirm').modal('show'); 
+  	  });
+  	  
+  	  $('body').on('campaign-closed', function(){
+  		  // reload current page to update state
+  		location.reload();
+  	  });
   	})
   	</script>
   	

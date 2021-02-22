@@ -34,6 +34,8 @@ public class PdiSellerDTO implements Serializable {
     
     private String pdiCampaignProject;
     
+    private boolean pdiCampaignClosed;
+    
     private String formattedOrdersTotal;
     
     private Long numOrders;

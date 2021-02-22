@@ -12,6 +12,7 @@ import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
 @Controller
 public class MainController extends BaseController {
@@ -25,20 +26,21 @@ public class MainController extends BaseController {
 	private PdiCampaignService pdiCampaignService;
 	
 	@GetMapping("/")
-	public String home(@AuthenticationPrincipal MyUserDetails user) {
+	public String home(@AuthenticationPrincipal MyUserDetails userDetails) {
 		log.info("Requested Home Page");
 		
 		// Dispatch the home page according to the user role
-		if(user.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
+		if(userDetails.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
 			// admin main page is admin dashboard
 			return "redirect:/admin";
-		} else if(user.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER)) {
+		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER)) {
 			return "redirect:/synthese";
-		} else if(user.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER)) {
-			return "index";
-		} else if(user.hasAnyAuthority(RoleEnum.ROLE_SELLER)) {
+		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER)) {
+			PdiSellerDTO seller = getSeller(userDetails);
+			return "redirect:/synthese/groupe/" + seller.getPdiGroupId();
+		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER)) {
 			return "redirect:/ventes";
-		} else if(user.hasAnyAuthority(RoleEnum.ROLE_BUYER)) {
+		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER)) {
 			// buyer main page is order
 			return "redirect:/commande";
 		} else {

@@ -1,9 +1,13 @@
 package com.poivredesiles.fundraising.service.mapper;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
@@ -17,8 +21,14 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerRecapDTO;
 public interface PdiSellerRecapMapper {
 
 	@Mapping(target="sellerName", source="name")
-	@Mapping(target="formattedTotalSales", source="ordersTotal", qualifiedByName="formatCurrency")
+	@Mapping(target="numPaidOrders", source="numOrders")
+	@Mapping(target="formattedTotalSales", source="ordersTotal", qualifiedByName="formatCurrency")	
 	PdiSellerRecapDTO toDto(PdiSeller seller);
 	
-	Set<PdiSellerRecapDTO> toDto(Set<PdiSeller> sellers);	
+	List<PdiSellerRecapDTO> toDto(Set<PdiSeller> sellers);	
+	
+	@AfterMapping
+	public static void sortGroups(@MappingTarget List<PdiSellerRecapDTO> pdiSellerRecapDTOs) {
+		pdiSellerRecapDTOs.sort(Comparator.comparing(PdiSellerRecapDTO::getSellerName)); 
+	}
 }

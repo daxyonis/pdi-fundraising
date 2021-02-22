@@ -34,7 +34,7 @@ public class PdiCampaignController {
 	}
 		
 	@PostMapping("/{id}/close")
-	@Secured("ROLE_ADMIN")
+	@Secured({"ROLE_ADMIN", "ROLE_CAMPAIGN_LEADER"})
 	public PdiCampaignDTO close(@PathVariable Long id) {
 		 return pdiCampaignService.close(id);
 	}

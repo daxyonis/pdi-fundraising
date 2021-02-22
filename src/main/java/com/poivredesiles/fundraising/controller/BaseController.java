@@ -33,7 +33,10 @@ public class BaseController {
 			model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 			model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
 			model.addAttribute("menuShowOrder", userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER, RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
-			model.addAttribute("seller", getSeller(userDetails));			
+			model.addAttribute("showCampaignSummaryLink", userDetails.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER));
+			if(!userDetails.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
+				model.addAttribute("seller", getSeller(userDetails));
+			}
 		}
 	}
 	

@@ -77,7 +77,7 @@
 					let campaignId = $(this).data('id');
 					$('#closeCampaignConfirmed').data('id', campaignId);
 					$('#closeConfirm').modal('show');
-				});
+				});															
 			}
 			
 			function initBlockButtonHandlers(){
@@ -89,19 +89,6 @@
 				});
 			}
 			
-			function closeCampaign(){
-				let campaignId = $(this).data('id');
-				let url = /*[[@{/api/campaign}]]*/'/api/campaign';
-				$.post(`${url}/${campaignId}/close`, function(){		
-					$('#closeConfirm').modal('hide');
-					displaySuccess('#close-msg-success', /*[[#{admin.terminate.success}]]*/'succes!');					
-					reloadAll();
-				})
-				.fail(terminateFailureHandler)
-				.done(function(){
-					$('#closeConfirm').modal('hide');
-				});
-			}
 			
 			function blockCampaign(){
 				let campaignId = $(this).data('id');
@@ -117,15 +104,6 @@
 				});
 			}
 			
-			
-			function terminateFailureHandler (err){ 						
-				console.log(err.responseJSON);
-				if(err.responseJSON && err.responseJSON.message){
-					displayError(err, '#close-msg-error', `ERREUR : ${err.responseJSON.message}`);	
-				} else {
-					displayError(err, '#close-msg-error', /*[[#{admin.action.error}]]*/'Erreur');
-				}
-			}
 			
 			function reloadAll(){
 				activeCampaignsDTable.ajax.reload();
@@ -171,6 +149,14 @@
 					    	}}
 					    ]
 					}, datatablesOptions));
+			
+			
+			$(function(){
+				$('body').on('campaign-closed', function(){
+					displaySuccess('#close-msg-success', /*[[#{admin.terminate.success}]]*/'succes!');					
+					reloadAll();
+				});				
+			});
 			</script>
 			
 		</div>
