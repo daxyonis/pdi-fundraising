@@ -51,6 +51,9 @@
   						<th:block th:if="${campaignRecap.totalNumGroups > 1}">
   							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
   						</th:block>
+  						<th:block th:if="${campaignRecap.totalNumGroups <= 1}">
+  							<div th:replace="fragments/summary-onegroup :: summary-table"></div>
+  						</th:block>
   					</div>
   				</div>
   				<div class="row py-1">
@@ -58,8 +61,10 @@
   					<div class="col-lg-9">
   						<table style="width:100%" class="table table-bordered">
   							<tfoot>
-  								<tr class="bg-info text-center">
-  									<th style="width:33%" th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</th>
+  								<tr class="bg-light text-center">
+  									<th style="width:33%" th:if="${campaignRecap.totalNumGroups > 1}" 
+  										th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</th>
+  									<th style="width:33%" th:if="${campaignRecap.totalNumGroups <= 1}" >60 vendeurs</th>
   									<th style="width:33%" th:text="${campaignRecap.totalNumPaidOrders}">562</th>
   									<th style="width:33%" th:text="${campaignRecap.formattedTotalSales}">4500$</th>
   								</tr>

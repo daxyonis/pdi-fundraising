@@ -16,6 +16,8 @@ public class PdiGroupRecapDTO {
 
 	private String groupName;
 	
+	private String groupLeaderName;
+	
 	private Long numPaidOrders;
 	
 	private Long numSellers;

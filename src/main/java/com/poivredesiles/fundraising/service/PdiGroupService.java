@@ -3,9 +3,16 @@ package com.poivredesiles.fundraising.service;
 import java.util.List;
 
 import com.poivredesiles.fundraising.imports.dto.Group;
+import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 
 public interface PdiGroupService {
 
 	void importGroups(List<Group> groups);
 
+	/**
+	 * Gather the group recap information for a given group
+	 * @param groupId the group id
+	 * @return the group recap DTO
+	 */
+	PdiGroupRecapDTO getGroupRecap(Long groupId);
 }

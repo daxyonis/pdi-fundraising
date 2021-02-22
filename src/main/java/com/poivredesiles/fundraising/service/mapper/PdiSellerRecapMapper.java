@@ -17,7 +17,7 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerRecapDTO;
 public interface PdiSellerRecapMapper {
 
 	@Mapping(target="sellerName", source="name")
-	@Mapping(target="formattedSalesTotal", source="ordersTotal", qualifiedByName="formatCurrency")
+	@Mapping(target="formattedTotalSales", source="ordersTotal", qualifiedByName="formatCurrency")
 	PdiSellerRecapDTO toDto(PdiSeller seller);
 	
 	Set<PdiSellerRecapDTO> toDto(Set<PdiSeller> sellers);	

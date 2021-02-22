@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{pdi.summary}">pdi synthese</title>
+</head>
+<body>
+  <section class="p-lg-3" layout:fragment="content">
+  	<div class="container"> 
+  		<div class="row">
+  			<div class="col-md-6">
+  				<h2 th:text="#{summary.title}">synthese des ventes</h2>
+  			</div>  			
+  		</div> 
+  		<div class="row py-4">
+  			<div class="col-md-11 offset-md-1">  				
+  				<h4><span class="font-weight-bold" th:text="#{summary.groupSummary}">synthese du groupe</span></h4>
+  				<div class="row py-1">
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.organization}">organisme:</div>
+  					<div class="col-md-9" th:text="${seller.pdiCampaignOrganization}">Ecole ABC</div>
+  				</div>
+  				<div class="row py-1">
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.project}">Projet</div>
+  					<div class="col-md-9" th:text="${seller.pdiCampaignProject}">Financement voyage scolaire</div>
+  				</div>
+  				<div class="row py-1">
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.groupName}">Groupe</div>
+  					<div class="col-md-9" th:text="${groupRecap.GroupName}">classe 502</div>
+  				</div>
+  				<div class="row py-1">
+  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.groupLeader}">Responsable du groupe</div>
+  					<div class="col-md-9" th:text="${groupRecap.groupLeaderName}">Guy Lanctot</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  	
+  </section>
+  
+ </body>
+</html>

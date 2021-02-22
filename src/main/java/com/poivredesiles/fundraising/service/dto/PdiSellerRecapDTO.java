@@ -12,7 +12,7 @@ public class PdiSellerRecapDTO {
 
 	private String sellerName;
 	
-	private Long numOrders;
+	private Long numPaidOrders;
 	
-	private String formattedSalesTotal;
+	private String formattedTotalSales;
 }

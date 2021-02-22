@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
+import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
 @PropertySource("classpath:git.properties")
 public class BaseController {
@@ -18,6 +21,8 @@ public class BaseController {
 	@Value("${git.build.version}")
 	protected String buildVersion;
 	
+	@Autowired
+	protected PdiSellerService pdiSellerService;		
 	
 	@ModelAttribute
 	public void populateModel(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
@@ -28,7 +33,11 @@ public class BaseController {
 			model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 			model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
 			model.addAttribute("menuShowOrder", userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER, RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));
+			model.addAttribute("seller", getSeller(userDetails));			
 		}
 	}
 	
+	protected PdiSellerDTO getSeller(MyUserDetails userDetails) {
+		return pdiSellerService.getSellerForUser(userDetails);			
+	}
 }

@@ -9,14 +9,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
-import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
-import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 
 @Controller
 public class SalesController extends BaseController {
@@ -24,13 +25,13 @@ public class SalesController extends BaseController {
 	private final Logger log = LoggerFactory.getLogger(SalesController.class);
 	
 	@Autowired
-	private PdiSellerService pdiSellerService;
-	
-	@Autowired
 	private PdiCampaignService pdiCampaignService;
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private PdiGroupService pdiGroupService;
 	
 	/**
 	 * Sales page for a seller : shows the orders for a seller
@@ -40,10 +41,8 @@ public class SalesController extends BaseController {
 	 */
 	@GetMapping("/ventes")
 	public String sales(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {		
-		log.info("Requested Sales Page");		
-		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
-		List<OrderHeaderDTO> orders = orderService.getPaidOrdersForSeller(seller);
-		model.addAttribute("seller", seller);
+		log.info("Requested Sales Page");			
+		List<OrderHeaderDTO> orders = orderService.getPaidOrdersForSeller(getSeller(userDetails));		
 		model.addAttribute("orders", orders);
 		return "views/sales";
 	}
@@ -61,5 +60,18 @@ public class SalesController extends BaseController {
 		PdiCampaignRecapDTO campaignRecap = pdiCampaignService.getCampaignRecapForLeader(userDetails.getUserId());
 		model.addAttribute("campaignRecap", campaignRecap);
 		return "views/summary";
+	}
+	
+	/**
+	 * Group summary
+	 * @param groupId
+	 * @return
+	 */
+	@GetMapping("/synthese/groupe/{groupId}")
+	public String groupSummary(@PathVariable Long groupId, Model model) {
+		log.info("Requested group summary page");
+		PdiGroupRecapDTO groupRecap = pdiGroupService.getGroupRecap(groupId);
+		model.addAttribute("groupRecap", groupRecap);
+		return "views/summary-group";
 	}
 }
