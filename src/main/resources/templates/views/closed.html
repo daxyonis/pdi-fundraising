@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{pdi.order}">pdi commande</title>    
+</head>
+<body>
+  <section class="p-lg-3" layout:fragment="content">
+  	<div class="container"> 
+  		<div class="alert alert-danger mt-5 p-5 text-center">
+		  <h4 th:text="#{campaign.closedMsg}">desole nous ne pouvons plus accepter de commandes : la campagne est maintenant fermee</h4>
+		  <br/>
+		  <p><a class="btn btn-primary btn-lg" th:href="@{/}" role="button" th:text="#{menu.home}">Accueil</a></p>
+		</div>  	
+  	</div>
+  </section>
+ </body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>		
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />        
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		
+		<style>
+			.font-weight-bold { font-weight: bold; }
+		</style>
+    </head>
+    <body>          	
+  		
+		<h2 th:text="#{summary.title}">synthese des ventes</h2>
+		<h4><span th:text="#{summary.totalAmount}">montant total</span> : <span th:text="${campaignRecap.formattedTotalSales}">4500.00$</span></h4>
+	
+		<h4><span th:text="#{summary.profit}">profit</span> : <span th:text="${campaignRecap.formattedTotalProfit}">2250.00$</span></h4>
+		  				
+		<h4><span th:text="#{summary.subtitle}">synthese de la campagne</span></h4>
+		<p><span class="font-weight-bold" th:text="#{summary.organization}">organisme</span>:
+			<span th:text="${campaignRecap.organizationName}">Ecole ABC</span>
+		</p>
+				
+		<p><span class="font-weight-bold" th:text="#{summary.project}">Projet</span>:
+		<span th:text="${campaignRecap.project}">Financement voyage scolaire</span>
+		</p>
+				
+				<div class="row py-1">
+					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.leader}">Responsable de la campagne</div>
+					<div class="col-md-9" th:text="${campaignRecap.leaderName}">Guy Lanctot</div>
+				</div>  				
+				<div class="row py-2">
+					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.details}">details</div>
+					<div class="col-lg-9">
+						<th:block th:if="${campaignRecap.totalNumGroups > 1}">
+							<table style="width: 100%" class="table table-bordered">
+						<thead>
+							<tr class="text-center">
+								<th style="width: 33%" th:text="#{summary.groupName}">nom du groupe</th>
+								<th style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</th>
+								<th style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="groupRecap : ${campaignRecap.pdiGroupRecaps}">
+								<td class="text-center" th:text="${groupRecap.groupName}">classe 501</td>
+								<td class="text-center" th:text="${groupRecap.numPaidOrders}">32</td>
+								<td class="text-center" th:text="${groupRecap.formattedTotalSales}">1100$</td>
+							</tr>
+						</tbody>
+					</table>
+						</th:block>
+						<th:block th:if="${campaignRecap.totalNumGroups <= 1}" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}">
+							<table style="width: 100%" class="table table-bordered">
+						<thead>
+							<tr class="text-center">
+								<th style="width: 33%" th:text="#{summary.sellerName}">nom du vendeur</th>
+								<th style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</th>
+								<th style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="sellerRecap : ${groupRecap.pdiSellerRecaps}">
+								<td class="text-center" th:text="${sellerRecap.sellerName}">classe 501</a></td>
+								<td class="text-center" th:text="${sellerRecap.numPaidOrders}">32</td>
+								<td class="text-center" th:text="${sellerRecap.formattedTotalSales}">1100$</td>
+							</tr>
+						</tbody>
+					</table>
+						</th:block>
+					</div>
+				</div>
+				<div class="row py-1">
+					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.campaignTotal}">total de la campagne</div>
+					<div class="col-lg-9">
+						<table style="width:100%" class="table table-bordered">
+							<tfoot>
+								<tr class="bg-light text-center">
+									<th style="width:33%" th:if="${campaignRecap.totalNumGroups > 1}" 
+										th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</th>
+									<th style="width:33%" th:if="${campaignRecap.totalNumGroups <= 1}" >60 vendeurs</th>
+									<th style="width:33%" th:text="${campaignRecap.totalNumPaidOrders}">562</th>
+									<th style="width:33%" th:text="${campaignRecap.formattedTotalSales}">4500$</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+  			</div>
+  		</div>  	  		  	
+    </body>
+</html>    

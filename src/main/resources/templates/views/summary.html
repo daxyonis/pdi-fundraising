@@ -11,21 +11,20 @@
   				<h2 th:text="#{summary.title}">synthese des ventes</h2>
   			</div>
   			<div class="col-md-4 text-md-right"><h4><span class="font-weight-bold" th:text="#{summary.totalAmount}">montant total</span></h4></div>
-  			<div class="col-md-2"><h4><span class="badge badge-success p-2" th:text="${campaignRecap.formattedTotalSales}">4500.00$</span></h4></div>
+  			<div class="col-md-2"><h4 class="text-right"><span class="badge badge-success p-2" th:text="${campaignRecap.formattedTotalSales}">4500.00$</span></h4></div>
   		</div>  		
   		<div class="row">
   			<div class="col-md-6 offset-md-1">
   				<a href="http://www.poivredesiles.com/contact.html" target="_blank" class="btn btn-light" th:text="#{summary.contact}">contactez-nous</a>
   			</div>
   			<div class="col-md-3 text-md-right"><h4><span class="font-weight-bold" th:text="#{summary.profit}">profit</span></h4></div>
-  			<div class="col-md-2"><h4><span class="badge badge-info p-2" th:text="${campaignRecap.formattedTotalProfit}">2250.00$</span></h4></div>
+  			<div class="col-md-2"><h4 class="text-right"><span class="badge badge-info p-2" th:text="${campaignRecap.formattedTotalProfit}">2250.00$</span></h4></div>
   		</div>
   		<div class="row pt-1" th:if="${campaignRecap.closed}" th:with="alertMsg = #{summary.closedAlert}">
   			<div class="col-md-6 offset-md-3">
   				<div class="alert alert-warning" th:text="${#strings.toUpperCase(alertMsg)}">campagne terminee - impossible de faire des commandes</div>
   			</div>
-  		</div>
-  		</div>
+  		</div>  		
   		<div class="row py-4">
   			<div class="col-md-11 offset-md-1">  				
   				<h4><span class="font-weight-bold" th:text="#{summary.subtitle}">synthese de la campagne</span></h4>

@@ -38,11 +38,14 @@ public class OrderController extends BaseController {
 		log.info("Requested Order Page");		
 		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
 		model.addAttribute("seller", seller);
-		List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails);
-		model.addAttribute("products", products);						
-		model.addAttribute("stripePublicApiKey", stripePublicKey);
-		
-		return "views/order";
+		if(seller.isPdiCampaignClosed()) {
+			return "views/closed";
+		} else {
+			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails);
+			model.addAttribute("products", products);						
+			model.addAttribute("stripePublicApiKey", stripePublicKey);			
+			return "views/order";
+		}
 	}
 	
 	@GetMapping("/commande/succes")

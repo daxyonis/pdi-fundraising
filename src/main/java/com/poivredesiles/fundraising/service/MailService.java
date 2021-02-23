@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.mail.MessagingException;
@@ -9,6 +10,7 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,6 +22,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.resource.ErrorMessage;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 
 @Service
 public class MailService {
@@ -67,38 +70,38 @@ public class MailService {
 		}
 	}
 
-//	@Async
-//	public void sendEmailFromTemplate(Contact contact, String templateName, String titleKey) {
-//		if (contact.getDealerEmail() == null) {
-//			log.debug("Email doesn't exist for dealer '{}'", contact.getDealerId());
-//			return;
-//		}
-//		Locale locale = Locale.FRENCH;
-//		Context context = new Context(locale);
-//		context.setVariable(CONTACT, contact);
-//		String content = templateEngine.process(templateName, context);
-//		String subject = messageSource.getMessage(titleKey, new Object[] {contact.getVehicleLabel()}, locale);
-//		String to = getEmailTo(contact);
-//		sendEmail(to, subject, content, false, true);
-//	}
-//
-//	@Async
-//	public void sendContactEmail(Contact contact) {
-//		log.debug("Sending contact email to '{}'", getEmailTo(contact));
-//		sendEmailFromTemplate(contact, "mail/contactEmail", "email.contact.title");
-//	}
-//	
-//	private String getEmailTo(Contact contact) {
-//		String to = applicationProperties.getMail().getTo();
-//		
-//		//******************************************
-//		// Send to dealer only if in production
-//		if(to.equals("dealer") && Arrays.asList(env.getActiveProfiles()).contains("prod")) {
-//			to = contact.getDealerEmail();
-//		}
-//		//******************************************
-//		return to;
-//	}
+	@Async
+	public void sendEmailFromTemplate(PdiCampaignRecapDTO campaignRecap, String templateName, String titleKey) {
+		if (campaignRecap.getEmailTo() == null) {
+			log.debug("Email doesn't exist for campaign '{}'", campaignRecap.getCampaignId());
+			return;
+		}
+		Locale locale = LocaleContextHolder.getLocale();
+		Context context = new Context(locale);
+		context.setVariable("campaignRecap", campaignRecap);
+		String content = templateEngine.process(templateName, context);
+		String subject = messageSource.getMessage(titleKey, null, locale);
+		String to = getEmailTo(campaignRecap);
+		sendEmail(to, subject, content, false, true);
+	}
+
+	@Async
+	public void sendCampaignRecapEmail(PdiCampaignRecapDTO campaignRecap) {
+		log.debug("Sending contact email to '{}'", getEmailTo(campaignRecap));
+		sendEmailFromTemplate(campaignRecap, "mail/campaignSummaryEmail", "email.summary.title");
+	}
+	
+	private String getEmailTo(PdiCampaignRecapDTO campaignRecap) {
+		String to = applicationProperties.getMail().getTo();
+		
+		//******************************************
+		// Send to leader only if in production
+		if(to.equals("leader") && Arrays.asList(env.getActiveProfiles()).contains("prod")) {
+			to = campaignRecap.getEmailTo();
+		}
+		//******************************************
+		return to;
+	}
 
 	@Async
 	public void sendErrorEmail(ErrorMessage errorMessage) {

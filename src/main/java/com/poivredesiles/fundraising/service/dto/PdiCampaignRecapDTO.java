@@ -26,7 +26,7 @@ public class PdiCampaignRecapDTO {
 
     private String leaderNum;
     
-    private String leaderName;
+    private String leaderName;        
     
     private String formattedTotalSales;
     
@@ -39,4 +39,6 @@ public class PdiCampaignRecapDTO {
     private List<PdiGroupRecapDTO> pdiGroupRecaps;
     
     private boolean closed;
+    
+    private String emailTo;
 }

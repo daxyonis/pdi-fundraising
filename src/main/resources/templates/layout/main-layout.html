@@ -38,9 +38,9 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active" th:if="${menuShowHome}">
-						<a class="nav-link active" th:href="@{/}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a></li>
-					<li class="nav-item" th:if="${menuShowSales}">
+					<li class="nav-item" th:if="${menuShowHome}" th:classappend="${homeRequest} == true ? 'active' : ''">
+						<a class="nav-link" th:href="@{/}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a></li>
+					<li class="nav-item" th:if="${menuShowSales}" th:classappend="(${#request.getServletPath()} == '/ventes')? 'active' : ''">
 						<a class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
 					</li>
 					<li class="nav-item" th:if="${menuShowOrder}" th:classappend="(${#request.getServletPath()} == '/commande')? 'active' : ''">						

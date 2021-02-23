@@ -153,10 +153,29 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		}		
 	}
 
-	// TODO !!!
+	/**
+	 * Send an email with the campaign overview
+	 * to the campaign leader (if specified in PDI campaign)
+	 * @param pdiCampaign
+	 */
 	private void sendEmailToLeader(PdiCampaign pdiCampaign) {
-		//mailService.send		
-		// send the same page as sales recap
+		if(pdiCampaign.getLeaderEmail() != null && !pdiCampaign.getLeaderEmail().isBlank()) {
+			PdiCampaignRecapDTO campaignRecap = pdiCampaignRecapMapper.toDto(pdiCampaign);
+			// Set the leader name as it is not in the entity
+			Optional<PdiSeller> leader = pdiCampaign.getPdiGroups().stream()
+													.flatMap(g -> g.getPdiSellers().stream())
+													.filter(s -> s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
+													.findFirst();
+			if(leader.isPresent()) {
+				campaignRecap.setLeaderName(leader.get().getName());
+				campaignRecap.setEmailTo(pdiCampaign.getLeaderEmail());
+				mailService.sendCampaignRecapEmail(campaignRecap);
+			} else {
+				log.warn("Could not send email : leader not found for campaign {}", pdiCampaign.getId());
+			}			
+		} else {
+			log.warn("No leader email specified for campaign {}", pdiCampaign.getId());
+		}
 	}
 
 	@Override

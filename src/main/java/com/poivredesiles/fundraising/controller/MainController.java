@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
@@ -26,9 +27,9 @@ public class MainController extends BaseController {
 	private PdiCampaignService pdiCampaignService;
 	
 	@GetMapping("/")
-	public String home(@AuthenticationPrincipal MyUserDetails userDetails) {
+	public String home(@AuthenticationPrincipal MyUserDetails userDetails, RedirectAttributes redirectAttrs) {
 		log.info("Requested Home Page");
-		
+		redirectAttrs.addFlashAttribute("homeRequest", true);
 		// Dispatch the home page according to the user role
 		if(userDetails.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
 			// admin main page is admin dashboard

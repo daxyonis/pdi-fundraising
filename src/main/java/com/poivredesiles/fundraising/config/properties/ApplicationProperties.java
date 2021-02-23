@@ -23,7 +23,7 @@ public class ApplicationProperties {
 
 		private String from;
 
-//		private String to;
+		private String to;
 
 		private String cc;
 
@@ -43,13 +43,13 @@ public class ApplicationProperties {
 			this.from = from;
 		}
 
-//		public String getTo() {
-//			return to;
-//		}
-//
-//		public void setTo(String to) {
-//			this.to = to;
-//		}
+		public String getTo() {
+			return to;
+		}
+
+		public void setTo(String to) {
+			this.to = to;
+		}
 
 		public String getCc() {
 			return cc;
