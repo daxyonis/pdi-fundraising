@@ -2,6 +2,8 @@ package com.poivredesiles.fundraising.controller.rest;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.LocaleResolver;
 
 import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
@@ -25,6 +28,9 @@ public class PdiCampaignController {
 	@Autowired
 	private PdiCampaignService pdiCampaignService;
 	
+	@Autowired
+	private LocaleResolver localeResolver;
+	
 	private final Logger log = LoggerFactory.getLogger(PdiCampaignController.class);
 	
 	@GetMapping("/")
@@ -35,8 +41,8 @@ public class PdiCampaignController {
 		
 	@PostMapping("/{id}/close")
 	@Secured({"ROLE_ADMIN", "ROLE_CAMPAIGN_LEADER"})
-	public PdiCampaignDTO close(@PathVariable Long id) {
-		 return pdiCampaignService.close(id);
+	public PdiCampaignDTO close(@PathVariable Long id, HttpServletRequest request) {
+		 return pdiCampaignService.close(id, localeResolver.resolveLocale(request));
 	}
 	
 	@PostMapping("/{id}/block")

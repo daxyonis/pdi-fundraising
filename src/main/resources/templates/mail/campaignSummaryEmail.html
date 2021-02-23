@@ -6,10 +6,21 @@
 		
 		<style>
 			.font-weight-bold { font-weight: bold; }
+			.text-center { text-align: center; }
+			.text-right { text-align: right; }
+			.ital { font-style: italic; }			
+			table { border: 1px solid black;
+					border-collapse: collapse;
+					width: 75%; }
+			td { border: 1px solid black; }
+				
 		</style>
     </head>
-    <body>          	
-  		
+    <body> 
+    	<div class="text-center">    		
+    		<h2 th:text="#{email.summary.subtitle}">Campagne de financement avec Poivre des iles</h2>
+    	</div>         	
+  		<p class="text-center ital" th:text="#{email.summary.note}">vous recevez ce message car blablabla</p>
 		<h2 th:text="#{summary.title}">synthese des ventes</h2>
 		<h4><span th:text="#{summary.totalAmount}">montant total</span> : <span th:text="${campaignRecap.formattedTotalSales}">4500.00$</span></h4>
 	
@@ -21,71 +32,61 @@
 		</p>
 				
 		<p><span class="font-weight-bold" th:text="#{summary.project}">Projet</span>:
-		<span th:text="${campaignRecap.project}">Financement voyage scolaire</span>
+		   <span th:text="${campaignRecap.project}">Financement voyage scolaire</span>
 		</p>
 				
-				<div class="row py-1">
-					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.leader}">Responsable de la campagne</div>
-					<div class="col-md-9" th:text="${campaignRecap.leaderName}">Guy Lanctot</div>
-				</div>  				
-				<div class="row py-2">
-					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.details}">details</div>
-					<div class="col-lg-9">
-						<th:block th:if="${campaignRecap.totalNumGroups > 1}">
-							<table style="width: 100%" class="table table-bordered">
-						<thead>
-							<tr class="text-center">
-								<th style="width: 33%" th:text="#{summary.groupName}">nom du groupe</th>
-								<th style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</th>
-								<th style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="groupRecap : ${campaignRecap.pdiGroupRecaps}">
-								<td class="text-center" th:text="${groupRecap.groupName}">classe 501</td>
-								<td class="text-center" th:text="${groupRecap.numPaidOrders}">32</td>
-								<td class="text-center" th:text="${groupRecap.formattedTotalSales}">1100$</td>
-							</tr>
-						</tbody>
-					</table>
-						</th:block>
-						<th:block th:if="${campaignRecap.totalNumGroups <= 1}" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}">
-							<table style="width: 100%" class="table table-bordered">
-						<thead>
-							<tr class="text-center">
-								<th style="width: 33%" th:text="#{summary.sellerName}">nom du vendeur</th>
-								<th style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</th>
-								<th style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="sellerRecap : ${groupRecap.pdiSellerRecaps}">
-								<td class="text-center" th:text="${sellerRecap.sellerName}">classe 501</a></td>
-								<td class="text-center" th:text="${sellerRecap.numPaidOrders}">32</td>
-								<td class="text-center" th:text="${sellerRecap.formattedTotalSales}">1100$</td>
-							</tr>
-						</tbody>
-					</table>
-						</th:block>
-					</div>
-				</div>
-				<div class="row py-1">
-					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.campaignTotal}">total de la campagne</div>
-					<div class="col-lg-9">
-						<table style="width:100%" class="table table-bordered">
-							<tfoot>
-								<tr class="bg-light text-center">
-									<th style="width:33%" th:if="${campaignRecap.totalNumGroups > 1}" 
-										th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</th>
-									<th style="width:33%" th:if="${campaignRecap.totalNumGroups <= 1}" >60 vendeurs</th>
-									<th style="width:33%" th:text="${campaignRecap.totalNumPaidOrders}">562</th>
-									<th style="width:33%" th:text="${campaignRecap.formattedTotalSales}">4500$</th>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-				</div>
-  			</div>
-  		</div>  	  		  	
+				
+		<p><span class="font-weight-bold" th:text="#{summary.leader}">Responsable de la campagne</span>:
+		<span th:text="${campaignRecap.leaderName}">Guy Lanctot</span>
+		</p>
+				  				
+		<p class="font-weight-bold" th:text="#{summary.details}">details</p>
+					
+		<th:block th:if="${campaignRecap.totalNumGroups > 1}">
+			<table>				
+					<tr class="font-weight-bold text-center">
+						<td style="width: 33%" th:text="#{summary.groupName}">nom du groupe</td>
+						<td style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</td>
+						<td style="width: 33%" th:text="#{summary.salesTotal}">total de ses ventes</td>
+					</tr>				
+					<tr th:each="groupRecap : ${campaignRecap.pdiGroupRecaps}">
+						<td class="text-center" th:text="${groupRecap.groupName}">classe 501</td>
+						<td class="text-center" th:text="${groupRecap.numPaidOrders}">32</td>
+						<td class="text-right" th:text="${groupRecap.formattedTotalSales}">1100$</td>
+					</tr>				
+			</table>
+		</th:block> 
+		<th:block th:if="${campaignRecap.totalNumGroups <= 1}" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}">
+			<table>				
+					<tr class="font-weight-bold text-center">
+						<td style="width: 33%" th:text="#{summary.sellerName}">nom du vendeur</td>
+						<td style="width: 33%" th:text="#{summary.numOrders}">nb de commandes</td>
+						<td style="width: 33%" class="text-right" th:text="#{summary.salesTotal}">total de ses ventes</td>
+					</tr>				
+					<tr th:each="sellerRecap : ${groupRecap.pdiSellerRecaps}">
+						<td class="text-center" th:text="${sellerRecap.sellerName}">Pierre Deschamps</td>
+						<td class="text-center" th:text="${sellerRecap.numPaidOrders}">32</td>
+						<td class="text-right" th:text="${sellerRecap.formattedTotalSales}">1100$</td>
+					</tr>				
+			</table>
+		</th:block>
+					
+		<p class="font-weight-bold" th:text="#{summary.campaignTotal}">total de la campagne</p>					
+		<table>			
+				<tr class="font-weight-bold text-center">
+					<td style="width:33%" th:if="${campaignRecap.totalNumGroups > 1}" 
+						th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</td>
+					<td style="width:33%" th:if="${campaignRecap.totalNumGroups <= 1}" >60 vendeurs</td>
+					<td style="width:33%" th:text="${campaignRecap.totalNumPaidOrders}">562</td>
+					<td style="width:33%" class="text-right" th:text="${campaignRecap.formattedTotalSales}">4500$</td>
+				</tr>			
+		</table>							  
     </body>
+    <br/><br/>
+    <p class="ital"><span th:text="#{email.noreply}">Veuillez ne pas repondre a ce message.</span>
+    			   <span th:utext="#{email.contact('http://www.poivredesiles.com/contact.html')}">Pour toute question, contactez-nous</span>
+    </p>
+    <p class="ital" th:text="#{email.generated}">
+    	Ce courriel a ete genere automatiquement par la plateforme 
+    </p>
 </html>    

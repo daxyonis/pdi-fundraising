@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.resource.ExportFileNames;
@@ -28,9 +29,10 @@ public interface PdiCampaignService {
 	 *   - Email sending : send to the campaign leader the sales recap
 	 *   - Set the campaign closed flag to true; set the campaign closed date
 	 * @param id
+	 * @param locale 
 	 * @return
 	 */
-	PdiCampaignDTO close(Long id);
+	PdiCampaignDTO close(Long id, Locale locale);
 
 	/**
 	 * Find all PDI campaigns

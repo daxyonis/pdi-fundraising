@@ -4,6 +4,7 @@ import static com.poivredesiles.fundraising.imports.ImportsUtils.convertToLocalD
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -119,12 +120,12 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	}
 
 	@Override
-	public PdiCampaignDTO close(Long id) {
+	public PdiCampaignDTO close(Long id, Locale locale) {
 		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
 		if(campaign.isPresent()) {
 			PdiCampaign pdiCampaign = campaign.get(); 
 			disableCampaignUsers(pdiCampaign, false);
-			sendEmailToLeader(pdiCampaign);
+			sendEmailToLeader(pdiCampaign, locale);
 			pdiCampaign.setClosed(true);
 			pdiCampaign.setClosedDate(LocalDate.now());
 			pdiCampaign = pdiCampaignRepository.save(pdiCampaign);
@@ -158,21 +159,21 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	 * to the campaign leader (if specified in PDI campaign)
 	 * @param pdiCampaign
 	 */
-	private void sendEmailToLeader(PdiCampaign pdiCampaign) {
+	private void sendEmailToLeader(PdiCampaign pdiCampaign, Locale locale) {
 		if(pdiCampaign.getLeaderEmail() != null && !pdiCampaign.getLeaderEmail().isBlank()) {
 			PdiCampaignRecapDTO campaignRecap = pdiCampaignRecapMapper.toDto(pdiCampaign);
 			// Set the leader name as it is not in the entity
 			Optional<PdiSeller> leader = pdiCampaign.getPdiGroups().stream()
 													.flatMap(g -> g.getPdiSellers().stream())
-													.filter(s -> s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
+													.filter(s -> s != null && s.getMe() != null && s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
 													.findFirst();
 			if(leader.isPresent()) {
-				campaignRecap.setLeaderName(leader.get().getName());
-				campaignRecap.setEmailTo(pdiCampaign.getLeaderEmail());
-				mailService.sendCampaignRecapEmail(campaignRecap);
+				campaignRecap.setLeaderName(leader.get().getName());				
 			} else {
-				log.warn("Could not send email : leader not found for campaign {}", pdiCampaign.getId());
+				log.warn("No leader found for campaign {}", pdiCampaign.getId());
 			}			
+			campaignRecap.setEmailTo(pdiCampaign.getLeaderEmail());
+			mailService.sendCampaignRecapEmail(campaignRecap, locale);
 		} else {
 			log.warn("No leader email specified for campaign {}", pdiCampaign.getId());
 		}
