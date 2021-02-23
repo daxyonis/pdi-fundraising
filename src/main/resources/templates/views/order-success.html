@@ -11,15 +11,15 @@
   		<div class="row mt-5">
   			<div class="col-md-12">
   				<div class="row">
-  					<div class="col-md-3 text-right"><span th:text="#{order.success.buyer}">Acheteur</span> : </div>
+  					<div class="col-md-3 text-md-right"><span th:text="#{order.success.buyer}">Acheteur</span> : </div>
   					<div class="col-md-3">
   						<span th:text="${order.buyerName}">Ginette Thibault</span>
   					</div>
-  					<div class="col-md-3 text-center" th:text="${order.buyerPhone}">514-321-9876</div>
-  					<div class="col-md-3 text-center font-weight-bold" th:text="${order.formattedTotal}">18.00$</div>
+  					<div class="col-md-3 text-md-center" th:text="${order.buyerPhone}">514-321-9876</div>
+  					<div class="col-md-3 text-md-center font-weight-bold" th:text="${order.formattedTotal}">18.00$</div>
   				</div>
   				<div class="row">
-  					<div class="col-md-3 text-right"><span th:text="#{order.success.detail}">Detail de la commande</span> : </div>
+  					<div class="col-md-3 text-md-right"><span th:text="#{order.success.detail}">Detail de la commande</span> : </div>
   					<div class="col-md-9"><span th:text="${order.detail}">1 Poivre blanc, 2 Ail en poudre</span></div>
   				</div>
   			</div>

@@ -96,7 +96,7 @@
 				$.post(`${url}/${campaignId}/block`, function(){		
 					$('#blockConfirm').modal('hide');
 					displaySuccess('#block-msg-success', /*[[#{admin.block.success}]]*/'succes!');					
-					reloadAll();
+					reloadAll();				
 				})
 				.fail(terminateFailureHandler)
 				.done(function(){
@@ -108,6 +108,7 @@
 			function reloadAll(){
 				activeCampaignsDTable.ajax.reload();
 				closedCampaignsDTable.ajax.reload();
+				reloadAllForExport();
 			}
 			
 			
