@@ -2,22 +2,34 @@ package com.poivredesiles.fundraising.service.impl;
 
 import static com.poivredesiles.fundraising.imports.ImportsUtils.convertToLocalDate;
 
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
+import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.model.order.OrderItem;
+import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.order.OrderType;
 import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
@@ -25,12 +37,15 @@ import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
-import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.dto.OrderHeaderCsvDTO;
+import com.poivredesiles.fundraising.service.dto.OrderItemCsvDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
+import com.poivredesiles.fundraising.service.mapper.OrderHeaderCsvMapper;
+import com.poivredesiles.fundraising.service.mapper.OrderItemCsvMapper;
 import com.poivredesiles.fundraising.service.mapper.PdiCampaignMapper;
 import com.poivredesiles.fundraising.service.mapper.PdiCampaignRecapMapper;
 
@@ -60,7 +75,16 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	
 	@Autowired
 	private PdiSellerRepository pdiSellerRepository;
+	
+	@Autowired
+	private MessageSource messageSource;
 
+	@Autowired
+	private OrderHeaderCsvMapper orderHeaderCsvMapper;
+	
+	@Autowired
+	private OrderItemCsvMapper orderItemCsvMapper;
+	
 	@Override
 	public void importCampaigns(List<Campaign> campaigns) {
 		if (campaigns != null) {
@@ -209,12 +233,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
 		}
 	}
-
-	@Override
-	public PdiCampaignDTO export(Long id, ExportFileNames exportFileNames) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public PdiCampaignRecapDTO getCampaignRecapForLeader(Long userId) {
@@ -233,6 +252,67 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		// Set the leader name as it is not in the entity
 		campaignRecap.setLeaderName(pdiSeller.get().getName());
 		return campaignRecap;
+	}
+
+	@Override
+	public void exportHeaders(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException {
+		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
+		if(campaign.isPresent()) {
+			 List<OrderHeader> orderHeaders = campaign.get().getPdiGroups().stream()
+								 			   .flatMap(g -> g.getPdiSellers().stream())
+								 			   .flatMap(s -> s.getOrderHeaders().stream())
+								 			   .filter(o -> o.getOrderStatus() == OrderStatusEnum.PAID)
+//								 			   .sorted(Comparator.comparing(OrderHeader::getOrderNumber))
+								 			   .collect(Collectors.toList());
+		
+			 List<OrderHeaderCsvDTO> orderHeaderCsvDtos = orderHeaderCsvMapper.toDto(orderHeaders);
+			 StatefulBeanToCsv<OrderHeaderCsvDTO> csvWriter = new StatefulBeanToCsvBuilder<OrderHeaderCsvDTO>(writer)
+		                .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+		                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+		                .withOrderedResults(false)
+		                .build();
+
+		     //write all order headers to csv file
+			 try {
+				csvWriter.write(orderHeaderCsvDtos);
+			} catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+				log.error("There was an error writing data to CSV.", e);
+				throw new PdiExportDataException(messageSource.getMessage("admin.export.error", null, locale));
+			}		        
+		} else {
+			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+		}
+	}
+
+	@Override
+	public void exportDetails(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException {
+		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
+		if(campaign.isPresent()) {
+			 List<OrderItem> orderItems = campaign.get().getPdiGroups().stream()
+								 			   .flatMap(g -> g.getPdiSellers().stream())
+								 			   .flatMap(s -> s.getOrderHeaders().stream())
+								 			   .filter(o -> o.getOrderStatus() == OrderStatusEnum.PAID)
+								 			   .flatMap(h -> h.getOrderItems().stream())
+//								 			   .sorted(Comparator.comparing(OrderItem::getOrderNumber).thenComparing(OrderItem::getProductNumber))
+								 			   .collect(Collectors.toList());
+		
+			 List<OrderItemCsvDTO> orderItemCsvDtos = orderItemCsvMapper.toDto(orderItems);
+			 StatefulBeanToCsv<OrderItemCsvDTO> csvWriter = new StatefulBeanToCsvBuilder<OrderItemCsvDTO>(writer)
+		                .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+		                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+		                .withOrderedResults(false)
+		                .build();
+
+		     //write all order headers to csv file
+			 try {
+				csvWriter.write(orderItemCsvDtos);
+			} catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+				log.error("There was an error writing data to CSV.", e);
+				throw new PdiExportDataException(messageSource.getMessage("admin.export.error", null, locale));
+			}		        
+		} else {
+			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+		}		
 	}
 	
 	

@@ -1,10 +1,11 @@
 package com.poivredesiles.fundraising.service;
 
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
 
+import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
-import com.poivredesiles.fundraising.resource.ExportFileNames;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 
@@ -61,7 +62,7 @@ public interface PdiCampaignService {
 	 * @param exportFileNames the filenames for export
 	 * @return
 	 */
-	PdiCampaignDTO export(Long id, ExportFileNames exportFileNames);
+//	PdiCampaignDTO export(Long id, ExportFileNames exportFileNames);
 
 	/**
 	 * Builds and returns the campaign recap (summary) including all groups,
@@ -70,5 +71,21 @@ public interface PdiCampaignService {
 	 * @return the campaign recap DTO
 	 */
 	PdiCampaignRecapDTO getCampaignRecapForLeader(Long userId);
+
+	/**
+	 * Export order headers to writer
+	 * @param id
+	 * @param writer
+	 * @throws PdiExportDataException 
+	 */
+	void exportHeaders(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException;
+
+	/**
+	 * Export order details to writer
+	 * @param id
+	 * @param writer
+	 * @throws PdiExportDataException 
+	 */
+	void exportDetails(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException;
 
 }

@@ -63,29 +63,35 @@
 						$('#campaignInfo').text(campaign.campaignInfo);
 						$('#orderHeaderFilename').val(campaign.orderHeaderFilename);
 						$('#orderDetailFilename').val(campaign.orderDetailFilename);
-						$('#exportCampaignConfirmed').data('id', campaign.id);
+						$('#exportForm').data('id', campaign.id);
 						$('#exportConfirm').modal('show');
 					});
 				}
 				
-				function exportCampaign(){
-					$('#exportConfirm').modal('hide');
-					let campaignId = $(this).data('id');
-					let url = /*[[@{/api/campaign/}]]*/'/api/campaign/';
-					url = url + campaignId + '/export';
-					let fd = {};
-					fd['headerFilename'] = $('#orderHeaderFilename').val();
-					fd['detailFilename'] = $('#orderDetailFilename').val();
-					$.post({'url': url, 
-							'data': JSON.stringify(fd), 
-							'contentType' : 'application/json',
-							'success': function(){										
-											displaySuccess('#export-msg-success', /*[[#{admin.export.success}]]*/'succes!');					
-											reloadAllForExport();
-									}
-							})
-							.fail(exportFailureHandler);	
-				}
+				function exportCampaign(campaignId){
+					$('#exportConfirm').modal('hide');					
+										
+					let headerFilename = $('#orderHeaderFilename').val();
+					let detailFilename = $('#orderDetailFilename').val();
+					
+					if(headerFilename){
+						let url = /*[[@{/api/campaign/}]]*/'/api/campaign/';
+						url = url + campaignId + '/download/headers?filename=' + headerFilename;
+						window.open(url);
+					} else {
+						displayDisappear('#export-msg-error', /*[[#{error.csv.filename}]]*/'Erreur')
+					}
+					
+					if(detailFilename){
+						let url = /*[[@{/api/campaign/}]]*/'/api/campaign/';
+						url = url + campaignId + '/download/details?filename=' + detailFilename;
+						window.open(url).fail(exportFailureHandler);
+					} else {
+						displayDisappear('#export-msg-error', /*[[#{error.csv.filename}]]*/'Erreur')
+					}
+					
+					setTimeout(reloadAllForExport, 3000);
+				}			
 				
 				function exportFailureHandler (err){ 						
 					console.log(err.responseJSON);

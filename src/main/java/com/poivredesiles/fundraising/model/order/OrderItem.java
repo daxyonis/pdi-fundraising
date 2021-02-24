@@ -60,4 +60,8 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
 			return quantity.toString() + " " + product.getNameEn();
 		}    	
     }
+    
+    public BigDecimal getSubTotal() {
+    	return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
 }
