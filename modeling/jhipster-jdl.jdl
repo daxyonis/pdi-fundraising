@@ -96,7 +96,8 @@ relationship OneToMany {
     PdiSeller to OrderHeader{pdiSeller},
     OrderHeader to OrderItem{header},
     PdiCategory to PdiProduct{pdiCategory},    
-    OrderType to PdiCampaign{orderType}
+    OrderType to PdiCampaign{orderType},
+    PdiSeller to PdiGroup{groupLeader}
 }
 
 // Use Data Transfer Objects (DTO)

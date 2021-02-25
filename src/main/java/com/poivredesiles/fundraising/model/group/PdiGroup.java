@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "pdigroup")
 @Data
-@EqualsAndHashCode(callSuper=false, exclude={"pdiSellers", "pdiCampaign", "orderType"})
+@EqualsAndHashCode(callSuper=false, exclude={"pdiSellers", "pdiCampaign", "orderType", "groupLeader"})
 public class PdiGroup extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,6 +56,10 @@ public class PdiGroup extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = "pdiProducts", allowSetters = true)
     private OrderType orderType;
+    
+    @ManyToOne
+    @JsonIgnoreProperties(value = "pdiGroups", allowSetters = true)
+    private PdiSeller groupLeader;
     
     public BigDecimal getTotalSales() {
     	return pdiSellers.stream().map(PdiSeller::getOrdersTotal).reduce(BigDecimal.ZERO, (a,b) -> a.add(b));

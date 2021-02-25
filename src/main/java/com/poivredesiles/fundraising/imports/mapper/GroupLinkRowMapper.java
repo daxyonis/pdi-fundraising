@@ -1,5 +1,7 @@
 package com.poivredesiles.fundraising.imports.mapper;
 
+import static com.poivredesiles.fundraising.imports.ImportsUtils.sanitize;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -15,12 +17,12 @@ public class GroupLinkRowMapper implements RowMapper<GroupLink> {
 		GroupLink groupLink = new GroupLink();
 		groupLink.setGroupNumber(rs.getLong("NoGroupe"));
 		groupLink.setSellerNumber(rs.getLong("NoVendeur"));
-//		String value = sanitize(rs.getString("VenteAss"));
-//		if(value.compareTo("0") > 0 ) {
-//			groupLink.setGroupForLeaderSales(false);
-//		} else {
-//			groupLink.setGroupForLeaderSales(true);
-//		}
+		String value = sanitize(rs.getString("VenteAss"));
+		if(value.compareTo("0") == 0 ) {
+			groupLink.setGroupForLeaderSales(false);
+		} else {
+			groupLink.setGroupForLeaderSales(true);
+		}
 		return groupLink;
 	}
 

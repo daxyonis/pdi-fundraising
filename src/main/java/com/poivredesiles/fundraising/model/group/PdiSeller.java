@@ -59,10 +59,14 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
     @OneToMany(mappedBy = "pdiSeller")    
     private Set<OrderHeader> orderHeaders = new HashSet<>();
 
+    // Group where this seller sells
     @ManyToOne
     @JsonIgnoreProperties(value = "pdiSellers", allowSetters = true)
     private PdiGroup pdiGroup;
 
+    // Groups that belong to a group leader, that he/she can view
+    @OneToMany(mappedBy = "groupLeader")
+    private Set<PdiGroup> pdiGroups = new HashSet<>();
     
     public Set<OrderHeader> getOrderHeaders() {
         return orderHeaders;

@@ -9,5 +9,5 @@ public class GroupLink {
 	
 	private Long groupNumber;
 	
-	private boolean groupForLeaderSales;
+	private boolean groupForLeaderSales = true;
 }

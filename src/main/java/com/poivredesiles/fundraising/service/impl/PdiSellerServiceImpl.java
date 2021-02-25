@@ -184,7 +184,18 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	private void updateSellerGroup(PdiSeller pdiSeller, GroupLink groupLink) {
 		Optional<PdiGroup> pdiGroup = pdiGroupRepository.findOneByNumber(groupLink.getGroupNumber());
 		if (pdiGroup.isPresent()) {
-			pdiSeller.setPdiGroup(pdiGroup.get());
+			if(pdiSeller.getMe() != null && pdiSeller.getMe().hasRole(RoleEnum.ROLE_GROUP_LEADER)) {
+				// special case for the group leader
+				pdiGroup.get().setGroupLeader(pdiSeller);
+				if(groupLink.isGroupForLeaderSales()) {
+					// Set the main group = the sales group
+					pdiSeller.setPdiGroup(pdiGroup.get());
+				}					
+				// add this group in the list of groups the seller can view
+				pdiSeller.getPdiGroups().add(pdiGroup.get());				
+			} else {
+				pdiSeller.setPdiGroup(pdiGroup.get());
+			}
 		} else {
 			log.error("No PdiGroup found(number={}) for seller #{}", groupLink.getGroupNumber(), pdiSeller.getNumber());
 			throw new ResourceNotFoundException(String.format("Aucun groupe (no=%d) trouvé pour le vendeur (no=%d)", groupLink.getGroupNumber(), pdiSeller.getNumber()));

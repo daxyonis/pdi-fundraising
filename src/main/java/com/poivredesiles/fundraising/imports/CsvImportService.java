@@ -1,5 +1,7 @@
 package com.poivredesiles.fundraising.imports;
 
+import static com.poivredesiles.fundraising.imports.ImportsUtils.sanitize;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -573,6 +575,12 @@ public class CsvImportService {
 					GroupLink groupLink = new GroupLink();
 					groupLink.setGroupNumber(Long.parseLong(lineInArray[0]));
 					groupLink.setSellerNumber(Long.parseLong(lineInArray[1]));
+					String value = sanitize(lineInArray[2]);
+					if(value.compareTo("0") == 0 ) {
+						groupLink.setGroupForLeaderSales(false);
+					} else {
+						groupLink.setGroupForLeaderSales(true);
+					}
 					groupLinks.add(groupLink);
 				} catch (NumberFormatException e1) {
 					numFaultyLines += 1.0;
