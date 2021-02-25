@@ -51,18 +51,18 @@
   					
   				</div>
   				<div class="row py-2">
-  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.details}">details</div>
+  					<div class="col-md-3 text-md-right font-weight-bold pt-2" th:text="#{summary.details}">details</div>
   					<div class="col-lg-9">
   						<th:block th:if="${campaignRecap.totalNumGroups > 1}">
   							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
   						</th:block>
-  						<th:block th:if="${campaignRecap.totalNumGroups <= 1}">
-  							<div th:replace="fragments/summary-onegroup :: summary-table" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}"></div>
+  						<th:block th:if="${campaignRecap.totalNumGroups <= 1}" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}">
+  							<div th:replace="fragments/summary-onegroup :: summary-table"></div>
   						</th:block>
   					</div>
   				</div>
   				<div class="row py-1">
-  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.campaignTotal}">total de la campagne</div>
+  					<div class="col-md-3 text-md-right font-weight-bold pt-2" th:text="#{summary.campaignTotal}">total de la campagne</div>
   					<div class="col-lg-9">
   						<table style="width:100%" class="table table-bordered">
   							<tfoot>

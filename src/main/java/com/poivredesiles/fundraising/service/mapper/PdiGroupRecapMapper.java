@@ -27,6 +27,15 @@ public interface PdiGroupRecapMapper {
 	List<PdiGroupRecapDTO> toDto(Set<PdiGroup> pdiGroups);    
 	
 	@AfterMapping
+	public static void cleanGroupName(@MappingTarget PdiGroupRecapDTO pdiGroupRecapDTO) {
+		String groupName = pdiGroupRecapDTO.getGroupName() == null ? "" : pdiGroupRecapDTO.getGroupName(); 
+		if(groupName.strip().compareTo("--") == 0) {
+			groupName = "";
+		}
+		pdiGroupRecapDTO.setGroupName(groupName);
+	}
+	
+	@AfterMapping
 	public static void sortGroups(@MappingTarget List<PdiGroupRecapDTO> pdiGroupRecapDTOs) {
 		pdiGroupRecapDTOs.sort(Comparator.comparing(PdiGroupRecapDTO::getGroupName)); 
 	}

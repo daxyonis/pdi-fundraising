@@ -43,7 +43,7 @@ public class FileController {
 				
 		String lastImportDate = csvImportService.dispatchImport(file, DataTypeEnum.valueOf(fileType));	    
 	    String message = messageSource.getMessage("admin.import.success", new Object[] {fileType}, localeResolver.resolveLocale(request));
-	    Map<String, String> map = Map.of("lastImportDate",lastImportDate, "message", message);
+	    var map = Map.of("lastImportDate",lastImportDate, "message", message);
 	    return map;
 	}
 

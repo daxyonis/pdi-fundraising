@@ -1,7 +1,9 @@
 package com.poivredesiles.fundraising.service.mapper;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.service.dto.PdiGroupDTO;
@@ -19,6 +21,15 @@ public interface PdiGroupMapper extends EntityMapper<PdiGroupDTO, PdiGroup> {
     @Mapping(target = "orderType", ignore = true)
     @Mapping(source = "pdiCampaignId", target = "pdiCampaign")
     PdiGroup toEntity(PdiGroupDTO pdiGroupDTO);
+    
+    @AfterMapping
+	public static void cleanGroupName(@MappingTarget PdiGroupDTO pdiGroupDTO) {
+    	String groupName = pdiGroupDTO.getName() == null ? "" : pdiGroupDTO.getName(); 
+		if(groupName.strip().compareTo("--") == 0) {
+			groupName = "";
+		}
+		pdiGroupDTO.setName(groupName);
+	}
 
     default PdiGroup fromId(Long id) {
         if (id == null) {

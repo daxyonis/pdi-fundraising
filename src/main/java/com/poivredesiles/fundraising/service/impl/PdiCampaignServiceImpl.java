@@ -258,6 +258,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	public void exportHeaders(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException {
 		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
 		if(campaign.isPresent()) {
+			 campaign.get().setExportDate(LocalDate.now());
 			 List<OrderHeader> orderHeaders = campaign.get().getPdiGroups().stream()
 								 			   .flatMap(g -> g.getPdiSellers().stream())
 								 			   .flatMap(s -> s.getOrderHeaders().stream())
@@ -288,6 +289,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	public void exportDetails(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException {
 		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
 		if(campaign.isPresent()) {
+			campaign.get().setExportDate(LocalDate.now());
 			 List<OrderItem> orderItems = campaign.get().getPdiGroups().stream()
 								 			   .flatMap(g -> g.getPdiSellers().stream())
 								 			   .flatMap(s -> s.getOrderHeaders().stream())

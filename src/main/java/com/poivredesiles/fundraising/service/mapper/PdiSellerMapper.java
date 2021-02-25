@@ -3,8 +3,10 @@ package com.poivredesiles.fundraising.service.mapper;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import com.poivredesiles.fundraising.imports.ImportsUtils;
@@ -45,6 +47,16 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     public static String formatCurrency(BigDecimal amount) {  
     	return ImportsUtils.formatCurrency(amount);
     }
+    
+    @AfterMapping
+	public static void cleanGroupName(@MappingTarget PdiSellerDTO pdiSellerDTO) {
+    	String groupName = pdiSellerDTO.getPdiGroupName() == null ? "" : pdiSellerDTO.getPdiGroupName(); 
+		if(groupName.strip().compareTo("--") == 0) {
+			groupName = "";
+		}
+		pdiSellerDTO.setPdiGroupName(groupName);
+	}
+
     
     default PdiSeller fromId(Long id) {
         if (id == null) {

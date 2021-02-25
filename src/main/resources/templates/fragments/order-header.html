@@ -49,11 +49,13 @@
 	  			<div class="col-md-4" >
 	  				<input type="text" readonly class="form-control-plaintext" id="sellerName" th:value="${seller.name}">
 	  			</div>
-	  			<!-- /* Display group name only if it exists */ -->
-	  			<label th:if="${seller.pdiGroupName}" class="col-md-2 col-form-label" th:text="|#{order.seller.group} :|">groupe:</label>
-	  			<div th:if="${seller.pdiGroupName}" class="col-md-4" >
-	  				<input type="text" readonly class="form-control-plaintext" id="sellerGroup" th:value="${seller.pdiGroupName}">
-	  			</div>
+	  			<!-- /* Display group only if it exists */ -->
+	  			<th:block th:unless="${#strings.isEmpty(seller.pdiGroupName)}">
+		  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.group} :|">groupe:</label>
+		  			<div class="col-md-4" >
+		  				<input type="text" readonly class="form-control-plaintext" id="sellerGroup" th:value="${seller.pdiGroupName}">
+		  			</div>
+	  			</th:block>
 	  		</div>
 	  		<div class="row">
 	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.organization} :|">organisme:</label>

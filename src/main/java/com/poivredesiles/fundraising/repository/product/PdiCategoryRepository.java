@@ -9,7 +9,6 @@ import com.poivredesiles.fundraising.model.product.PdiCategory;
 /**
  * Spring Data  repository for the PdiCategory entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface PdiCategoryRepository extends JpaRepository<PdiCategory, Long> {
 

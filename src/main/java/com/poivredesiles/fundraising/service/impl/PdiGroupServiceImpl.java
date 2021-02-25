@@ -15,6 +15,7 @@ import com.poivredesiles.fundraising.imports.dto.Group;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
@@ -22,7 +23,7 @@ import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 import com.poivredesiles.fundraising.service.mapper.PdiGroupRecapMapper;
 
-@Service
+@Service(value = "pdiGroupService")
 @Transactional
 public class PdiGroupServiceImpl implements PdiGroupService {
 
@@ -109,4 +110,17 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 		return groupRecap;
 	}
 
+	@Override
+	public boolean hasAccess(MyUserDetails currentUser, Long groupId) {
+		Optional<PdiGroup> group = pdiGroupRepository.findById(groupId);
+		if(group.isEmpty()) {
+			throw new ResourceNotFoundException("Group not found !");
+		}
+		Optional<PdiSeller> pdiSeller = group.get().getPdiSellers().stream()
+										.filter(s -> s.getMe() != null && s.getMe().getId() == currentUser.getUserId())
+										.findFirst();
+		return pdiSeller.isPresent();
+	}
+
+	
 }
