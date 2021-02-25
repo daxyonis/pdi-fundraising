@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.model.group;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -99,5 +100,9 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
     	return orderHeaders.stream()
     			.filter(o -> o.getOrderStatus() == OrderStatusEnum.PAID)
     			.count();
+    }
+    
+    public boolean isDueDateArrived() {
+    	return this.pdiGroup.getPdiCampaign().getDueDate().compareTo(LocalDate.now()) <= 0;
     }
 }

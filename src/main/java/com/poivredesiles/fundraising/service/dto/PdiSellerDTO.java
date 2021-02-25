@@ -39,4 +39,6 @@ public class PdiSellerDTO implements Serializable {
     private String formattedOrdersTotal;
     
     private Long numOrders;
+    
+    private boolean dueDateArrived;
 }

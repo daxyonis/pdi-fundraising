@@ -84,12 +84,18 @@
   	<div th:replace="fragments/modal-terminate :: modal"></div>
   	
   	<script th:inline="javascript">
+  	var dueDateArrived = /*[[${seller.dueDateArrived}]]*/false;
+  	
   	$(function () {
   	  $('[data-toggle="tooltip"]').tooltip();
   	  
-  	  $('#closeCampaignBtn').on('click', function(){  		
-		$('#closeCampaignConfirmed').data('id', /*[[${campaignRecap.campaignId}]]*/'0');
-		$('#closeConfirm').modal('show'); 
+  	  $('#closeCampaignBtn').on('click', function(){
+  		$('#closeCampaignConfirmed').data('id', /*[[${campaignRecap.campaignId}]]*/'0');
+  		if(dueDateArrived){			
+			$('#closeConfirm').modal('show');
+  		} else {
+  			$('#closeWarning').modal('show');
+  		}
   	  });
   	  
   	  $('body').on('campaign-closed', function(){
