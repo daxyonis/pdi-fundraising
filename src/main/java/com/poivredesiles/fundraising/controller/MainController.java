@@ -38,7 +38,13 @@ public class MainController extends BaseController {
 			return "redirect:/synthese";
 		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER)) {
 			PdiSellerDTO seller = getSeller(userDetails);
-			return "redirect:/synthese/groupe/" + seller.getPdiGroupId();
+			if(seller.getNumGroups() > 1) {
+				// Multi-group scenario
+				return "redirect:/synthese/groupes";
+			} else {
+				// Only 1 group
+				return "redirect:/synthese/groupe/" + seller.getPdiGroupId();
+			}
 		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER)) {
 			return "redirect:/ventes";
 		} else if(userDetails.hasAnyAuthority(RoleEnum.ROLE_BUYER)) {

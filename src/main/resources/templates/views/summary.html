@@ -53,7 +53,7 @@
   				<div class="row py-2">
   					<div class="col-md-3 text-md-right font-weight-bold pt-2" th:text="#{summary.details}">details</div>
   					<div class="col-lg-9">
-  						<th:block th:if="${campaignRecap.totalNumGroups > 1}">
+  						<th:block th:if="${campaignRecap.totalNumGroups > 1}" th:with="pdiGroupRecaps = ${campaignRecap.pdiGroupRecaps}">
   							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
   						</th:block>
   						<th:block th:if="${campaignRecap.totalNumGroups <= 1}" th:with="groupRecap = ${campaignRecap.pdiGroupRecaps[0]}">

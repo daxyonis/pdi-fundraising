@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.poivredesiles.fundraising.imports.dto.Group;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.resource.MultiGroupRecap;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 
 public interface PdiGroupService {
@@ -18,11 +19,18 @@ public interface PdiGroupService {
 	PdiGroupRecapDTO getGroupRecap(Long groupId);
 	
 	/**
-	 * Permission method : is the current User a member of this group,
-	 * i.e. is he/she a seller in this group ? If so, returns true; else returns false.
+	 * Permission method : does the current User have a permission to access this group ?
+	 * If he/she a seller in this group or if he/she is a leader of this group , then Yes, returns true; else returns false.
 	 * @param currentUser 
 	 * @param groupId
 	 * @return
 	 */
 	boolean hasAccess(MyUserDetails currentUser, Long groupId);
+
+	/**
+	 * Get the recap of groups that are under the responsibility of a given group leader
+	 * @param userId Group Leader User Id
+	 * @return
+	 */
+	MultiGroupRecap getMultiGroupRecapForLeader(Long userId);
 }

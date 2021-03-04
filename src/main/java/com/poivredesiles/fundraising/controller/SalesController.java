@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.resource.MultiGroupRecap;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 import com.poivredesiles.fundraising.service.PdiGroupService;
@@ -40,6 +41,7 @@ public class SalesController extends BaseController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_SELLER')")
 	@GetMapping("/ventes")
 	public String sales(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {		
 		log.info("Requested Sales Page");			
@@ -55,6 +57,7 @@ public class SalesController extends BaseController {
 	 * @param model
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ROLE_CAMPAIGN_LEADER')")
 	@GetMapping("/synthese")
 	public String summary(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
 		log.info("Requested Summary Page");
@@ -64,11 +67,11 @@ public class SalesController extends BaseController {
 	}
 	
 	/**
-	 * Group summary
+	 * Summary for one group
 	 * @param groupId
 	 * @return
 	 */
-	@PreAuthorize("@pdiGroupService.hasAccess(principal, #groupId)")
+	@PreAuthorize("hasRole('ROLE_GROUP_LEADER') and @pdiGroupService.hasAccess(principal, #groupId)")
 	@GetMapping("/synthese/groupe/{groupId}")
 	public String groupSummary(@PathVariable Long groupId, Model model) {
 		log.info("Requested group summary page");
@@ -76,4 +79,18 @@ public class SalesController extends BaseController {
 		model.addAttribute("groupRecap", groupRecap);
 		return "views/summary-group";
 	}
+	
+	/**
+	 * Summary for N groups
+	 * 
+	 */
+	@PreAuthorize("hasRole('ROLE_GROUP_LEADER')")
+	@GetMapping("/synthese/groupes")
+	public String groupsSummary(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+		log.info("Requested groups summary page");
+		MultiGroupRecap multiGroupRecap = pdiGroupService.getMultiGroupRecapForLeader(userDetails.getUserId());
+		model.addAttribute("multigroupRecap", multiGroupRecap);		
+		return "views/summary-group";
+	}
+	
 }

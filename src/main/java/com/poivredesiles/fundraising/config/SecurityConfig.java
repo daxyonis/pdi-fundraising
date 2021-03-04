@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	// The public endpoints
@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN") 
         	.antMatchers("/commande/**", "/api/checkout/**").hasRole("BUYER")
         	.antMatchers("/ventes").hasRole("SELLER")
-        	.antMatchers("/synthese").hasRole("CAMPAIGN_LEADER")
+        	.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
             .antMatchers("/admin", "/api/file/**").hasRole("ADMIN")            
             .anyRequest().authenticated()
             .and()

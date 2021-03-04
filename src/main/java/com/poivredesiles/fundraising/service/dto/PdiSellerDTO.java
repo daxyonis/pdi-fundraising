@@ -41,4 +41,6 @@ public class PdiSellerDTO implements Serializable {
     private Long numOrders;
     
     private boolean dueDateArrived;
+    
+    private Integer numGroups;
 }

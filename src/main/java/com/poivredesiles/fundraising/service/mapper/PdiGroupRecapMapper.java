@@ -24,6 +24,7 @@ public interface PdiGroupRecapMapper {
 	@Mapping(target = "pdiSellerRecaps", source = "pdiSellers")
 	PdiGroupRecapDTO toDto(PdiGroup pdiGroup);
 	
+	// Map from Set to List
 	List<PdiGroupRecapDTO> toDto(Set<PdiGroup> pdiGroups);    
 	
 	@AfterMapping

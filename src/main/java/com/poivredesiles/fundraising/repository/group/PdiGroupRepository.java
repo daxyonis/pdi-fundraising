@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.repository.group;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,5 @@ public interface PdiGroupRepository extends JpaRepository<PdiGroup, Long> {
 
 	Optional<PdiGroup> findOneByNumber(Long number);
 
+	Set<PdiGroup> findByGroupLeader_Me_id(Long userId);
 }

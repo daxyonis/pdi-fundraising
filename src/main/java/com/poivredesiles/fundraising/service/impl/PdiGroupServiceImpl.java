@@ -1,8 +1,10 @@
 package com.poivredesiles.fundraising.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
+import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.imports.dto.Group;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
@@ -19,6 +22,7 @@ import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
+import com.poivredesiles.fundraising.resource.MultiGroupRecap;
 import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 import com.poivredesiles.fundraising.service.mapper.PdiGroupRecapMapper;
@@ -115,12 +119,31 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 		Optional<PdiGroup> group = pdiGroupRepository.findById(groupId);
 		if(group.isEmpty()) {
 			throw new ResourceNotFoundException("Group not found !");
-		}
+		}		
 		Optional<PdiSeller> pdiSeller = group.get().getPdiSellers().stream()
 										.filter(s -> s.getMe() != null && s.getMe().getId() == currentUser.getUserId())
 										.findFirst();
-		return pdiSeller.isPresent();
+		
+		Optional<PdiSeller> groupLeader = Optional.ofNullable(group.get().getGroupLeader());
+		
+		return pdiSeller.isPresent() || ( groupLeader.isPresent() && groupLeader.get().getMe() != null && groupLeader.get().getMe().getId() == currentUser.getUserId());
 	}
+
+	@Override
+	public MultiGroupRecap getMultiGroupRecapForLeader(Long userId) {
+		Set<PdiGroup> groups = pdiGroupRepository.findByGroupLeader_Me_id(userId);
+		
+		MultiGroupRecap multiGroupRecap = new MultiGroupRecap();		
+		multiGroupRecap.setPdiGroupRecaps(pdiGroupRecapMapper.toDto(groups));		
+		multiGroupRecap.setFormattedTotalSales(ImportsUtils.formatCurrency(
+				groups.stream()
+						.map(PdiGroup::getTotalSales)
+						.reduce(BigDecimal.ZERO, (a,b) -> a.add(b))));
+		
+		multiGroupRecap.setNumPaidOrders(groups.stream().mapToLong(PdiGroup::getNumPaidOrders).sum());
+		return multiGroupRecap;
+	}
+
 
 	
 }

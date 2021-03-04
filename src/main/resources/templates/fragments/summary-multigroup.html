@@ -12,7 +12,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="groupRecap : ${campaignRecap.pdiGroupRecaps}">
+			<tr th:each="groupRecap : ${pdiGroupRecaps}">
 				<td class="text-center"><a th:href="@{'/synthese/groupe/'+${groupRecap.groupId}}" th:text="${groupRecap.groupName}">classe 501</a></td>
 				<td class="text-center" th:text="${groupRecap.numPaidOrders}">32</td>
 				<td class="text-center" th:text="${groupRecap.formattedTotalSales}">1100$</td>
