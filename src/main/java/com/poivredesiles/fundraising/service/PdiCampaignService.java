@@ -88,4 +88,9 @@ public interface PdiCampaignService {
 	 */
 	void exportDetails(Long id, PrintWriter writer, Locale locale) throws PdiExportDataException;
 
+	/**
+	 * Cleanup method to delete all campaign data that has been blocked for more than 1 year 
+	 */
+	void deleteBlockedFor1Year();
+
 }

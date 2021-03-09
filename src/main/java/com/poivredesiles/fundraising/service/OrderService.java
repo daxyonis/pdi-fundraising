@@ -39,5 +39,11 @@ public interface OrderService {
 	 * @return the list of orders for this seller
 	 */
 	List<OrderHeaderDTO> getPaidOrdersForSeller(PdiSellerDTO seller);
+
+	/**
+	 * Delete one order : all its items and its header
+	 * @param orderHeader
+	 */
+	void deleteOrder(OrderHeader orderHeader);
 	
 }

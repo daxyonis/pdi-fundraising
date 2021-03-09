@@ -263,4 +263,19 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			throw new ResourceNotFoundException("Unknown user !");
 		}	
 	}
+
+	@Override
+	public void deletePdiSeller(PdiSeller pdiSeller) {
+		if(pdiSeller != null) {
+			// First delete the users		
+			userService.deleteUser(pdiSeller.getBuyer());
+			if(pdiSeller.getMe() != null && !pdiSeller.getMe().hasRole(RoleEnum.ROLE_ADMIN)) {
+				userService.deleteUser(pdiSeller.getMe());
+			}
+			pdiSellerRepository.delete(pdiSeller);
+			log.info("Deleted seller #{}", pdiSeller.getNumber());
+		} else {
+			log.warn("Could not delete seller : was null.");		
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.repository.group;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +19,6 @@ public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> 
 	List<PdiCampaign> findAllByClosed(boolean b);
 
 	Optional<PdiCampaign> findByLeaderNum(String number);
+	
+	List<PdiCampaign> findByClosedTrueAndBlockedTrueAndExportDateNotNullAndBlockedDateLessThan(LocalDate date);
 }

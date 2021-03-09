@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.service;
 import java.util.List;
 
 import com.poivredesiles.fundraising.imports.dto.Group;
+import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.resource.MultiGroupRecap;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
@@ -33,4 +34,10 @@ public interface PdiGroupService {
 	 * @return
 	 */
 	MultiGroupRecap getMultiGroupRecapForLeader(Long userId);
+
+	/**
+	 * Delete one group
+	 * @param pdiGroup
+	 */
+	void deletePdiGroup(PdiGroup pdiGroup);
 }

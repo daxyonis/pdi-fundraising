@@ -38,7 +38,9 @@ import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
 import com.poivredesiles.fundraising.service.MailService;
+import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
+import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderCsvDTO;
 import com.poivredesiles.fundraising.service.dto.OrderItemCsvDTO;
@@ -69,6 +71,12 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	
 	@Autowired
 	private MailService mailService;
+	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private PdiGroupService pdiGroupService;
 	
 	@Autowired
 	private PdiCampaignRecapMapper pdiCampaignRecapMapper;
@@ -314,6 +322,28 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			}		        
 		} else {
 			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+		}		
+	}
+
+	
+	@Override
+	public void deleteBlockedFor1Year() {
+		// find and delete all campaigns that were blocked prior to 1 year ago
+		LocalDate limitDate = LocalDate.now().minusYears(1L);		
+		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByClosedTrueAndBlockedTrueAndExportDateNotNullAndBlockedDateLessThan(limitDate);
+		// Delete the whole tree : campaign -> groups -> sellers -> orders 
+		for(PdiCampaign pdiCampaign : pdiCampaigns) {
+			for(PdiGroup pdiGroup : pdiCampaign.getPdiGroups()) {
+				for(PdiSeller pdiSeller : pdiGroup.getPdiSellers()) {
+					for(OrderHeader orderHeader : pdiSeller.getOrderHeaders()) {
+						orderService.deleteOrder(orderHeader);						
+					}
+					pdiSellerService.deletePdiSeller(pdiSeller);
+				}
+				pdiGroupService.deletePdiGroup(pdiGroup);
+			}
+			pdiCampaignRepository.delete(pdiCampaign);
+			log.info("Deleted campaign #{}", pdiCampaign.getNumber());
 		}		
 	}
 	

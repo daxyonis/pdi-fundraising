@@ -144,6 +144,12 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 		return multiGroupRecap;
 	}
 
+	@Override
+	public void deletePdiGroup(PdiGroup pdiGroup) {
+		pdiGroupRepository.delete(pdiGroup);
+		log.info("Deleted group #{}", pdiGroup.getNumber());
+	}
+
 
 	
 }

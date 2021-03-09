@@ -24,6 +24,7 @@ import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
+import com.poivredesiles.fundraising.repository.order.OrderItemRepository;
 import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
 import com.poivredesiles.fundraising.resource.OrderItemResource;
 import com.poivredesiles.fundraising.resource.OrderResource;
@@ -39,6 +40,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderHeaderRepository orderHeaderRepository;
+	
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 	
 	@Autowired
 	private PdiSellerRepository pdiSellerRepository;
@@ -131,6 +135,17 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderHeaderDTO> getPaidOrdersForSeller(PdiSellerDTO seller) {
 		Set<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatusAndPdiSeller_id(OrderStatusEnum.PAID, seller.getId());
 		return orderHeaderMapper.toDto(orderHeaders.stream().sorted(Comparator.comparing(OrderHeader::getId)).collect(Collectors.toList()));
+	}
+
+	@Override	
+	public void deleteOrder(OrderHeader orderHeader) {
+		if(orderHeader != null) {
+			orderItemRepository.deleteInBatch(orderHeader.getOrderItems());
+			orderHeaderRepository.delete(orderHeader);
+			log.info("Deleted order #{}", orderHeader.getOrderNumber());
+		} else {
+			log.warn("Order could not be deleted : was null.");
+		}
 	}
 
 }

@@ -30,6 +30,13 @@ public interface PdiSellerService {
 	 * @param userDetails current user info
 	 * @return the seller info corresponding to the current user
 	 */
-	PdiSellerDTO getSellerForUser(MyUserDetails userDetails);	
+	PdiSellerDTO getSellerForUser(MyUserDetails userDetails);
+
+	/**
+	 * Delete the seller : also deletes the buyer user and the 'me' user (i.e. the user that represents the seller)
+	 * if his role is not ADMIN
+	 * @param pdiSeller
+	 */
+	void deletePdiSeller(PdiSeller pdiSeller);	
 
 }

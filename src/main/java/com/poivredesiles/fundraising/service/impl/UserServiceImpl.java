@@ -2,6 +2,8 @@ package com.poivredesiles.fundraising.service.impl;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	private Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Override
 	public UserDTO createUser(UserDTO user) {
@@ -26,6 +30,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<User> findUserById(Long userId) {
 		return userRepository.findById(userId);
+	}
+
+	@Override
+	public void deleteUser(User user) {
+		if(user != null) {
+			userRepository.delete(user);
+			log.info("Deleted user {}", user.getUsername());
+		} else {
+			log.warn("Could not delete user : was null");
+		}
 	}
 
 }
