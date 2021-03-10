@@ -71,7 +71,7 @@ public class SalesController extends BaseController {
 	 * @param groupId
 	 * @return
 	 */
-	@PreAuthorize("hasRole('ROLE_GROUP_LEADER') and @pdiGroupService.hasAccess(principal, #groupId)")
+	@PreAuthorize("hasAnyRole('ROLE_GROUP_LEADER', 'ROLE_CAMPAIGN_LEADER') and @pdiGroupService.hasAccess(principal, #groupId)")
 	@GetMapping("/synthese/groupe/{groupId}")
 	public String groupSummary(@PathVariable Long groupId, Model model) {
 		log.info("Requested group summary page");
@@ -89,7 +89,8 @@ public class SalesController extends BaseController {
 	public String groupsSummary(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
 		log.info("Requested groups summary page");
 		MultiGroupRecap multiGroupRecap = pdiGroupService.getMultiGroupRecapForLeader(userDetails.getUserId());
-		model.addAttribute("multigroupRecap", multiGroupRecap);		
+		model.addAttribute("groupRecap", multiGroupRecap);		
+		model.addAttribute("pdiGroupRecaps", multiGroupRecap.getPdiGroupRecaps());
 		return "views/summary-group";
 	}
 	

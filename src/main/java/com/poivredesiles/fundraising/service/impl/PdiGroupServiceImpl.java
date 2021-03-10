@@ -19,6 +19,7 @@ import com.poivredesiles.fundraising.model.group.PdiCampaign;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
@@ -115,18 +116,32 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 	}
 
 	@Override
-	public boolean hasAccess(MyUserDetails currentUser, Long groupId) {
+	public boolean hasAccess(MyUserDetails currentUser, Long groupId) {		
 		Optional<PdiGroup> group = pdiGroupRepository.findById(groupId);
 		if(group.isEmpty()) {
 			throw new ResourceNotFoundException("Group not found !");
+		}
+				
+		if(currentUser.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER)) {
+			// First case : user is the campaign leader, then permit access
+			// if this user belongs to any group in the campaign
+			Optional<PdiSeller> campaignLeader = group.get().getPdiCampaign().getPdiGroups().stream()
+												.flatMap(g -> g.getPdiSellers().stream())
+												.filter(s -> s.getMe() != null && s.getMe().getId().equals(currentUser.getUserId()))
+												.findFirst();
+			return campaignLeader.isPresent();
+		} else {
+			// Second case : user is not a campaign leader, so must be a part of the given group
+			// as a seller or as a leader
+			Optional<PdiSeller> pdiSeller = group.get().getPdiSellers().stream()
+					.filter(s -> s.getMe() != null && s.getMe().getId().equals(currentUser.getUserId()))
+					.findFirst();
+
+			Optional<PdiSeller> groupLeader = Optional.ofNullable(group.get().getGroupLeader());
+
+			return pdiSeller.isPresent() || ( groupLeader.isPresent() && groupLeader.get().getMe() != null && groupLeader.get().getMe().getId() == currentUser.getUserId());
 		}		
-		Optional<PdiSeller> pdiSeller = group.get().getPdiSellers().stream()
-										.filter(s -> s.getMe() != null && s.getMe().getId() == currentUser.getUserId())
-										.findFirst();
 		
-		Optional<PdiSeller> groupLeader = Optional.ofNullable(group.get().getGroupLeader());
-		
-		return pdiSeller.isPresent() || ( groupLeader.isPresent() && groupLeader.get().getMe() != null && groupLeader.get().getMe().getId() == currentUser.getUserId());
 	}
 
 	@Override

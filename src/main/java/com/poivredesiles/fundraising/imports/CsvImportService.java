@@ -108,7 +108,7 @@ public class CsvImportService {
 
 	private String importSections(MultipartFile file) throws PdiImportDataException {
 		List<Section> sections = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndfillSections(sections, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
@@ -131,7 +131,7 @@ public class CsvImportService {
 
 	private String importProducts(MultipartFile file) throws PdiImportDataException {
 		List<Product> products = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndFillProducts(products, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
@@ -154,7 +154,7 @@ public class CsvImportService {
 
 	private String importTypeBC(MultipartFile file) throws PdiImportDataException {
 		List<TypeBC> orderTypes = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndFillOrderTypes(orderTypes, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
@@ -177,7 +177,7 @@ public class CsvImportService {
 
 	private String importCampaigns(MultipartFile file) throws PdiImportDataException {
 		List<Campaign> campaigns = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndFillCampaigns(campaigns, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
@@ -200,7 +200,7 @@ public class CsvImportService {
 
 	private String importGroups(MultipartFile file) throws PdiImportDataException {
 		List<Group> groups = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndFillGroups(groups, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
@@ -223,7 +223,7 @@ public class CsvImportService {
 
 	private String importSellers(MultipartFile file) throws PdiImportDataException {
 		List<Seller> sellers = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndFillSellers(sellers, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
@@ -246,7 +246,7 @@ public class CsvImportService {
 
 	private String importGroupLinks(MultipartFile file) throws PdiImportDataException {
 		List<GroupLink> groupLinks = new ArrayList<>();
-		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+		try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"))) {
 			readAndFillGroupLinks(groupLinks, reader);
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);

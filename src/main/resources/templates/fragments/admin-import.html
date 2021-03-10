@@ -70,15 +70,15 @@
 					  	<label for="campaignFile">Campagne</label>
 						<input id="campaignFile" class="upload d-none" type="file" data-file-type="CAMPAIGN">
 					  </div>
-					  <div class="btn btn-outline-success px-lg-3">
+					  <div class="fileBtn btn btn-outline-success px-lg-3">
 					  	<label for="groupFile">Groupe</label>
 						<input id="groupFile" class="upload d-none" type="file" data-file-type="GROUP">
 					  </div>
-					  <div class="btn btn-outline-success px-lg-3">
+					  <div class="fileBtn btn btn-outline-success px-lg-3">
 					  	<label for="sellerFile">Vendeur</label>
 						<input id="sellerFile" class="upload d-none" type="file" data-file-type="SELLER">
 					  </div>
-					  <div class="btn btn-outline-success px-lg-3">
+					  <div class="fileBtn btn btn-outline-success px-lg-3">
 					  	<label for="groupLinkFile">LienGroupe</label>
 						<input id="groupLinkFile" class="upload d-none" type="file" data-file-type="GROUPLINK">
 					  </div>					  
@@ -92,8 +92,13 @@
 			</div>
 			
 			<script th:inline="javascript">
-			$(function(){		   	    						   	    
-				$('.upload').change(function(){					
+			$(function(){		   	    	
+				
+				$('fileBtn').on('click', function(){
+					$(this).children('input.upload').trigger('change');
+				});
+				
+				$('.upload').on('change', function(){					
 					// Ajax call to upload this file					
 					let fileToUpload = this.files[0];
 					let fileType = $(this).data('fileType');

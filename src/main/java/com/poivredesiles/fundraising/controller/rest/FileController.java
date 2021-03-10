@@ -37,10 +37,7 @@ public class FileController {
 	public Map<String, String> handleFileUpload(@RequestParam("file") MultipartFile file, 
 												@RequestParam("fileType") String fileType, 
 												HttpServletRequest request) 
-														throws IllegalStateException, IOException, PdiImportDataException {
-//		String fileName = file.getOriginalFilename();	    
-//	    file.transferTo( new File("C:\\upload\\" + fileName));
-				
+														throws IllegalStateException, IOException, PdiImportDataException {				
 		String lastImportDate = csvImportService.dispatchImport(file, DataTypeEnum.valueOf(fileType));	    
 	    String message = messageSource.getMessage("admin.import.success", new Object[] {fileType}, localeResolver.resolveLocale(request));
 	    var map = Map.of("lastImportDate",lastImportDate, "message", message);

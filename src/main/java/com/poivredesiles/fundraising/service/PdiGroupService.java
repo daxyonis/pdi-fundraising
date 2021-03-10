@@ -21,7 +21,7 @@ public interface PdiGroupService {
 	
 	/**
 	 * Permission method : does the current User have a permission to access this group ?
-	 * If he/she a seller in this group or if he/she is a leader of this group , then Yes, returns true; else returns false.
+	 * If he/she is a campaign leader, or a seller in this group, or a leader of this group , then Yes, returns true; else returns false.
 	 * @param currentUser 
 	 * @param groupId
 	 * @return

@@ -4,7 +4,7 @@
   <title th:text="#{pdi.summary}">pdi synthese</title>
 </head>
 <body>
-  <section class="p-lg-3" layout:fragment="content" th:with="oneGroup=(${groupRecap} != null), multiGroup=(${multigroupRecap} != null)">
+  <section class="p-lg-3" layout:fragment="content">
   	<div class="container"> 
   		<div class="row">
   			<div class="col-md-6">
@@ -17,8 +17,8 @@
   		<div class="row py-4">
   			<div class="col-md-11 offset-md-1">  				
   				<h4>
-  					<span th:if="oneGroup" class="font-weight-bold" th:text="#{summary.groupSummary}">synthese du groupe</span>
-  					<span th:unless="oneGroup" class="font-weight-bold" th:text="#{summary.groupsSummary}">synthese des groupes</span>
+  					<span th:unless="${pdiGroupRecaps}" class="font-weight-bold" th:text="#{summary.groupSummary}">synthese du groupe</span>
+  					<span th:if="${pdiGroupRecaps}" class="font-weight-bold" th:text="#{summary.groupsSummary}">synthese des groupes</span>
   				</h4>
   				<div class="row py-1">
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.organization}">organisme:</div>
@@ -28,43 +28,45 @@
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.project}">Projet</div>
   					<div class="col-md-9" th:text="${seller.pdiCampaignProject}">Financement voyage scolaire</div>
   				</div>
-  				<div class="row py-1" th:if="oneGroup">
+  				<div class="row py-1" th:unless="${pdiGroupRecaps}">
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.groupName}">Groupe</div>
   					<div class="col-md-9" th:text="${groupRecap.GroupName}">classe 502</div>
   				</div>
-  				<div class="row py-1" th:if="oneGroup">
+  				<div class="row py-1" th:unless="${pdiGroupRecaps}">
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.groupLeader}">Responsable du groupe</div>
   					<div class="col-md-9" th:text="${groupRecap.groupLeaderName}">Guy Lanctot</div>
   				</div>
   				<div class="row py-2">
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.details}">details</div>
-  					<div class="col-lg-9">  				
-  							<th:block th:if="oneGroup" th:with="groupRecap = ${groupRecap}">		  						
-  								<div th:replace="fragments/summary-onegroup :: summary-table"></div>
-  							</th:block>
-							<th:block th:if="multiGroup" th:with="pdiGroupRecaps = ${multigroupRecap.pdiGroupRecaps}">
-								<div th:replace="fragments/summary-multigroup :: summary-table"></div>
-							</th:block>  							  						
+  					<div class="col-lg-9" th:unless="${pdiGroupRecaps}">
+  						<th:block th:with="groupRecap = ${groupRecap}">		  						
+  							<div th:replace="fragments/summary-onegroup :: summary-table"></div>
+  						</th:block>
+  					</div>  						
+					<div class="col-lg-9" th:if="${pdiGroupRecaps}">
+						<th:block th:with="pdiGroupRecaps = ${pdiGroupRecaps}">
+							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
+						</th:block>						  							  					
   					</div>
   				</div>
   				<div class="row py-1">
   					<div class="col-md-3 text-md-right font-weight-bold">
-  						<span th:if="oneGroup" th:text="#{summary.groupTotal}">total du groupe</span>
-  						<span th:if="multiGroup" th:text="#{summary.groupsTotal}">total des groupes</span>
+  						<span th:unless="${pdiGroupRecaps}" th:text="#{summary.groupTotal}">total du groupe</span>
+  						<span th:if="${pdiGroupRecaps}" th:text="#{summary.groupsTotal}">total des groupes</span>
   					</div>
   					<div class="col-lg-9">
   						<table style="width:100%" class="table table-bordered">
   							<tfoot>
   								<tr class="bg-light text-center">  	
-  									<th:block th:if="oneGroup">								
+  									<th:block th:unless="${pdiGroupRecaps}">								
 	  									<th style="width:33%" th:text="#{summary.sellers(${groupRecap.numSellers})}" >60 vendeurs</th>
 	  									<th style="width:33%" th:text="${groupRecap.numPaidOrders}">562</th>
 	  									<th style="width:33%" th:text="${groupRecap.formattedTotalSales}">4500$</th>
   									</th:block>
-  									<th:block th:if="multiGroup">								
-	  									<th style="width:33%" th:text="#{summary.groups(${multigroupRecap.pdiGroupRecaps.size()})}" >60 groupes</th>
-	  									<th style="width:33%" th:text="${multigroupRecap.numPaidOrders}">562</th>
-	  									<th style="width:33%" th:text="${multigroupRecap.formattedTotalSales}">4500$</th>
+  									<th:block th:if="${pdiGroupRecaps}">								
+	  									<th style="width:33%" th:text="#{summary.groups(${pdiGroupRecaps.size()})}" >60 groupes</th>
+	  									<th style="width:33%" th:text="${groupRecap.numPaidOrders}">562</th>
+	  									<th style="width:33%" th:text="${groupRecap.formattedTotalSales}">4500$</th>
   									</th:block>
   								</tr>
   							</tfoot>
