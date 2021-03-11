@@ -25,7 +25,7 @@ public class CsvImportServiceTest {
 	private final int NUM_SECTIONS = 16;
 	private final int NUM_PRODUCTS = 99;	
 	private final int NUM_TYPE_BC_PRODUCTS = 99;
-	private final int NUM_CAMPAIGN = 1;
+	private final int NUM_CAMPAIGN = 2;
 	private final int NUM_GROUPS = 6;
 	private final int NUM_SELLERS = 28;
 	

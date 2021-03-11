@@ -21,7 +21,8 @@ public class CleanupService {
 	private Logger log = LoggerFactory.getLogger(CleanupService.class);
 	
 	// Runs everyday at 3:00am
-	// cron = ("sec min hour dayOfMonth month dayOfWeek")
+	// cron = ("sec min hour dayOfMonth month dayOfWeek")	
+//	@Scheduled(cron="0 * * * * *")		// each minute
 	@Scheduled(cron="0 0 3 * * *")
 	public void cleanup() {
 		log.info("****************** RUNNING CLEANUP *******************");

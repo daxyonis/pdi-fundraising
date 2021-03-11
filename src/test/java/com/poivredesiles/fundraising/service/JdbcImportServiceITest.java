@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,7 +36,7 @@ public class JdbcImportServiceITest{
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 	}			
 		
-	@Test
+//	@Test
 	public void importProductsAndSectionsTest() throws SQLException {
 		jdbcImportService.importProductsAndSections();		
 					
@@ -52,7 +51,7 @@ public class JdbcImportServiceITest{
 		assertEquals(NUM_TYPE_BC_PRODUCTS, numOrderTypePdiProducts);								
 	}
 	
-	@Test
+//	@Test
 	public void importCampaignGroupsAndSellersTest() {
 		jdbcImportService.importCampaignGroupsAndSellers();
 		
