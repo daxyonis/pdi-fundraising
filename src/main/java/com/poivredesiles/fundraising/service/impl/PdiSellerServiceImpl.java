@@ -196,6 +196,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			} else {
 				pdiSeller.setPdiGroup(pdiGroup.get());
 			}
+			updateCampaignLeadership(pdiSeller);
 		} else {
 			log.error("No PdiGroup found(number={}) for seller #{}", groupLink.getGroupNumber(), pdiSeller.getNumber());
 			throw new ResourceNotFoundException(String.format("Aucun groupe (no=%d) trouvé pour le vendeur (no=%d)", groupLink.getGroupNumber(), pdiSeller.getNumber()));
@@ -215,6 +216,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 				!currentPdiSeller.getMe().getRoles().contains(new Role(RoleEnum.ROLE_CAMPAIGN_LEADER))) {
 				currentPdiSeller.getMe().addRole(RoleEnum.ROLE_CAMPAIGN_LEADER);
 				pdiSellerRepository.save(currentPdiSeller);
+				log.info("Added canpaign leadership to seller number={}", sellerNumber);
 			}
 		} else {			
 			log.warn("Did not get the campaign leader number for seller number={}", sellerNumber);

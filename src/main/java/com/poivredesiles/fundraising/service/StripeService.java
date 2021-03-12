@@ -13,7 +13,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
@@ -30,10 +29,7 @@ import com.stripe.param.checkout.SessionCreateParams;
 public class StripeService {
 	
 	@Autowired
-	private OrderService orderService;
-	
-	@Autowired
-	private ApplicationProperties applicationProperties;
+	private OrderService orderService;	
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -66,9 +62,9 @@ public class StripeService {
 	 * @throws InvalidOrderException 
 	 * @throws OrderProcessingException 
 	 */
-	public Session createCheckoutSession(OrderResource orderResource, Locale locale) throws InvalidOrderException, OrderProcessingException {
+	public Session createCheckoutSession(OrderResource orderResource, Locale locale, String applicationUrl) throws InvalidOrderException, OrderProcessingException {
 		log.info("Creating new Stripe checkout session");
-		final String YOUR_DOMAIN = applicationProperties.getUrl();
+		final String YOUR_DOMAIN = applicationUrl;
 				
 		Stripe.apiKey = stripeApiKey;	
 		SessionCreateParams.Locale sessionLocale = SessionCreateParams.Locale.FR_CA;

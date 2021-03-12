@@ -31,7 +31,8 @@ public class StripeController {
 	@PostMapping("/session")
 	@Secured({"ROLE_BUYER"})
 	public HashMap<String, String> createCheckoutSession(@RequestBody OrderResource orderResource, HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {
-		Session session = stripeService.createCheckoutSession(orderResource, localeResolver.resolveLocale(request));            
+		String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
+		Session session = stripeService.createCheckoutSession(orderResource, localeResolver.resolveLocale(request), applicationUrl);            
 		HashMap<String, String> responseData = new HashMap<String, String>();
 	    responseData.put("id", session.getId());
 	    return responseData;
