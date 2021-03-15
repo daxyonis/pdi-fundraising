@@ -501,7 +501,7 @@ public class CsvImportService {
 
 	/**
 	 * Read the seller CSV file and build the object array Field order:
-	 * Autorisation, CodeAcheteur, CodeCampagne, MotDePasse, NomVendeur, NoVendeur
+	 * Autorisation, CodeAcheteur, CodeCampagne (= code vendeur), MotDePasse, NomVendeur, NoVendeur
 	 * 
 	 * @param filename
 	 * @return a list of sellers
@@ -549,7 +549,7 @@ public class CsvImportService {
 
 	/**
 	 * Read the group link CSV file and build the object array Field order:
-	 * NoGroupe, NoVendeur
+	 * NoGroupe, NoVendeur, VenteAss
 	 * 
 	 * @param groupLinksFilename
 	 * @return a list of group links

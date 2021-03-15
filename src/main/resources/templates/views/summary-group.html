@@ -29,8 +29,8 @@
   					<div class="col-md-9" th:text="${seller.pdiCampaignProject}">Financement voyage scolaire</div>
   				</div>
   				<div class="row py-1" th:unless="${pdiGroupRecaps}">
-  					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.groupName}">Groupe</div>
-  					<div class="col-md-9" th:text="${groupRecap.GroupName}">classe 502</div>
+  					<div class="col-md-3 text-md-right font-weight-bold" th:if="${not #strings.isEmpty(groupRecap.groupName)}" th:text="#{summary.groupName}">Groupe</div>
+  					<div class="col-md-9" th:if="${not #strings.isEmpty(groupRecap.groupName)}" th:text="${groupRecap.groupName}">classe 502</div>
   				</div>
   				<div class="row py-1" th:unless="${pdiGroupRecaps}">
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.groupLeader}">Responsable du groupe</div>
