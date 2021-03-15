@@ -11,6 +11,12 @@
 					<div class="alert alert-warning d-none" id="import-msg-error">L'importation des nouveaux groupes a echoue</div>
 				</div>
 			</div>
+			<div id="spinning" class="d-none">
+				<div class="d-flex align-items-center">
+	  				<strong class="text-success" th:text="#{loading}">Loading...</strong>  				
+	  				<div class="spinner-border text-success ml-auto" role="status" aria-hidden="true"></div>
+				</div>
+			</div>
 			<!-- /* Sections and products import */ -->
 			<div class="row mt-3">
 				<div class="col-md-12">
@@ -28,15 +34,15 @@
 					<div class="btn-group" role="group" aria-label="Import files">
 						<div class="btn btn-outline-success px-lg-3">
 							<label for="sectionFile">Section</label>
-							<input id="sectionFile" class="upload d-none" type="file" data-file-type="SECTION">
+							<input id="sectionFile" class="upload d-none" type="file" data-file-type="SECTION" accept=".csv">
 						</div>					  
 						<div class="btn btn-outline-success px-lg-3">
 							<label for="productFile">Produit</label>
-							<input id=productFile class="upload d-none" type="file" data-file-type="PRODUCT">
+							<input id=productFile class="upload d-none" type="file" data-file-type="PRODUCT" accept=".csv">
 						</div>
 						<div class="btn btn-outline-success px-lg-3">
 							<label for="typeBcFile">TypeBC</label>
-							<input id=typeBcFile class="upload d-none" type="file" data-file-type="ORDERTYPE">
+							<input id=typeBcFile class="upload d-none" type="file" data-file-type="ORDERTYPE" accept=".csv">
 						</div>					  
 					</div>					
 				</div>
@@ -68,19 +74,19 @@
 					<div class="btn-group" role="group" aria-label="Import files">
 					  <div class="btn btn-outline-success px-lg-3">
 					  	<label for="campaignFile">Campagne</label>
-						<input id="campaignFile" class="upload d-none" type="file" data-file-type="CAMPAIGN">
+						<input id="campaignFile" class="upload d-none" type="file" data-file-type="CAMPAIGN" accept=".csv">
 					  </div>
 					  <div class="fileBtn btn btn-outline-success px-lg-3">
 					  	<label for="groupFile">Groupe</label>
-						<input id="groupFile" class="upload d-none" type="file" data-file-type="GROUP">
+						<input id="groupFile" class="upload d-none" type="file" data-file-type="GROUP" accept=".csv">
 					  </div>
 					  <div class="fileBtn btn btn-outline-success px-lg-3">
 					  	<label for="sellerFile">Vendeur</label>
-						<input id="sellerFile" class="upload d-none" type="file" data-file-type="SELLER">
+						<input id="sellerFile" class="upload d-none" type="file" data-file-type="SELLER" accept=".csv">
 					  </div>
 					  <div class="fileBtn btn btn-outline-success px-lg-3">
 					  	<label for="groupLinkFile">LienGroupe</label>
-						<input id="groupLinkFile" class="upload d-none" type="file" data-file-type="GROUPLINK">
+						<input id="groupLinkFile" class="upload d-none" type="file" data-file-type="GROUPLINK" accept=".csv">
 					  </div>					  
 					</div>
 				</div>
@@ -98,7 +104,8 @@
 					$(this).children('input.upload').trigger('change');
 				});
 				
-				$('.upload').on('change', function(){					
+				$('.upload').on('change', function(){		
+					$('#spinning').removeClass('d-none');
 					// Ajax call to upload this file					
 					let fileToUpload = this.files[0];
 					let fileType = $(this).data('fileType');
@@ -110,7 +117,8 @@
 						data: fd,
 						contentType: false,						
 						processData: false,
-						success: function(result) { 
+						success: function(result) {
+							$('#spinning').addClass('d-none');
 							displaySuccess('#import-msg-success', result.message);
 							var updatedDate = new Date();
 							var selector = 'span#groupLastImport';
@@ -120,14 +128,15 @@
 							$(selector).text(result.lastImportDate);
 						}
 					})
-					.fail(function(err){ 						
+					.fail(function(err){
+						$('#spinning').addClass('d-none');
 						console.log(err.responseJSON);
 						if(err.responseJSON && err.responseJSON.message){
 							displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
 						} else {
 							displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
 						}
-					});
+					});					
 				});
 			});
 			</script>

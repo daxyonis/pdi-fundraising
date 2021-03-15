@@ -72,7 +72,7 @@ public class MailService {
 	@Async
 	public void sendEmailFromTemplate(PdiCampaignRecapDTO campaignRecap, String templateName, String titleKey, Locale locale) {
 		if (campaignRecap.getEmailTo() == null) {
-			log.debug("Email doesn't exist for campaign '{}'", campaignRecap.getCampaignId());
+			log.warn("Email doesn't exist for campaign '{}'", campaignRecap.getCampaignId());
 			return;
 		}		
 		Context context = new Context(locale);
@@ -85,7 +85,7 @@ public class MailService {
 
 	@Async
 	public void sendCampaignRecapEmail(PdiCampaignRecapDTO campaignRecap, Locale locale) {
-		log.debug("Sending contact email to '{}'", getEmailTo(campaignRecap));		
+		log.debug("Sending campaign summary email to '{}'", getEmailTo(campaignRecap));		
 		sendEmailFromTemplate(campaignRecap, "mail/campaignSummaryEmail", "email.summary.title", locale);
 	}
 	
