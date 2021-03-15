@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import com.poivredesiles.fundraising.exception.InvalidUsernameException;
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.ImportsUtils.DataTypeEnum;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
@@ -215,10 +216,16 @@ public class CsvImportService {
 	 * 
 	 * @param sellersFilename
 	 * @throws PdiImportDataException 
+	 * @throws InvalidUsernameException 
 	 */
 	public void importSellers(String sellersFilename) throws PdiImportDataException {
 		List<Seller> sellers = readSellers(sellersFilename);
-		pdiSellerService.importSellers(sellers);
+		try {
+			pdiSellerService.importSellers(sellers);
+		} catch (InvalidUsernameException e) {
+			log.error("Found an invalid user", e);
+			throw new PdiImportDataException("Erreur : chaque vendeur doit avoir un code unique.");
+		}
 	}
 
 	private String importSellers(MultipartFile file) throws PdiImportDataException {
@@ -228,8 +235,13 @@ public class CsvImportService {
 		} catch (IOException e1) {
 			log.error("Could not open file " + file.getName(), e1);
 			throw new PdiImportDataException("Erreur d'ouverture du fichier CSV pour les vendeurs");
+		}		
+		try {
+			pdiSellerService.importSellers(sellers);
+		} catch (InvalidUsernameException e) {
+			log.error("Found an invalid user", e);
+			throw new PdiImportDataException("Erreur : chaque vendeur doit avoir un code unique.");
 		}
-		pdiSellerService.importSellers(sellers);
 		return this.getGroupsAndSellersLastImportDate();
 	}
 

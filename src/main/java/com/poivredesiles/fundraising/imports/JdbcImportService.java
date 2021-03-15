@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.poivredesiles.fundraising.exception.InvalidUsernameException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.imports.dto.Group;
 import com.poivredesiles.fundraising.imports.dto.GroupLink;
@@ -85,7 +86,12 @@ public class JdbcImportService {
 		pdiGroupService.importGroups(groups);
 				
 		List<Seller> sellers = readSellers(jdbcTemplate);
-		pdiSellerService.importSellers(sellers);
+		try {
+			pdiSellerService.importSellers(sellers);
+		} catch (InvalidUsernameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		List<GroupLink> groupLinks = readGroupLinks(jdbcTemplate);
 		pdiSellerService.linkSellersToGroup(groupLinks);
