@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	// The public endpoints
-	private static final String[] PUBLIC = new String[]{"/error", "/login", "/logout"}; 
+	private static final String[] PUBLIC = new String[]{"/error", "/login", "/logout", "/actuator/**"}; 
 	
 	// Provide a bean for the password encoder
 	@Bean
@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/commande/**", "/api/checkout/**").hasRole("BUYER")
         	.antMatchers("/ventes").hasRole("SELLER")
         	.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
-            .antMatchers("/admin", "/api/file/**", "/actuator/**").hasRole("ADMIN")            
+            .antMatchers("/admin", "/api/file/**").hasRole("ADMIN")            
             .anyRequest().authenticated()
             .and()
             .formLogin()
