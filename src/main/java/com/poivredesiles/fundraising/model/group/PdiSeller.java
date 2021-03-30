@@ -28,7 +28,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Seller entity\n@author Eva Maciejko
+ * Seller entity
+ * @author Eva Maciejko
  */
 @Entity
 @Table(name = "pdiseller")
@@ -48,10 +49,12 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
     @Column(name = "name")
     private String name;
 
+    // I, the seller
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(unique = true)
     private User me;
 
+    // A buyer related to this seller 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(unique = true)
     private User buyer;
