@@ -56,13 +56,6 @@ public interface PdiCampaignService {
 	 */
 	PdiCampaignDTO block(Long id);
 
-	/**
-	 * Export the sales results for a given PDI campaign
-	 * @param id the PDI campaign id
-	 * @param exportFileNames the filenames for export
-	 * @return
-	 */
-//	PdiCampaignDTO export(Long id, ExportFileNames exportFileNames);
 
 	/**
 	 * Builds and returns the campaign recap (summary) including all groups,
