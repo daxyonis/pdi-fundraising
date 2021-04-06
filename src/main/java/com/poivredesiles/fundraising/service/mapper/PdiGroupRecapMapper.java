@@ -20,6 +20,7 @@ public interface PdiGroupRecapMapper {
 
 	@Mapping(target = "groupId", source = "id")
 	@Mapping(target = "groupName", source = "name")
+	@Mapping(target = "groupLeaderName", source = "groupLeader.name")
 	@Mapping(target = "formattedTotalSales", source = "totalSales", qualifiedByName="formatCurrency")
 	@Mapping(target = "pdiSellerRecaps", source = "pdiSellers")
 	PdiGroupRecapDTO toDto(PdiGroup pdiGroup);
