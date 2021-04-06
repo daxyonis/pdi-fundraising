@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.service;
 
 import java.util.List;
 
+import com.poivredesiles.fundraising.exception.InvalidUsernameException;
 import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
@@ -11,7 +12,7 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
 public interface PdiSellerService {
 
-	void importSellers(List<Seller> sellers);		
+	void importSellers(List<Seller> sellers) throws InvalidUsernameException;		
 
 	void linkSellersToGroup(List<GroupLink> groupLinks);
 

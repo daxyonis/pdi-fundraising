@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.poivredesiles.fundraising.exception.InvalidUsernameException;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.dto.GroupLink;
 import com.poivredesiles.fundraising.imports.dto.Seller;
@@ -67,7 +68,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	private static Comparator<PdiProduct> compareByCategoryAndName = compareByCategory.thenComparing(compareByName);
 
 	@Override
-	public void importSellers(List<Seller> sellers) {
+	public void importSellers(List<Seller> sellers) throws InvalidUsernameException {
 		if (sellers != null) {
 			log.info("Importing {} sellers", sellers.size());
 			for (Seller seller : sellers) {
@@ -111,8 +112,9 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	 * 
 	 * @param pdiSeller the entity to update
 	 * @param seller    the input seller data
+	 * @throws InvalidUsernameException 
 	 */
-	private void updateSeller(PdiSeller pdiSeller, Seller seller) {
+	private void updateSeller(PdiSeller pdiSeller, Seller seller) throws InvalidUsernameException {
 		if (seller.valid()) {
 			pdiSeller.setNumber(seller.getNumber());
 			pdiSeller.setName(seller.getName());			
@@ -129,12 +131,14 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	 * 
 	 * @param pdiSeller
 	 * @param seller
+	 * @throws InvalidUsernameException 
 	 */
-	private void updateUsers(PdiSeller pdiSeller, Seller seller) {
+	private void updateUsers(PdiSeller pdiSeller, Seller seller) throws InvalidUsernameException {
 		if (seller.hasUserInfo()) {
 			// First set seller's user
 			User sellerAsUser = pdiSeller.getMe();
 			if (sellerAsUser == null) {
+				userService.validateUsername(seller.getCampaignCode());
 				sellerAsUser = new User();
 				sellerAsUser.setCreatedBy("system");
 			}
@@ -162,6 +166,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			// Then set the seller's buyer user = the same for all users
 			User buyer = pdiSeller.getBuyer();
 			if (buyer == null) {
+				userService.validateUsername(seller.getBuyerCode());
 				buyer = new User();
 				buyer.setCreatedBy("system");
 			}
@@ -172,7 +177,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 			buyer.setPassword(passwordEncoder.encode(seller.getBuyerCode()));
 			pdiSeller.setBuyer(buyer);
 		}
-	}
+	}	
 
 	/**
 	 * Update the group for this seller
