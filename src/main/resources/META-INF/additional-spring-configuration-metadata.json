@@ -73,5 +73,20 @@
     "name": "application.mail.to",
     "type": "java.lang.String",
     "description": "A description for 'application.mail.to'"
+  },
+  {
+    "name": "application.account.lockedDuration",
+    "type": "java.lang.String",
+    "description": "A description for 'application.account.lockedDuration'"
+  },
+  {
+    "name": "application.account.loginAttempts",
+    "type": "java.lang.String",
+    "description": "A description for 'application.account.loginAttempts'"
+  },
+  {
+    "name": "application.account.loginTimespan",
+    "type": "java.lang.String",
+    "description": "A description for 'application.account.loginTimespan'"
   }
 ]}

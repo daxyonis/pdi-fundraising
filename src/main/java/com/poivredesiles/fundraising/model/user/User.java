@@ -41,6 +41,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	
 	private boolean disabled = false;
 	
+	private boolean locked = false;
+	
 	@ManyToMany(fetch = FetchType.EAGER)    
     private Set<Role> roles = new HashSet<>(); 
 	
