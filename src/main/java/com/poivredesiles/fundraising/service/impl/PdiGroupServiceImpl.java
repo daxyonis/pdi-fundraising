@@ -2,7 +2,6 @@ package com.poivredesiles.fundraising.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -100,18 +99,12 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 
 	@Override
 	public PdiGroupRecapDTO getGroupRecap(Long groupId) {
+		log.info("Build the group recap");
 		Optional<PdiGroup> group = pdiGroupRepository.findById(groupId);
 		if(group.isEmpty()) {
 			throw new ResourceNotFoundException("Group not found !");
 		}
 		PdiGroupRecapDTO groupRecap = pdiGroupRecapMapper.toDto(group.get());
-		try {
-			// TRy to find the group leader from leader number
-			Optional<PdiSeller> groupLeader = pdiSellerRepository.findOneByNumber(Long.parseLong(group.get().getLeaderNum()));
-			groupRecap.setGroupLeaderName(groupLeader.get().getName());
-		} catch (NumberFormatException | NoSuchElementException e) {
-			log.error("Cannot find a seller corresponding to group leader number=" + group.get().getLeaderNum(), e);			
-		}
 		return groupRecap;
 	}
 
