@@ -26,6 +26,7 @@ import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
 import com.poivredesiles.fundraising.repository.order.OrderItemRepository;
 import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
+import com.poivredesiles.fundraising.resource.AddressResource;
 import com.poivredesiles.fundraising.resource.OrderItemResource;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.BusinessNumberService;
@@ -100,14 +101,32 @@ public class OrderServiceImpl implements OrderService {
 
 	private boolean validate(OrderResource orderResource, Locale locale) throws InvalidOrderException {
 		boolean valid = true;
-		if(orderResource.getName().isBlank() || orderResource.getPhone().isBlank()) {
-			log.error("Invalid name and/or phone field(s) in order.");
+		if(orderResource.getName().isBlank() || orderResource.getPhone().isBlank()) {			
 			throw new InvalidOrderException(messageSource.getMessage("order.error.requiredfields", null, locale));
 		}
 //		if(!orderResource.getPhone().matches("/^\\(?\\d{3}\\)?\\s*(\\.|-)?\\d{3}\\s*(\\.|-)?\\d{4}.*$/")) {
 //			throw new InvalidOrderException("Invalid phone number format !");
 //		}
+		if(orderResource.getEmail() == null || orderResource.getEmail().isBlank()) {
+			throw new InvalidOrderException(messageSource.getMessage("order.error.email", null, locale));
+		}
+		
+		valid = validateAddress(orderResource.getAddress(), locale);		
+		
 		return valid;
+	}
+
+	private boolean validateAddress(AddressResource address, Locale locale) throws InvalidOrderException {	
+		if(address == null ||
+		   address.getLine1() == null || address.getLine1().isBlank() ||
+		   address.getCity() == null ||  address.getCity().isBlank() ||
+		   address.getState() == null || address.getState().isBlank() ||
+		   address.getPostalCode() == null || address.getPostalCode().isBlank() ||
+		   address.getCountry() == null) {
+			throw new InvalidOrderException(messageSource.getMessage("order.error.address", null, locale));
+		}
+				
+		return false;
 	}
 
 	@Override

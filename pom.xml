@@ -153,6 +153,12 @@
 			<artifactId>stripe-java</artifactId>
 			<version>20.37.0</version>
 		</dependency>
+		<!-- Global Payments -->
+		<dependency>
+		    <groupId>com.heartlandpaymentsystems</groupId>
+		    <artifactId>globalpayments-sdk</artifactId>
+		    <version>6.1.70</version>
+		</dependency>
 		<!-- Actuator -->
 		<dependency>
 	        <groupId>org.springframework.boot</groupId>

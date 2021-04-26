@@ -1,6 +1,8 @@
 package com.poivredesiles.fundraising.resource;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Resource representing a buyer order item
@@ -10,6 +12,8 @@ import lombok.Data;
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderItemResource {
 
 	private Long id;

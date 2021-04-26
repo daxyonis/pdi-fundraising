@@ -13,10 +13,13 @@ import lombok.Data;
 public class OrderResource {
 
 	private String name;	
-	private String phone;	
+	private String phone;		
 	private String note;
 	
 	private Long sellerId;
+	
+	private String email;
+	private AddressResource address;
 	
 	private List<OrderItemResource> items;
 }
