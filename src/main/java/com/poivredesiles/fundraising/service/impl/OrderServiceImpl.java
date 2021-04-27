@@ -126,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
 			throw new InvalidOrderException(messageSource.getMessage("order.error.address", null, locale));
 		}
 				
-		return false;
+		return true;
 	}
 
 	@Override

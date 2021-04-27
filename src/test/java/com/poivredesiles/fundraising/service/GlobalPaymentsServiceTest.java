@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.service;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -32,7 +33,6 @@ import com.poivredesiles.fundraising.resource.OrderItemResource;
 import com.poivredesiles.fundraising.resource.OrderResource;
 
 @ExtendWith(MockitoExtension.class)
-//@TestPropertySource(properties={"global.merchantIdev730552577821985541", "global.sharedSecret=${GLOBAL_SHARED_SECRET}"})
 public class GlobalPaymentsServiceTest {
 
 	@Mock
@@ -54,6 +54,7 @@ public class GlobalPaymentsServiceTest {
 	public void setup() {
 		ReflectionTestUtils.setField(globalPaymentsService, "globalMerchantId", "dev730552577821985541");
 		ReflectionTestUtils.setField(globalPaymentsService, "globalSharedSecret", System.getenv("GLOBAL_SHARED_SECRET"));
+		ReflectionTestUtils.setField(globalPaymentsService, "globalServiceUrl", "https://pay.sandbox.realexpayments.com/pay");
 		
 		orderResource = new OrderResource();
 		orderResource.setSellerId(1L);
@@ -113,6 +114,13 @@ public class GlobalPaymentsServiceTest {
 		String hppJson = globalPaymentsService.getHppJson(orderResource, Locale.FRENCH);
 		
 		log.info("Returned JSON : {}", hppJson);
+		assertTrue(hppJson.contains("\"ORDER_ID\":\"123\""));
+		assertTrue(hppJson.contains("\"AMOUNT\":\"1900\""));
+		assertTrue(hppJson.contains("\"HPP_CUSTOMER_EMAIL\":\"abc@example.com\""));
+		assertTrue(hppJson.contains("\"HPP_BILLING_STREET1\":\"100 rue Rhéaume\""));
+		assertTrue(hppJson.contains("\"HPP_BILLING_CITY\":\"Verdun\""));
+		assertTrue(hppJson.contains("\"HPP_BILLING_POSTALCODE\":\"H4G 3N1\""));
+		assertTrue(hppJson.contains("\"HPP_BILLING_COUNTRY\":\"124\""));
 	}
 
 	

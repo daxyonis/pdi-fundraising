@@ -41,6 +41,9 @@ public class GlobalPaymentsService {
 	@Value("${global.sharedSecret}")
     private String globalSharedSecret;
 	
+	@Value("${global.serviceUrl}")
+	private String globalServiceUrl;
+	
 	private final Logger log = LoggerFactory.getLogger(GlobalPaymentsService.class);
 
 	public String getHppJson(OrderResource orderResource, Locale locale) throws InvalidOrderException, OrderProcessingException {
@@ -54,7 +57,7 @@ public class GlobalPaymentsService {
 		config.setMerchantId(globalMerchantId);
 		//config.setAccountId("internet");		
 		config.setSharedSecret(globalSharedSecret);
-		config.setServiceUrl("https://pay.sandbox.realexpayments.com/pay");		
+		config.setServiceUrl(globalServiceUrl);		
 		
 		HostedPaymentConfig hostedPaymentConfig = new HostedPaymentConfig();
 		hostedPaymentConfig.setLanguage(locale.getLanguage());

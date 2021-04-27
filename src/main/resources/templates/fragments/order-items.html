@@ -94,6 +94,14 @@
 	  					$('input[name="name"]').val(orderData.name);
 	  					$('input[name="phone"]').val(orderData.phone);
 	  					$('input[name="note"]').val(orderData.note);
+	  					$('input[name="email"]').val(orderData.email);
+	  					$('input[name="address.line1"]').val(orderData.address.line1);
+	  					$('input[name="address.line2"]').val(orderData.address.line2);
+	  					$('input[name="address.line3"]').val(orderData.address.line3);	  						
+	  					$('input[name="address.city"]').val(orderData.address.city);
+	  					$('select[name="address.state"]').val(orderData.address.state);
+	  					$('input[name="address.postalCode"]').val(orderData.address.postalCode);		  						
+	  					
 	  					// Fill in item quantities
 	  					chosenProducts = orderData.items;
 	  					chosenProducts.forEach(function(item){
@@ -103,7 +111,7 @@
 	  				}	  					  					  					  				
 	  				
 	  				$('.qty').on('change', function(){
-	  					// Add/updat product in lookup table	  				  					
+	  					// Add/update product in lookup table	  				  					
 	  					let qty = Number($(this).val());
 	  					let productId = $(this).data('id');
 	  					let product = products.filter( p => p.id === productId);
@@ -120,8 +128,8 @@
 	  					updateTotal();
 	  				});	  			
 	  			
-		  			// STRIPE stuff
-		  			var stripe = Stripe(/*[[${stripePublicApiKey}]]*/ '1234');
+		  			// GLOBAL stuff		  			
+		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
 		  			
 		  			$('#checkout-button').on('click', function(){
 		  				$('#buyerForm').submit();
@@ -137,6 +145,16 @@
 		  					name: $('input[name="name"]').val(),
 		  					phone: $('input[name="phone"]').val(),
 		  					note: $('input[name="note"]').val(),
+		  					email: $('input[name="email"]').val(),
+		  					address: {
+		  						line1: $('input[name="address.line1"]').val(),
+		  						line2: $('input[name="address.line2"]').val(),
+		  						line3: $('input[name="address.line3"]').val(),
+		  						city:  $('input[name="address.city"]').val(),
+		  						state: $('select[name="address.state"]').val(),
+		  						postalCode:$('input[name="address.postalCode"]').val(),
+		  						country: "CANADA"
+		  					},
 		  					sellerId: /*[[${seller.id}]]*/ '0',
 		  					items: chosenProducts
 		  				};
@@ -151,14 +169,16 @@
 		  		        }
 		  				this.classList.add('was-validated');
 		  				
-	  					// Validated, go !
+	  					// Validated, go !	  					
 		  				$.post({
-		  					url: /*[[@{/api/checkout/session}]]*/ '/api/checkout/session',
+		  					url: /*[[@{/api/global/checkout}]]*/ '/api/global/checkout/',
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				
-		  				.then(function(session){
-		  					return stripe.redirectToCheckout({sessionId: session.id});
+		  				.then(function(hppJson){
+		  					let responseUrl = /*[[@{/commande/succes}]]*/'/commande/success';
+		  					responseUrl += '1'; // get order ID
+		  					RealexHpp.redirect.init("checkout-button", responseUrl, hppJson);		  					
 		  				})	  				
 		  				.fail(function(err){ 						
 							console.log(err.responseJSON);

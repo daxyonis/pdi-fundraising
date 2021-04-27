@@ -15,35 +15,114 @@
 				<div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
 			</div>
 		</div>
-  		<form id="buyerForm" class="needs-validation" novalidate>  		
+  		<form id="buyerForm" class="needs-validation" novalidate>  			  			  	
+	  		<fieldset>
+    		<legend th:text="#{order.buyer.infos}">infos de l'acheteur</legend>
 	  		<div class="row">
-	  			<div class="col-md-12">
-	  				<h5 class="font-weight-bold" th:text="#{order.buyer.infos}">infos de l'acheteur</h5>	  				
-	  			</div>
-	  		</div>	  		
-		  		<div class="form-group row">
-		  			<label for="name" class="col-md-2 col-form-label" th:text="|#{order.buyer.name} :|">nom:</label>
-		  			<div class="col-md-4">
+	  			<div class="col-md-6">
+	  				<div class="form-group row">
+		  			<label for="name" class="col-lg-2 col-form-label" th:text="|#{order.buyer.name} :|">nom:</label>
+		  			<div class="col-lg-10">
 		  				<input type="text" class="form-control" id="name" name="name" th:placeholder="#{order.buyer.name.help}" required>
 		  				<div class="invalid-feedback" th:text="#{field.required}"></div>
 		  			</div>
-		  			<label for="phone" class="col-md-2 col-form-label" th:text="|#{order.buyer.phone} :|">telephone:</label>
-		  			<div class="col-md-4">
-		  				<input type="text" class="form-control" id="phone" name="phone" th:placeholder="#{order.buyer.phone.help}" required>
-		  				<div class="invalid-feedback" th:text="#{field.required}"></div>
 		  			</div>
 		  		</div>
-		  		<div class="form-group row">
-		  			<label for="note" class="col-md-2 col-form-label" th:text="|#{order.buyer.note} :|">note:</label>
-		  			<div class="col-md-10">
-		  				<input type="text" class="form-control" id="note" name="note" th:placeholder="#{order.buyer.note.help}">
-		  			</div>
-		  		</div>	  		
+		  		<div class="col-md-6">
+			  		<div class="form-group row">
+			  			<label for="phone" class="col-lg-2 col-form-label" th:text="|#{order.buyer.phone} :|">telephone:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="phone" name="phone" th:placeholder="#{order.buyer.phone.help}" required>
+			  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+			  			</div>
+			  		</div>
+		  		</div>
+	  		</div>	  
+	  		
 	  		<div class="row">
-	  			<div class="col-md-12">
-	  				<h5 class="font-weight-bold" th:text="#{order.seller.infos}">infos du vendeur</h5>	  				
+	  			<div class="col-md-6">
+	  				<div class="form-group row">
+		  			<label for="email" class="col-lg-2 col-form-label" th:text="|#{order.buyer.email} :|">email:</label>
+		  			<div class="col-lg-10">
+		  				<input type="text" class="form-control" id="email" name="email" th:placeholder="#{order.buyer.email.help}" required>
+		  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+		  			</div>
+		  			</div>
+		  		</div>
+	  			<div class="col-md-6">
+		  			<div class="form-group row">
+			  			<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.note} :|">note:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="note" name="note" th:placeholder="#{order.buyer.note.help}">
+			  			</div>
+		  			</div>
 	  			</div>
-	  		</div>
+	  		</div>	
+	  		</fieldset>
+	  				
+	  		<fieldset>
+    		<legend th:text="#{order.buyer.billingAddress}">adresse de facturation</legend>
+	  		<div class="row">
+	  			<div class="col-md-6">
+	  				<div class="form-group row">
+	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.addr1} :|">addresse ligne 1:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="address.line1" name="address.line1" required>
+			  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+			  			</div>
+	  				</div>
+	  				<div class="form-group row">
+	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.addr2} :|">addresse ligne 2:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="address.line2" name="address.line2">
+			  			</div>
+	  				</div>
+	  				<div class="form-group row">
+	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.addr3} :|">addresse ligne 3:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="address.line3" name="address.line3">
+			  			</div>
+	  				</div>
+	  			</div>
+	  			<div class="col-md-6">
+	  				<div class="form-group row">
+	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.city} :|">ville:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="address.city" name="address.city" required>
+			  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+			  			</div>
+	  				</div>
+	  				<div class="form-group row">
+	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.state} :|">province:</label>
+			  			<div class="col-lg-10">
+			  				<select class="form-control" id="address.state" name="address.state" required>
+			  					<option></option>
+			  					<option th:each="entry : ${provinces}" th:value="${entry.key}" th:text="${entry.value}"></option>
+			  				</select>
+			  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+			  			</div>
+	  				</div>
+	  				<div class="form-group row">
+	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.zip} :|">code postal:</label>
+			  			<div class="col-lg-10">
+			  				<input type="text" class="form-control" id="address.postalCode" name="address.postalCode" required>
+			  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+			  			</div>
+	  				</div>
+	  			</div>
+	  		</div>	
+	  		<div class="form-group row">
+	  			<div class="col-lg-10 offset-lg-1">
+	  				<div class="form-check">
+	  				<input type="checkbox" class="form-check-input" id="consent" required>	  				
+	  				<label for="consent" class="col-lg-10 form-check-label"><small th:text="#{order.buyer.consent}">je consens...</small></label>
+	  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+	  				</div>	  				
+	  			</div>	  			
+	  		</div>	  		 	
+	  		</fieldset>	  			  		
+	  		<fieldset>
+    		<legend th:text="#{order.seller.infos}">infos du vendeur</legend>
 	  		<div class="row">
 	  			<label class="col-md-2 col-form-label" th:text="|#{order.seller.name} :|">nom:</label>
 	  			<div class="col-md-4" >
@@ -69,11 +148,12 @@
 	  				<input type="text" readonly class="form-control-plaintext" id="sellerProject" th:value="${seller.pdiCampaignProject}">	  				
 	  			</div>
 	  		</div>
-	  		<div class="row">
+	  		</fieldset>
+	  		<div class="row mt">
 	  			<div class="col-md-12">
 	  				<h3 id="orderTitle" th:text="#{order.detail.title}">bon de commande</h3>
 	  			</div>
-	  		</div>	  		
+	  		</div>	  	  		 		
   		</form>
   	</th:block>
 	</body>
