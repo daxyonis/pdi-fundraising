@@ -45,7 +45,7 @@ public class OrderController extends BaseController {
 	
 	
 	@GetMapping("/commande")
-	public String order(@AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
+	public String order(@RequestParam(required = false)boolean failure, @AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
 		log.info("Requested Order Page");		
 		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
 		model.addAttribute("seller", seller);
@@ -58,6 +58,7 @@ public class OrderController extends BaseController {
 			model.addAttribute("provinces", resourceUtils.getProvincesMap(localeResolver.resolveLocale(request)));
 			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
+			model.addAttribute("failure", failure);
 			return "views/order";
 		}
 	}		

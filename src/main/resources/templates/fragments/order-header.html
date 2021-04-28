@@ -12,6 +12,7 @@
   		<!--/* Messages */-->
 		<div class="row">
 			<div class="col-md-12">
+				<div th:if="${failure}" class="alert alert-danger" th:text=#{order.error.failure}></div>
 				<div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
 			</div>
 		</div>
@@ -44,8 +45,8 @@
 	  				<div class="form-group row">
 		  			<label for="email" class="col-lg-2 col-form-label" th:text="|#{order.buyer.email} :|">email:</label>
 		  			<div class="col-lg-10">
-		  				<input type="text" class="form-control" id="email" name="email" th:placeholder="#{order.buyer.email.help}" required>
-		  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+		  				<input type="email" class="form-control" id="email" name="email" th:placeholder="#{order.buyer.email.help}" required>
+		  				<div class="invalid-feedback" th:text="#{field.valid.email}"></div>
 		  			</div>
 		  			</div>
 		  		</div>
@@ -105,8 +106,8 @@
 	  				<div class="form-group row">
 	  					<label for="note" class="col-lg-2 col-form-label" th:text="|#{order.buyer.zip} :|">code postal:</label>
 			  			<div class="col-lg-10">
-			  				<input type="text" class="form-control" id="address.postalCode" name="address.postalCode" required>
-			  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+			  				<input type="text" pattern="^(?!.*[DFIOQU])[A-VXY][0-9][A-Z] ?[0-9][A-Z][0-9]$" class="form-control" id="address.postalCode" name="address.postalCode" required>
+			  				<div class="invalid-feedback" th:text="#{field.valid.postalCode}"></div>
 			  			</div>
 	  				</div>
 	  			</div>
@@ -116,7 +117,7 @@
 	  				<div class="form-check">
 	  				<input type="checkbox" class="form-check-input" id="consent" required>	  				
 	  				<label for="consent" class="col-lg-10 form-check-label"><small th:text="#{order.buyer.consent}">je consens...</small></label>
-	  				<div class="invalid-feedback" th:text="#{field.required}"></div>
+	  				<div class="invalid-feedback" th:text="#{field.consent.required}"></div>
 	  				</div>	  				
 	  			</div>	  			
 	  		</div>	  		 	

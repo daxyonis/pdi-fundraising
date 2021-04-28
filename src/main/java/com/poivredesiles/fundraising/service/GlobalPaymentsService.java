@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.service;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,11 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.global.api.entities.Address;
 import com.global.api.entities.HostedPaymentData;
 import com.global.api.entities.Transaction;
 import com.global.api.entities.enums.AddressType;
+import com.global.api.entities.enums.FraudFilterMode;
 import com.global.api.entities.enums.HppVersion;
 import com.global.api.entities.exceptions.ApiException;
 import com.global.api.serviceConfigs.GatewayConfig;
@@ -46,6 +50,9 @@ public class GlobalPaymentsService {
 	@Value("${global.serviceUrl}")
 	private String globalServiceUrl;
 	
+	@Value("${global.currency}")
+	private String currency;
+	
 	private final Logger log = LoggerFactory.getLogger(GlobalPaymentsService.class);
 
 	/**
@@ -69,11 +76,15 @@ public class GlobalPaymentsService {
 		HostedPaymentConfig hostedPaymentConfig = new HostedPaymentConfig();
 		hostedPaymentConfig.setLanguage(locale.getLanguage());
 		hostedPaymentConfig.setVersion(HppVersion.Version2);		
+		hostedPaymentConfig.setFraudFilterMode(FraudFilterMode.Passive);
 		config.setHostedPaymentConfig(hostedPaymentConfig);
 		
 		// Add 3D Secure 2 Mandatory and Recommended Fields
 		HostedPaymentData hostedPaymentData = new HostedPaymentData();
-		hostedPaymentData.setCustomerEmail(orderResource.getEmail());		
+		hostedPaymentData.setCustomerEmail(orderResource.getEmail());
+		hostedPaymentData.setCustomerPhoneMobile(orderResource.getPhone());
+		hostedPaymentData.setCustomerFirstName(orderResource.getName());
+		hostedPaymentData.setSupplimentaryData(new HashMap<>(Map.of("detail", pendingOrder.getDetail())));
 		hostedPaymentData.setAddressesMatch(false);		
 		
 		AddressResource addr = orderResource.getAddress();
@@ -88,10 +99,10 @@ public class GlobalPaymentsService {
 		try {
 			HostedService service = new HostedService(config);
 		    String hppJson = service.charge(pendingOrder.getTotal())
-						    .withCurrency("USD")
+						    .withCurrency(currency)
 						    .withHostedPaymentData(hostedPaymentData)
 						    .withAddress(billingAddress, AddressType.Billing)	
-						    .withOrderId(pendingOrder.getId().toString())						    
+						    .withOrderId(pendingOrder.getId().toString())								    
 						    .serialize();		    		    
 		    return hppJson;
 		} catch (ApiException e) {
@@ -124,22 +135,29 @@ public class GlobalPaymentsService {
 	 * @param hppResponse
 	 * @return
 	 * @throws OrderProcessingException	
+	 * @throws JsonProcessingException 
 	 */
-	public Long processResponse(String hppResponse, Locale locale) throws OrderProcessingException {
+	public Long processResponse(MultiValueMap<String, String> responseData, Locale locale) throws OrderProcessingException {
 		
 		GatewayConfig config = getGatewayConfig();
 		try {
 			HostedService service = new HostedService(config);
 			 
-			// create the response object from the response JSON
+			// get the response json from the form data
+			String hppResponse = responseData.getFirst("hppResponse");
 		    Transaction response = service.parseResponse(hppResponse, true);
 		    String orderId = response.getOrderId();
 		    String responseCode = response.getResponseCode();
 		    String responseMessage = response.getResponseMessage();
 		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
-		    String fraudFilterResult = responseValues.get("HPP_FRAUDFILTER_RESULT"); // PASS
-		    // TODO: update your application and display transaction outcome to the customer
-		    return Long.parseLong(orderId);
+		    //String fraudFilterResult = responseValues.get("HPP_FRAUDFILTER_RESULT"); // PASS
+		    if(responseCode.compareTo("00") == 0) {
+		    	// Success !
+		    	return Long.parseLong(orderId);
+		    } else {
+		    	log.error("Failed transaction, code = {}, message={}", responseCode, responseMessage);
+		    	throw new OrderProcessingException(messageSource.getMessage("order.error.failure", null, locale));
+		    }
 			   
 		} catch (ApiException e) {
 			log.error("Error post-processing payment response : {}", e.getLocalizedMessage());

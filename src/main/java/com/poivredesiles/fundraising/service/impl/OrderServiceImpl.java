@@ -125,7 +125,11 @@ public class OrderServiceImpl implements OrderService {
 		   address.getCountry() == null) {
 			throw new InvalidOrderException(messageSource.getMessage("order.error.address", null, locale));
 		}
-				
+		
+		if(!address.getPostalCode().matches("^(?!.*[DFIOQU])[A-VXY][0-9][A-Z] ?[0-9][A-Z][0-9]$")) {
+			throw new InvalidOrderException(messageSource.getMessage("order.error.postalCode", null, locale));
+		}
+		
 		return true;
 	}
 
