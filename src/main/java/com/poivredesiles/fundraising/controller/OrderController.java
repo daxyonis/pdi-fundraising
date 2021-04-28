@@ -56,13 +56,15 @@ public class OrderController extends BaseController {
 			model.addAttribute("products", products);						
 			model.addAttribute("globalServiceUrl", globalServiceUrl);
 			model.addAttribute("provinces", resourceUtils.getProvincesMap(localeResolver.resolveLocale(request)));
+			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
+			model.addAttribute("applicationUrl", applicationUrl);
 			return "views/order";
 		}
-	}
+	}		
 	
 	@GetMapping("/commande/succes")
-	public String successfulOrder(@RequestParam(name = "session_id", required = false) String sessionId, Model model) {
-		OrderHeaderDTO order = orderService.getConfirmedOrder(sessionId);
+	public String successfulOrder(@RequestParam(name = "orderId", required = false) Long orderId, Model model) {
+		OrderHeaderDTO order = orderService.getConfirmedOrder(orderId);
 		model.addAttribute("order", order);
 		return "views/order-success";		
 	}

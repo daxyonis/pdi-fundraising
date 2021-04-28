@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +31,12 @@ public class GlobalPaymentsController {
 	public String createHppJson(@RequestBody OrderResource orderResource, HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {		
 		String hppJson = globalPaymentsService.getHppJson(orderResource, localeResolver.resolveLocale(request));            		
 	    return hppJson;
+	}
+	
+	
+	@PostMapping(value="/response")
+	public String processResponse(@RequestBody String payload, Model model, HttpServletRequest request) throws OrderProcessingException {
+		Long orderId = globalPaymentsService.processResponse(payload, localeResolver.resolveLocale(request));
+		return "redirect:/commande/succes?orderId=" + orderId;
 	}
 }

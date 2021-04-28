@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.service;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.global.api.entities.Address;
 import com.global.api.entities.HostedPaymentData;
+import com.global.api.entities.Transaction;
 import com.global.api.entities.enums.AddressType;
 import com.global.api.entities.enums.HppVersion;
 import com.global.api.entities.exceptions.ApiException;
@@ -46,6 +48,15 @@ public class GlobalPaymentsService {
 	
 	private final Logger log = LoggerFactory.getLogger(GlobalPaymentsService.class);
 
+	/**
+	 * Form the json string for GP HPP
+	 * See https://developer.globalpay.com/ecommerce/hosted-payment-page#hpp
+	 * @param orderResource	the order details
+	 * @param locale		the current user locale 
+	 * @return
+	 * @throws InvalidOrderException	if order has invalid fields
+	 * @throws OrderProcessingException	if HPP json could not be formed
+	 */
 	public String getHppJson(OrderResource orderResource, Locale locale) throws InvalidOrderException, OrderProcessingException {
 		log.info("Charging payment");		
 		
@@ -53,11 +64,7 @@ public class GlobalPaymentsService {
 		OrderHeader pendingOrder = orderService.createNewOrder(orderResource, locale);
 		
 		// configure client, request and HPP settings
-		GatewayConfig config = new GatewayConfig();
-		config.setMerchantId(globalMerchantId);
-		//config.setAccountId("internet");		
-		config.setSharedSecret(globalSharedSecret);
-		config.setServiceUrl(globalServiceUrl);		
+		GatewayConfig config = getGatewayConfig();		
 		
 		HostedPaymentConfig hostedPaymentConfig = new HostedPaymentConfig();
 		hostedPaymentConfig.setLanguage(locale.getLanguage());
@@ -81,7 +88,7 @@ public class GlobalPaymentsService {
 		try {
 			HostedService service = new HostedService(config);
 		    String hppJson = service.charge(pendingOrder.getTotal())
-						    .withCurrency("CAD")
+						    .withCurrency("USD")
 						    .withHostedPaymentData(hostedPaymentData)
 						    .withAddress(billingAddress, AddressType.Billing)	
 						    .withOrderId(pendingOrder.getId().toString())						    
@@ -90,8 +97,54 @@ public class GlobalPaymentsService {
 		} catch (ApiException e) {
 			pendingOrder.setOrderStatus(OrderStatusEnum.ERROR);
 			orderService.save(pendingOrder);
-			log.error("Error trying to create checkout session : {}", e.getLocalizedMessage());
+			log.error("Error trying to create checkout info : {}", e.getLocalizedMessage());
 			throw new OrderProcessingException(messageSource.getMessage("order.error.checkout", null, locale));
 		}
+	}
+
+	/**
+	 * Create a GatewayConfig with Global Payments account
+	 * credentials
+	 * 
+	 * @return	a new GatewayConfig
+	 */
+	private GatewayConfig getGatewayConfig() {
+		GatewayConfig config = new GatewayConfig();
+		config.setMerchantId(globalMerchantId);
+		config.setSharedSecret(globalSharedSecret);
+		config.setServiceUrl(globalServiceUrl);
+		return config;
+	}
+
+	/**
+	 * Once payment has been processed, GP returns a response.
+	 * Here we analyze it : 
+	 * 		- if response indicates transaction success, we return the order id
+	 * 		- if response indicates transaction failure, we throw an exception
+	 * @param hppResponse
+	 * @return
+	 * @throws OrderProcessingException	
+	 */
+	public Long processResponse(String hppResponse, Locale locale) throws OrderProcessingException {
+		
+		GatewayConfig config = getGatewayConfig();
+		try {
+			HostedService service = new HostedService(config);
+			 
+			// create the response object from the response JSON
+		    Transaction response = service.parseResponse(hppResponse, true);
+		    String orderId = response.getOrderId();
+		    String responseCode = response.getResponseCode();
+		    String responseMessage = response.getResponseMessage();
+		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
+		    String fraudFilterResult = responseValues.get("HPP_FRAUDFILTER_RESULT"); // PASS
+		    // TODO: update your application and display transaction outcome to the customer
+		    return Long.parseLong(orderId);
+			   
+		} catch (ApiException e) {
+			log.error("Error post-processing payment response : {}", e.getLocalizedMessage());
+			throw new OrderProcessingException(messageSource.getMessage("order.error.postprocess", null, locale));
+		}		
+		
 	}
 }

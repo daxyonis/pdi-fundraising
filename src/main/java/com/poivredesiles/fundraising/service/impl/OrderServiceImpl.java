@@ -135,8 +135,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public OrderHeaderDTO getConfirmedOrder(String sessionId) {
-		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findByStripeSessionId(sessionId);
+	public OrderHeaderDTO getConfirmedOrder(Long orderId) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findById(orderId);
 		if(optionalOrderHeader.isPresent()) {
 			OrderHeader order = optionalOrderHeader.get();
 			if(order.getConfirmationNumber() == null) {

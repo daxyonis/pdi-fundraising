@@ -131,13 +131,13 @@
 		  			// GLOBAL stuff		  			
 		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
 		  			
-		  			$('#checkout-button').on('click', function(){
-		  				$('#buyerForm').submit();
-		  			})
-		  				
-		  			$('#buyerForm').on('submit', function(event){
-		  				event.preventDefault();
-		  		        event.stopPropagation();
+                    $('#checkout-button').on('click', function(){
+                        $('#buyerForm').submit();
+                    })
+                        
+                    $('#buyerForm').on('submit', function(event){
+                        event.preventDefault();
+                        event.stopPropagation();	  						  			
 		  		      	sessionStorage.clear();
 		  				
 		  		      	// Get the input data
@@ -176,9 +176,10 @@
 		  					contentType: 'application/json'	  					
 		  				})	  				
 		  				.then(function(hppJson){
-		  					let responseUrl = /*[[@{/commande/succes}]]*/'/commande/success';
-		  					responseUrl += '1'; // get order ID
-		  					RealexHpp.redirect.init("checkout-button", responseUrl, hppJson);		  					
+		  					let hppData = JSON.parse(hppJson);
+		  					let responseUrl = /*[[|${applicationUrl}/api/global/response|]]*/ '/api/global/response';		  					  					
+		  					RealexHpp.lightbox.init("autoload", responseUrl, hppData);
+		  					$('body').addClass('loaded');
 		  				})	  				
 		  				.fail(function(err){ 						
 							console.log(err.responseJSON);

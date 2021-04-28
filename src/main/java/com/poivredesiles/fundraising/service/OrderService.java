@@ -31,7 +31,7 @@ public interface OrderService {
 	 * @param sessionId	Stripe session id
 	 * @return the confirmed order
 	 */
-	OrderHeaderDTO getConfirmedOrder(String sessionId);
+	OrderHeaderDTO getConfirmedOrder(Long sessionId);
 
 	/**
 	 * Get the list of orders assigned to a given seller

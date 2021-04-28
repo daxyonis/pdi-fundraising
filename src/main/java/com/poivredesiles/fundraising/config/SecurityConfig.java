@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
         	.antMatchers(PUBLIC).permitAll()      
         	.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN") 
-        	.antMatchers("/commande/**", "/api/checkout/**").hasRole("BUYER")
+        	.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
         	.antMatchers("/ventes").hasRole("SELLER")
         	.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
             .antMatchers("/admin", "/api/file/**").hasRole("ADMIN")            
@@ -39,7 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             	.loginPage("/login")
             .and()
             .logout()           
-            	.logoutUrl("/logout");            	
+            	.logoutUrl("/logout")
+            .and()
+            .csrf()
+            	.ignoringAntMatchers("/api/global/response");            	
     }
 	
 	@Override
