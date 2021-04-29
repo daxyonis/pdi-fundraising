@@ -40,7 +40,7 @@ public class OrderController extends BaseController {
 	@Autowired
 	private LocaleResolver localeResolver;
 			
-	@Value("${global.serviceUrl}")	
+	@Value("${global.service.url}")	
 	private String globalServiceUrl;
 	
 	

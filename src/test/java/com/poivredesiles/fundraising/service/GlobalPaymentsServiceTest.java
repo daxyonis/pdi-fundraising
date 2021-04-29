@@ -27,6 +27,7 @@ import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderItem;
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
+import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.resource.AddressResource;
 import com.poivredesiles.fundraising.resource.Country;
 import com.poivredesiles.fundraising.resource.OrderItemResource;
@@ -55,6 +56,7 @@ public class GlobalPaymentsServiceTest {
 		ReflectionTestUtils.setField(globalPaymentsService, "globalMerchantId", "dev730552577821985541");
 		ReflectionTestUtils.setField(globalPaymentsService, "globalSharedSecret", System.getenv("GLOBAL_SHARED_SECRET"));
 		ReflectionTestUtils.setField(globalPaymentsService, "globalServiceUrl", "https://pay.sandbox.realexpayments.com/pay");
+		ReflectionTestUtils.setField(globalPaymentsService, "currency", "USD");
 		
 		orderResource = new OrderResource();
 		orderResource.setSellerId(1L);
@@ -88,7 +90,11 @@ public class GlobalPaymentsServiceTest {
 		header.setBuyerPhone(orderResource.getPhone());
 		header.setOrderNumber(123456789L);
 		header.setOrderStatus(OrderStatusEnum.PENDING);		
+		header.setBuyerLanguage("FR");
 		
+		PdiProduct product = new PdiProduct();
+		product.setNameEn("Black salt");
+		product.setNameFr("Sel noir");
 		Set<OrderItem> orderItems = new LinkedHashSet<>();
 		for(OrderItemResource orderItem : orderResource.getItems())
 		{
@@ -98,6 +104,7 @@ public class GlobalPaymentsServiceTest {
 			item.setOrderNumber(header.getOrderNumber());
 			item.setProductNumber("100" + item.getId().toString());
 			item.setUnitPrice(BigDecimal.valueOf(item.getId()).divide(BigDecimal.valueOf(10L)));
+			item.setProduct(product);
 			orderItems.add(item);
 		}
 		header.setOrderItems(orderItems);
@@ -121,7 +128,5 @@ public class GlobalPaymentsServiceTest {
 		assertTrue(hppJson.contains("\"HPP_BILLING_CITY\":\"Verdun\""));
 		assertTrue(hppJson.contains("\"HPP_BILLING_POSTALCODE\":\"H4G 3N1\""));
 		assertTrue(hppJson.contains("\"HPP_BILLING_COUNTRY\":\"124\""));
-	}
-
-	
+	}	
 }

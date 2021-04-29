@@ -41,13 +41,13 @@ public class GlobalPaymentsService {
 	@Autowired
 	private MessageSource messageSource;
 	
-	@Value("${global.merchantId}")
+	@Value("${global.merchant.id}")
     private String globalMerchantId;
 	
-	@Value("${global.sharedSecret}")
+	@Value("${global.shared.secret}")
     private String globalSharedSecret;
 	
-	@Value("${global.serviceUrl}")
+	@Value("${global.service.url}")
 	private String globalServiceUrl;
 	
 	@Value("${global.currency}")
@@ -149,13 +149,14 @@ public class GlobalPaymentsService {
 		    String orderId = response.getOrderId();
 		    String responseCode = response.getResponseCode();
 		    String responseMessage = response.getResponseMessage();
-		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
+//		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
 		    //String fraudFilterResult = responseValues.get("HPP_FRAUDFILTER_RESULT"); // PASS
 		    if(responseCode.compareTo("00") == 0) {
 		    	// Success !
 		    	return Long.parseLong(orderId);
 		    } else {
 		    	log.error("Failed transaction, code = {}, message={}", responseCode, responseMessage);
+		    	orderService.markOrderAsError(Long.parseLong(orderId));
 		    	throw new OrderProcessingException(messageSource.getMessage("order.error.failure", null, locale));
 		    }
 			   

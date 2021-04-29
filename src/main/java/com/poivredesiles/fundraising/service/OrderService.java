@@ -28,10 +28,10 @@ public interface OrderService {
 
 	/**
 	 * Confirm a successful (i.e. paid) order if pending, then return it
-	 * @param sessionId	Stripe session id
+	 * @param orderId	order id
 	 * @return the confirmed order
 	 */
-	OrderHeaderDTO getConfirmedOrder(Long sessionId);
+	OrderHeaderDTO getConfirmedOrder(Long orderId);
 
 	/**
 	 * Get the list of orders assigned to a given seller
@@ -45,5 +45,11 @@ public interface OrderService {
 	 * @param orderHeader
 	 */
 	void deleteOrder(OrderHeader orderHeader);
+
+	/**
+	 * Change order status to error
+	 * @param orderId
+	 */
+	void markOrderAsError(Long orderId);
 	
 }

@@ -11,10 +11,7 @@
 						<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
 					</div>
 	  			</div>
-	  		</div>		
-	  		<div class="row">			
-	  			<div class="col-sm-12 text-right"><small th:text="#{order.total.note}" class="d-none" id="totalNote">Lorsque votre total est inferieur a 10.00$ nous ajoutons des frais...</small></div>
-	  		</div>
+	  		</div>	  		
 	  		<div class="row">
 	  			<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
 	  		</div>
@@ -70,13 +67,7 @@
 	  			}
 	  			
 	  			function updateTotal(){
-	  				total = chosenProducts.map(p => p.qty * p.unitPrice).reduce((acc,price) => acc + price, 0.0);
-	  				if(total > 0.0 && total < 10.0){
-  						total += 0.30;
-  						$('#totalNote').removeClass('d-none');
-  					} else {
-  						$('#totalNote').addClass('d-none');
-  					}
+	  				total = chosenProducts.map(p => p.qty * p.unitPrice).reduce((acc,price) => acc + price, 0.0);	  				
 	  				$('#total').text(total.toFixed(2) + '$');
   					if(total > 0){
   						$('#checkout-button').attr('disabled', false);  						  						

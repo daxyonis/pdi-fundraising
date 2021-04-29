@@ -171,4 +171,14 @@ public class OrderServiceImpl implements OrderService {
 		}
 	}
 
+	@Override
+	public void markOrderAsError(Long orderId) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findById(orderId);
+		if(optionalOrderHeader.isPresent()) {
+			optionalOrderHeader.get().setOrderStatus(OrderStatusEnum.ERROR);
+		} else {
+			throw new ResourceNotFoundException("Invalid argument");
+		}		
+	}
+
 }

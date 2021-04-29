@@ -40,38 +40,33 @@
     "description": "A description for 'application.mail.cc'"
   },
   {
+    "name": "application.mail.to",
+    "type": "java.lang.String",
+    "description": "A description for 'application.mail.to'"
+  },
+  {
     "name": "application.order.confirmation",
     "type": "java.lang.String",
     "description": "A description for 'application.order.confirmation'"
   },
   {
-    "name": "application.order.minAmountForNoFee",
+    "name": "global.currency",
     "type": "java.lang.String",
-    "description": "A description for 'application.order.minAmountForNoFee'"
+    "description": "A description for 'global.currency'"
   },
   {
-    "name": "application.order.transactionFee",
+    "name": "global.shared.secret",
     "type": "java.lang.String",
-    "description": "A description for 'application.order.transactionFee'"
+    "description": "A description for 'global.shared.secret'"
   },
   {
-    "name": "stripe.publicKey",
+    "name": "global.merchant.id",
     "type": "java.lang.String",
-    "description": "A description for 'stripe.publicKey'"
+    "description": "A description for 'global.merchant.id'"
   },
   {
-    "name": "stripe.privateKey",
+    "name": "global.service.url",
     "type": "java.lang.String",
-    "description": "A description for 'stripe.privateKey'"
-  },
-  {
-    "name": "application.url",
-    "type": "java.lang.String",
-    "description": "A description for 'application.url'"
-  },
-  {
-    "name": "application.mail.to",
-    "type": "java.lang.String",
-    "description": "A description for 'application.mail.to'"
-  }
+    "description": "A description for 'global.service.url'"
+  }  
 ]}

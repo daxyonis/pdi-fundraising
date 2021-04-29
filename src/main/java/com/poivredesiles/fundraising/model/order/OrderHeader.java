@@ -61,9 +61,6 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 
     @Column(name = "confirmation_number")
     private String confirmationNumber;
-    
-    @Column(name = "session_id")
-    private String stripeSessionId;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})    
     private Set<OrderItem> orderItems = new HashSet<>();

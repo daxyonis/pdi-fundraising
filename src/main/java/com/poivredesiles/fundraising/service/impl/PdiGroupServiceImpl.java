@@ -21,7 +21,6 @@ import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiGroupRepository;
-import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.resource.MultiGroupRecap;
 import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
@@ -38,9 +37,6 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 	
 	@Autowired
 	private PdiCampaignRepository pdiCampaignRepository;
-	
-	@Autowired
-	private PdiSellerRepository pdiSellerRepository;
 	
 	@Autowired
 	private PdiGroupRecapMapper pdiGroupRecapMapper;
