@@ -71,14 +71,6 @@
 	<section layout:fragment="content">
 		<p>Page content goes here</p>
 	</section>
-	<footer>
-		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">
-			<div class="container">
-				<span class="navbar-text">&copy; Copyright 2021 - Poivre des Îles</span> 
-				<span class="navbar-text" th:unless="${#strings.isEmpty(buildVersion)}" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
-			</div>
-		</nav>
-		<!-- <p layout:fragment="custom-footer">Custom footer here</p> -->
-	</footer>
+	<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
