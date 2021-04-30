@@ -146,6 +146,7 @@ public class GlobalPaymentsService {
 			 
 			// get the response json from the form data
 			String hppResponse = responseData.getFirst("hppResponse");
+			log.debug("hppResponse = {}", hppResponse);
 		    Transaction response = service.parseResponse(hppResponse, true);
 		    String orderId = response.getOrderId();
 		    String responseCode = response.getResponseCode();
