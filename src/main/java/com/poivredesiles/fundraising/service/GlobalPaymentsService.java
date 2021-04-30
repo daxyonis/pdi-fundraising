@@ -82,7 +82,8 @@ public class GlobalPaymentsService {
 		// Add 3D Secure 2 Mandatory and Recommended Fields
 		HostedPaymentData hostedPaymentData = new HostedPaymentData();
 		hostedPaymentData.setCustomerEmail(orderResource.getEmail());
-		hostedPaymentData.setCustomerPhoneMobile(orderResource.getPhone());
+		// Expected format is country code|number
+		hostedPaymentData.setCustomerPhoneMobile("1|" + orderResource.getStrippedPhone(10));
 		hostedPaymentData.setCustomerFirstName(orderResource.getName());
 		hostedPaymentData.setSupplimentaryData(new HashMap<>(Map.of("detail", pendingOrder.getDetail())));
 		hostedPaymentData.setAddressesMatch(false);		
