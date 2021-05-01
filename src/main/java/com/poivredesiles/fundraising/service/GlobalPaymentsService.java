@@ -104,7 +104,7 @@ public class GlobalPaymentsService {
 						    .withCurrency(currency)
 						    .withHostedPaymentData(hostedPaymentData)
 						    .withAddress(billingAddress, AddressType.Billing)	
-						    .withOrderId(pendingOrder.getId().toString())								    
+						    .withOrderId(pendingOrder.getOrderNumber().toString())								    
 						    .serialize();		    		    
 		    return hppJson;
 		} catch (ApiException e) {
@@ -147,19 +147,19 @@ public class GlobalPaymentsService {
 			 
 			// get the response json from the form data
 			String hppResponse = responseData.getFirst("hppResponse");
-			log.debug("hppResponse = {}", hppResponse);
+			log.debug("hppResponse = {}", hppResponse);			
 		    Transaction response = service.parseResponse(hppResponse, true);
-		    String orderId = response.getOrderId();
+		    String orderNumber = response.getOrderId();
 		    String responseCode = response.getResponseCode();
 		    String responseMessage = response.getResponseMessage();
 //		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
 		    //String fraudFilterResult = responseValues.get("HPP_FRAUDFILTER_RESULT"); // PASS
 		    if(responseCode.compareTo("00") == 0) {
 		    	// Success !
-		    	return Long.parseLong(orderId);
+		    	return Long.parseLong(orderNumber);
 		    } else {
 		    	log.error("Failed transaction, code = {}, message={}", responseCode, responseMessage);
-		    	orderService.markOrderAsError(Long.parseLong(orderId));
+		    	orderService.markOrderAsError(Long.parseLong(orderNumber));
 		    	throw new OrderProcessingException(messageSource.getMessage("order.error.failure", null, locale));
 		    }
 			   
@@ -167,6 +167,5 @@ public class GlobalPaymentsService {
 			log.error("Error post-processing payment response : {}", e.getLocalizedMessage());
 			throw new OrderProcessingException(messageSource.getMessage("order.error.postprocess", null, locale));
 		}		
-		
 	}
 }

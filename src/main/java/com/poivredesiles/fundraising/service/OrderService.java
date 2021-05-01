@@ -28,10 +28,10 @@ public interface OrderService {
 
 	/**
 	 * Confirm a successful (i.e. paid) order if pending, then return it
-	 * @param orderId	order id
+	 * @param orderNumber	order number
 	 * @return the confirmed order
 	 */
-	OrderHeaderDTO getConfirmedOrder(Long orderId);
+	OrderHeaderDTO getConfirmedOrder(Long orderNumber);
 
 	/**
 	 * Get the list of orders assigned to a given seller
@@ -48,8 +48,8 @@ public interface OrderService {
 
 	/**
 	 * Change order status to error
-	 * @param orderId
+	 * @param orderNumber	the order number
 	 */
-	void markOrderAsError(Long orderId);
+	void markOrderAsError(Long orderNumber);
 	
 }

@@ -64,8 +64,8 @@ public class OrderController extends BaseController {
 	}		
 	
 	@GetMapping("/commande/succes")
-	public String successfulOrder(@RequestParam(name = "orderId", required = false) Long orderId, Model model) {
-		OrderHeaderDTO order = orderService.getConfirmedOrder(orderId);
+	public String successfulOrder(@RequestParam(name = "orderNum", required = false) Long orderNumber, Model model) {
+		OrderHeaderDTO order = orderService.getConfirmedOrder(orderNumber);
 		model.addAttribute("order", order);
 		return "views/order-success";		
 	}

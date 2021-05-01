@@ -39,11 +39,10 @@ public class GlobalPaymentsController {
 	
 	
 	@PostMapping(value="/response")
-	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Long orderId;
+	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {		
 		try {
-			orderId = globalPaymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
-			response.sendRedirect("/commande/succes?orderId=" + orderId);
+			Long orderNumber = globalPaymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
+			response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
 		} catch (OrderProcessingException e) {
 			response.sendRedirect("/commande?failure=true");
 		}		

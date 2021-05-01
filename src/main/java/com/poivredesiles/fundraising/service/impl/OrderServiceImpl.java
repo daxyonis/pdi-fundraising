@@ -139,8 +139,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public OrderHeaderDTO getConfirmedOrder(Long orderId) {
-		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findById(orderId);
+	public OrderHeaderDTO getConfirmedOrder(Long orderNumber) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
 		if(optionalOrderHeader.isPresent()) {
 			OrderHeader order = optionalOrderHeader.get();
 			if(order.getConfirmationNumber() == null) {
@@ -172,8 +172,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void markOrderAsError(Long orderId) {
-		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findById(orderId);
+	public void markOrderAsError(Long orderNumber) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
 		if(optionalOrderHeader.isPresent()) {
 			optionalOrderHeader.get().setOrderStatus(OrderStatusEnum.ERROR);
 		} else {
