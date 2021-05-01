@@ -28,10 +28,9 @@ public class OrderResource {
 	 * and return at most the first n digits
 	 * @return
 	 */
-	public String getStrippedPhone(int n) {
-		String strippedPhone = new String(phone);
+	public String getStrippedPhone(int n) {		
 		// Remove all non-digit 
-		strippedPhone = strippedPhone.replaceAll("\\D", "");
+		String strippedPhone = phone.replaceAll("\\D", "");
 		if(strippedPhone.length() > n) {
 			// Take first 10 numbers
 			strippedPhone = strippedPhone.substring(0, n-1);

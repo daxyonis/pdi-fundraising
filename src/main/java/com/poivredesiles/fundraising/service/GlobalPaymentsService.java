@@ -84,6 +84,7 @@ public class GlobalPaymentsService {
 		hostedPaymentData.setCustomerEmail(orderResource.getEmail());
 		// Expected format is country code|number
 		hostedPaymentData.setCustomerPhoneMobile("1|" + orderResource.getStrippedPhone(10));
+		log.debug("PaymentData.phone = {}", hostedPaymentData.getCustomerPhoneMobile());
 		hostedPaymentData.setCustomerFirstName(orderResource.getName());
 		hostedPaymentData.setSupplimentaryData(new HashMap<>(Map.of("detail", pendingOrder.getDetail())));
 		hostedPaymentData.setAddressesMatch(false);		
