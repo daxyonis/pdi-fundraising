@@ -121,7 +121,7 @@ public class GlobalPaymentsServiceTest {
 		String hppJson = globalPaymentsService.getHppJson(orderResource, Locale.FRENCH);
 		
 		log.info("Returned JSON : {}", hppJson);
-		assertTrue(hppJson.contains("\"ORDER_ID\":\"123\""));
+		assertTrue(hppJson.contains("\"ORDER_ID\":\"123456789\""));
 		assertTrue(hppJson.contains("\"AMOUNT\":\"1900\""));
 		assertTrue(hppJson.contains("\"HPP_CUSTOMER_EMAIL\":\"abc@example.com\""));
 		assertTrue(hppJson.contains("\"HPP_BILLING_STREET1\":\"100 rue Rhéaume\""));
