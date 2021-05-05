@@ -162,13 +162,13 @@
 		  				
 	  					// Validated, go !	  					
 		  				$.post({
-		  					url: /*[[@{/api/global/checkout}]]*/ '/api/global/checkout/',
+		  					url: location.origin + '/api/global/checkout/',
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
-		  					let responseUrl = /*[[|${applicationUrl}/api/global/response|]]*/ '/api/global/response';		  					  					
+		  					let responseUrl = location.origin + '/api/global/response';		  					  					
 		  					RealexHpp.lightbox.init("autoload", responseUrl, hppData);
 		  					$('body').addClass('loaded');
 		  				})	  				
