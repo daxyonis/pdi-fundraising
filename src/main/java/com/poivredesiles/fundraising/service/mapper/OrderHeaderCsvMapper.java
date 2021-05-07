@@ -8,7 +8,7 @@ import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderCsvDTO;
 
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {MapperUtils.class})
 public interface OrderHeaderCsvMapper extends EntityMapper<OrderHeaderCsvDTO, OrderHeader>{
 
 	@Mapping(target="noCommande", source="orderNumber")
@@ -19,6 +19,7 @@ public interface OrderHeaderCsvMapper extends EntityMapper<OrderHeaderCsvDTO, Or
 	@Mapping(target="langue", source="buyerLanguage")
 	@Mapping(target="etat", source="orderStatus", qualifiedByName="translateStatus")	
 	@Mapping(target="noConfirmation", source="confirmationNumber")
+	@Mapping(target="dateCommande", source="createdDate", qualifiedByName="instantToString")
 	OrderHeaderCsvDTO toDto(OrderHeader orderHeader);
 	
 	@Named("translateStatus")

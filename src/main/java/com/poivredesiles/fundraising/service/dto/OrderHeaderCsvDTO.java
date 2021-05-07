@@ -40,4 +40,7 @@ public class OrderHeaderCsvDTO implements Serializable {
 	
 	@CsvBindByPosition(position = 8)
 	private String noConfirmation;
+	
+	@CsvBindByPosition(position = 9)
+	private String dateCommande;
 }
