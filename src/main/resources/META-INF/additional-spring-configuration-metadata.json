@@ -68,5 +68,10 @@
     "name": "global.service.url",
     "type": "java.lang.String",
     "description": "A description for 'global.service.url'"
-  }  
+  },
+  {
+    "name": "googlepay.merchant.id",
+    "type": "java.lang.String",
+    "description": "A description for 'googlepay.merchant.id'"
+  }
 ]}

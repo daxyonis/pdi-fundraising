@@ -43,8 +43,12 @@
 	  				</div>
 	  			</th:block>
 	  		</th:block>	  	
-	  		
+	  		<script type="text/javascript" th:src="/js/googlepay.js"></script>
+	  		<script async=true src="https://pay.google.com/gp/p/js/pay.js" onload="googlePayLoaded()"></script>	  		
 	  		<script th:inline="javascript">
+	  			tokenizationSpecification.parameters.gatewayMerchantId = /*[[${@environment.getProperty('global.merchant.id')}]]*/ 'MY_MERCHANT_ID';
+	  			paymentDataRequest.merchantInfo.merchantId = /*[[${@environment.getProperty('googlepay.merchant.id')}]]*/ '12345678901234567890';
+	  			
 	  			var total = 0.0;
 	  			var products = /*[[${products}]]*/ null;
 	  			// Array of objects
@@ -73,7 +77,8 @@
   						$('#checkout-button').attr('disabled', false);  						  						
   					} else {
   						$('#checkout-button').attr('disabled', true);
-  					}  					
+  					}  	
+  					googlePayUpdateTotal(new String(total.toFixed(2)));
 	  			}
 	  			
 	  			//***********************************************
