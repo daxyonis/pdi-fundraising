@@ -6,10 +6,17 @@
 		<th:block th:fragment="items">	
 			<div class="sticky-top">
 	  			<div class="row">
-	  				<div class="col-sm-12 text-right">
-	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
-						<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+	  				<div class="col-sm-10 text-right">
+	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>						
 					</div>
+					<div class="col-sm-2">
+						<button id="checkout-button" class="btn btn-info btn-block" type="button" disabled th:text="#{order.pay}">Payer</button>
+					</div>
+	  			</div>
+	  			<div class="row mt-2">
+	  				<div id="digital-wallet-container" class="col-sm-2 offset-sm-10">
+	  					
+	  				</div>
 	  			</div>
 	  		</div>	  		
 	  		<div class="row">
@@ -43,12 +50,8 @@
 	  				</div>
 	  			</th:block>
 	  		</th:block>	  	
-	  		<script type="text/javascript" th:src="/js/googlepay.js"></script>
-	  		<script async=true src="https://pay.google.com/gp/p/js/pay.js" onload="googlePayLoaded()"></script>	  		
-	  		<script th:inline="javascript">
-	  			tokenizationSpecification.parameters.gatewayMerchantId = /*[[${@environment.getProperty('global.merchant.id')}]]*/ 'MY_MERCHANT_ID';
-	  			paymentDataRequest.merchantInfo.merchantId = /*[[${@environment.getProperty('googlepay.merchant.id')}]]*/ '12345678901234567890';
-	  			
+			<div th:replace="fragments/order-gpay :: gpay"></div>	  			  		
+	  		<script th:inline="javascript">	  			
 	  			var total = 0.0;
 	  			var products = /*[[${products}]]*/ null;
 	  			// Array of objects
@@ -74,11 +77,12 @@
 	  				total = chosenProducts.map(p => p.qty * p.unitPrice).reduce((acc,price) => acc + price, 0.0);	  				
 	  				$('#total').text(total.toFixed(2) + '$');
   					if(total > 0){
-  						$('#checkout-button').attr('disabled', false);  						  						
+  						$('#checkout-button').attr('disabled', false);  	
+  						$('button.gpay-button').attr('disabled', false);
   					} else {
   						$('#checkout-button').attr('disabled', true);
-  					}  	
-  					googlePayUpdateTotal(new String(total.toFixed(2)));
+  						$('button.gpay-button').attr('disabled', true);
+  					}  					
 	  			}
 	  			
 	  			//***********************************************
