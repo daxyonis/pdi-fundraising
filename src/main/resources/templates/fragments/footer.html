@@ -7,7 +7,7 @@
 		<footer>  	  		   
 		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">
 			<div class="container">
-				<span class="navbar-text">&copy; Copyright 2021 - Poivre des Îles</span> 
+				<span class="navbar-text">&copy; Copyright 2021 - Choconaute</span> 
 				<span class="navbar-text bg-primary" th:unless="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}"><<<---- EN MODE DÉVELOPPEMENT ---->>> </span></span> 				
 				<span class="navbar-text" th:unless="${#strings.isEmpty(buildVersion)}" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
 			</div>
