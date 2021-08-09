@@ -79,17 +79,17 @@ public class CsvImportService {
 		switch (dataType) {
 		case SECTION:
 			return importSections(file);
-		case PRODUCT:
+		case PRODUIT:
 			return importProducts(file);
-		case ORDERTYPE:
+		case TYPEBC:
 			return importTypeBC(file);
-		case CAMPAIGN:
+		case CAMPAGNE:
 			return importCampaigns(file);
-		case GROUP:
+		case GROUPE:
 			return importGroups(file);
-		case SELLER:
+		case VENDEUR:
 			return importSellers(file);
-		case GROUPLINK:
+		case LIENGROUPE:
 			return importGroupLinks(file);
 		default:
 			throw new IllegalArgumentException("Unsupported file type");

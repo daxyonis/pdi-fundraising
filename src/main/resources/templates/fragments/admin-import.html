@@ -20,85 +20,30 @@
 			<!-- /* Sections and products import */ -->
 			<div class="row mt-3">
 				<div class="col-md-12">
-					<h4 th:text="#{admin.import.products}">importer des sections</h4>
+					<h4 th:text="#{admin.import.folder}">Importer tout</h4>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4 pt-2">					
 					<span th:text="#{admin.import.last}">Dernier import le</span><span id="prodLastImport" th:text="${sectionsAndProductsLastImport}">2021/12/12</span>									
 				</div>				
-				<div class="col-md-3 pt-2">					
-					<span th:text="#{admin.import.file}">importer par fichier</span>
+				
+				<div class="col-md-5">																								
+						<div class="fileBtn btn btn-outline-success px-lg-3">
+							<label for="inputFolder" th:text="#{admin.import.select}">Sélectionnez le répertoire des fichiers</label>
+							<input id="inputFolder" class="upload d-none" type="file" accept=".csv" webkitdirectory multiple />
+						</div>					  							
 				</div>
-				<div class="col-md-5">														
-					<div class="btn-group" role="group" aria-label="Import files">
-						<div class="btn btn-outline-success px-lg-3">
-							<label for="sectionFile">Section</label>
-							<input id="sectionFile" class="upload d-none" type="file" data-file-type="SECTION" accept=".csv">
-						</div>					  
-						<div class="btn btn-outline-success px-lg-3">
-							<label for="productFile">Produit</label>
-							<input id=productFile class="upload d-none" type="file" data-file-type="PRODUCT" accept=".csv">
-						</div>
-						<div class="btn btn-outline-success px-lg-3">
-							<label for="typeBcFile">TypeBC</label>
-							<input id=typeBcFile class="upload d-none" type="file" data-file-type="ORDERTYPE" accept=".csv">
-						</div>					  
-					</div>					
-				</div>
-			</div>				
-			<div class="row">
-				<div class="col-md-5 offset-md-7">
-					<i class="fas fa-arrow-right"></i>&nbsp;<span th:text="#{admin.import.inorder}">Suivez l'ordre</span>
-				</div>
-			</div>
+			</div>			
 			<div class="row">
 				<div class="col-md-8 offset-md-4">
 					<p class="text-primary" th:if="${showWarning}" th:text="#{admin.import.warning}">Attention: campagne(s) en cours...</p>					
 				</div>							
-			</div>
-			<!-- /* Groups and sellers import */ -->
-			<div class="row mt-5">
-				<div class="col-md-12">
-					<h4 th:text="#{admin.import.groups}">importer des groupes</h4>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4 pt-2">					
-					<span th:text="#{admin.import.last}">Dernier import le</span><span id="groupLastImport" th:text="${groupsAndSellersLastImport}">2021/12/12</span>									
-				</div>				
-				<div class="col-md-3 pt-2">					
-					<span th:text="#{admin.import.file}">importer par fichier</span>
-				</div>
-				<div class="col-md-5">
-					<div class="btn-group" role="group" aria-label="Import files">
-					  <div class="btn btn-outline-success px-lg-3">
-					  	<label for="campaignFile">Campagne</label>
-						<input id="campaignFile" class="upload d-none" type="file" data-file-type="CAMPAIGN" accept=".csv">
-					  </div>
-					  <div class="fileBtn btn btn-outline-success px-lg-3">
-					  	<label for="groupFile">Groupe</label>
-						<input id="groupFile" class="upload d-none" type="file" data-file-type="GROUP" accept=".csv">
-					  </div>
-					  <div class="fileBtn btn btn-outline-success px-lg-3">
-					  	<label for="sellerFile">Vendeur</label>
-						<input id="sellerFile" class="upload d-none" type="file" data-file-type="SELLER" accept=".csv">
-					  </div>
-					  <div class="fileBtn btn btn-outline-success px-lg-3">
-					  	<label for="groupLinkFile">LienGroupe</label>
-						<input id="groupLinkFile" class="upload d-none" type="file" data-file-type="GROUPLINK" accept=".csv">
-					  </div>					  
-					</div>
-				</div>
-			</div>	
-			<div class="row">
-				<div class="col-md-5 offset-md-7">
-					<i class="fas fa-arrow-right"></i>&nbsp;<span th:text="#{admin.import.inorder}">Suivez l'ordre</span>
-				</div>
-			</div>
+			</div>				
 			
 			<script th:inline="javascript">
 			$(function(){		   	    	
+				const FILETYPES = ["SECTION","PRODUIT","TYPEBC","CAMPAGNE","GROUPE","VENDEUR","LIENGROUPE"];					
 				
 				$('fileBtn').on('click', function(){
 					$(this).children('input.upload').trigger('change');
@@ -106,38 +51,82 @@
 				
 				$('.upload').on('change', function(){		
 					$('#spinning').removeClass('d-none');
-					// Ajax call to upload this file					
-					let fileToUpload = this.files[0];
-					let fileType = $(this).data('fileType');
+					let files = this.files;
+					
+					let allFiles = {};
+					for(let i=0; i<files.length; i++){						
+						let file = files[i];
+						// Validate its a CSV
+						if(file.name.match(/.csv/)){								
+							// Validate its name starts with the file type	
+							let fileType = file.name.toUpperCase().match(/SECTION|PRODUIT|TYPEBC|CAMPAGNE|GROUPE|VENDEUR|LIENGROUPE/);
+							if(fileType && fileType.index >= 0){
+								allFiles[fileType[0]] = file;
+							} else {
+								console.log("File type not found in file name : " + file.name);
+							}							
+						} else {
+							console.log("Discarding file" + file.name + " because not of expected type.");
+						}
+					}
+					uploadAllInOrder(allFiles);
+					
+				});
+								
+				
+				async function uploadAllInOrder(allFiles){					
+					if(allFiles){
+						let messages = [];
+						// Upload them in order
+						for(let i=0; i< FILETYPES.length; i++){
+							if(allFiles[FILETYPES[i]]){
+								try{
+									messages[i] = await uploadFile(FILETYPES[i], allFiles[FILETYPES[i]]);	
+								}								
+								catch(err){
+									$('#spinning').addClass('d-none');
+									console.log(err.responseJSON);
+									if(err.responseJSON && err.responseJSON.message){
+										displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+									} else {
+										displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/ 'Erreur');
+									}
+								}
+							}	
+						}		
+						$('#spinning').addClass('d-none');
+						displaySuccess('#import-msg-success', messages.map((m)=>m.message).join("  "));	
+					}					
+				}
+				
+				function uploadFile(fileType, file){
+					// Ajax call to upload this file
 					let fd = new FormData();
-					fd.append('file', fileToUpload);					
+					fd.append('file', file);					
 					let url = /*[[@{/api/file/upload}]]*/ '';
-					$.post({
+					return $.post({
 						url: `${url}?fileType=${fileType}`,
 						data: fd,
 						contentType: false,						
 						processData: false,
 						success: function(result) {
-							$('#spinning').addClass('d-none');
-							displaySuccess('#import-msg-success', result.message);
-							var updatedDate = new Date();
-							var selector = 'span#groupLastImport';
-							if(fileType === "SECTION" || fileType === "PRODUCT" || fileType === "ORDERTYPE"){								
-								selector = 'span#prodLastImport';
-							}
+							//$('#spinning').addClass('d-none');
+							//displaySuccess('#import-msg-success', result.message);									
+							const selector = 'span#prodLastImport';									
 							$(selector).text(result.lastImportDate);
 						}
-					})
-					.fail(function(err){
+					});
+					/*.fail(function(err){
 						$('#spinning').addClass('d-none');
 						console.log(err.responseJSON);
 						if(err.responseJSON && err.responseJSON.message){
 							displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
 						} else {
-							displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
+							displayError(err, '#import-msg-error', [[#{admin.import.error}]]'Erreur');
 						}
-					});					
-				});
+					});*/						
+				}
+				
 			});
 			</script>
 			

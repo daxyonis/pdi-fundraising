@@ -16,7 +16,7 @@ import java.util.Locale;
 public class ImportsUtils {
 	
 	public static enum DataTypeEnum {
-		SECTION, PRODUCT, ORDERTYPE, CAMPAIGN, GROUP, SELLER, GROUPLINK
+		SECTION, PRODUIT, TYPEBC, CAMPAGNE, GROUPE, VENDEUR, LIENGROUPE
 	}
 	
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
