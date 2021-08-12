@@ -104,6 +104,7 @@
 					let fd = new FormData();
 					fd.append('file', file);					
 					let url = /*[[@{/api/file/upload}]]*/ '';
+					console.log(`Uploading file ${fileType}`);
 					return $.post({
 						url: `${url}?fileType=${fileType}`,
 						data: fd,
