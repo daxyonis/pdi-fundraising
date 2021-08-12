@@ -60,23 +60,17 @@
 					$('button.action-export').off();
 					$('button.action-export').on('click', function(){
 						let campaign = $(this).data('campaign');
-						$('#campaignInfo').text(campaign.campaignInfo);
-						$('#orderHeaderFilename').val(campaign.orderHeaderFilename);
-						$('#orderDetailFilename').val(campaign.orderDetailFilename);
-						$('#exportForm').data('id', campaign.id);
-						$('#exportConfirm').modal('show');
+						exportCampaign(campaign);
 					});
 				}
 				
-				function exportCampaign(campaignId){
-					$('#exportConfirm').modal('hide');					
-										
-					let headerFilename = $('#orderHeaderFilename').val();
-					let detailFilename = $('#orderDetailFilename').val();
+				function exportCampaign(campaign){										
+					let headerFilename = campaign.orderHeaderFilename;
+					let detailFilename = campaign.orderDetailFilename;
 					
 					if(headerFilename){
 						let url = /*[[@{/api/campaign/}]]*/'/api/campaign/';
-						url = url + campaignId + '/download/headers?filename=' + headerFilename;
+						url = url + campaign.id + '/download/headers?filename=' + headerFilename;
 						window.open(url);
 					} else {
 						displayDisappear('#export-msg-error', /*[[#{error.csv.filename}]]*/'Erreur')
@@ -84,13 +78,13 @@
 					
 					if(detailFilename){
 						let url = /*[[@{/api/campaign/}]]*/'/api/campaign/';
-						url = url + campaignId + '/download/details?filename=' + detailFilename;
+						url = url + campaign.id + '/download/details?filename=' + detailFilename;
 						window.open(url);
 					} else {
 						displayDisappear('#export-msg-error', /*[[#{error.csv.filename}]]*/'Erreur')
 					}
 					
-					setTimeout(reloadAllForExport, 2000);
+					setTimeout(reloadAllForExport, 3000);
 				}			
 				
 				function exportFailureHandler (err){ 						
