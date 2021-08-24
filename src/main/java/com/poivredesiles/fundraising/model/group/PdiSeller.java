@@ -110,7 +110,11 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
     }
     
     public boolean isDueDateArrived() {
-    	return this.pdiGroup.getPdiCampaign().getDueDate().compareTo(LocalDate.now()) <= 0;
+    	if(this.pdiGroup.getPdiCampaign().getDueDate() != null) {
+    		return this.pdiGroup.getPdiCampaign().getDueDate().compareTo(LocalDate.now()) <= 0;
+    	} else {
+    		return false;
+    	}
     }
     
     public Integer getNumGroups() {
