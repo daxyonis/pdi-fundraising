@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
 			orderHeader.setBuyerNote(orderResource.getNote());
 			orderHeader.setBuyerLanguage(locale.getLanguage());
 			orderHeader.setCreatedBy("system");
-			orderHeader.setPdiSeller(pdiSellerRepository.getOne(orderResource.getSellerId()));
+			orderHeader.setPdiSeller(pdiSellerRepository.findById(orderResource.getSellerId()).orElseThrow());
 			setOrderItems(orderHeader, orderResource.getItems());
 			orderHeaderRepository.save(orderHeader);
 		} 
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 	private void setOrderItems(OrderHeader orderHeader, List<OrderItemResource> orderItemResources) {
 		for(OrderItemResource orderItemResource : orderItemResources) {
 			// Get original product referenced
-			PdiProduct pdiProduct = pdiProductRepository.getOne(orderItemResource.getId());
+			PdiProduct pdiProduct = pdiProductRepository.findById(orderItemResource.getId()).orElseThrow();
 			OrderItem orderItem = new OrderItem();
 			orderItem.setCreatedBy("system");
 			orderItem.setOrderNumber(orderHeader.getOrderNumber());
@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override	
 	public void deleteOrder(OrderHeader orderHeader) {
 		if(orderHeader != null) {
-			orderItemRepository.deleteInBatch(orderHeader.getOrderItems());
+			orderItemRepository.deleteAllInBatch(orderHeader.getOrderItems());
 			orderHeaderRepository.delete(orderHeader);
 			log.info("Deleted order #{}", orderHeader.getOrderNumber());
 		} else {
