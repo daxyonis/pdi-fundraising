@@ -6,12 +6,17 @@
 		<th:block th:fragment="items">	
 			<div class="sticky-top">
 	  			<div class="row">
-	  				<div class="col-sm-12 text-right">
+	  				<div class="col-sm-4">
+	  					<a th:href="@{/produits}" class="btn btn-info" target="_blank">
+						  Voir les produits
+						</a>
+	  				</div>
+	  				<div class="col-sm-8 text-right">
 	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
 						<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
 					</div>
 	  			</div>
-	  		</div>	  		
+	  		</div>	  		 	
 	  		<div class="row">
 	  			<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
 	  		</div>

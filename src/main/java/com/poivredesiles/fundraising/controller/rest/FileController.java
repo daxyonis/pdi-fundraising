@@ -56,7 +56,8 @@ public class FileController {
 	}
 
 	
-	@PostMapping("/products/upload")	
+	@PostMapping("/upload")
+	@Secured("ROLE_ADMIN")
 	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description) {
 		String message = "";
 		try {
@@ -70,7 +71,7 @@ public class FileController {
 		}
 	}
 	
-	@GetMapping("/products")
+	@GetMapping("/")
 	public ResponseEntity<byte[]> getMostRecentFile(@RequestParam("description") String description) {
 		FileDB fileDB = fileService.getMostRecentFileWithDescription(description);
 		return ResponseEntity.ok()

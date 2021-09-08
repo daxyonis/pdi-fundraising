@@ -50,6 +50,9 @@
 					<li class="nav-item" th:if="${menuShowOrder}" th:classappend="(${#request.getServletPath()} == '/commande')? 'active' : ''">						
 						<a class="nav-link" th:href="@{/commande}" th:text="#{menu.order}">Order</a>
 					</li>
+					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/produits')? 'active' : ''">
+						<a class="nav-link" th:href="@{/produits}" th:text="#{menu.products}">Nos Produits</a>
+					</li>
 				</ul>
 				<ul th:if="${seller}" class="navbar-nav mr-auto">
 					<li class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.formattedPdiCampaignDueDate}|">date de fin de campagne prevue: 15/09/2021</li>					

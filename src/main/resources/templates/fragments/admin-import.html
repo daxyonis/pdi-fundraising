@@ -50,7 +50,7 @@
 				<div class="col-md-4 pt-2">
 				</div>
 				<div class="col-md-5">
-					<img th:src="|@{/api/file/products}?description=products|" class="img-products" />					
+					<img th:src="|@{/api/file/}?description=products|" class="img-products" />					
 					<div class="imgFileBtn btn btn-outline-success px-lg-3">
 						<label for="productsImage" th:text="#{admin.import.select.products}">Sélectionnez image produits</label>
 						<input id="productsImage" class="upload-products d-none" type="file" accept="image/*" />
@@ -146,7 +146,7 @@
 					let file = this.files[0];
 					let fd = new FormData();
 					fd.append('file', file);					
-					let url = /*[[@{/api/file/products/upload}]]*/ '';
+					let url = /*[[@{/api/file/upload}]]*/ '';
 					console.log(`Uploading file...`);
 					return $.post({
 						url: `${url}?description=products`,
@@ -155,7 +155,9 @@
 						processData: false,
 						success: function(result) {
 							$('#spinning').addClass('d-none');
-							displaySuccess('#import-msg-success', result.message);							
+							displaySuccess('#import-msg-success', result.message);	
+							// Refresh image
+							$('.img-products').attr('src', $('.img-products').attr('src') + '&t=' + new Date().getTime());
 						}
 					})
 					.fail(function(err){

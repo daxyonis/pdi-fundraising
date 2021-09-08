@@ -69,4 +69,9 @@ public class MainController extends BaseController {
 		model.addAttribute("showWarning", pdiCampaignService.thereAreActiveCampaigns());
 		return "views/admin";
 	}		
+	
+	@GetMapping("/produits")
+	public String showProducts() {
+		return "views/products";
+	}
 }

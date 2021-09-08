@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -32,7 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
         	.antMatchers("/ventes").hasRole("SELLER")
         	.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
-            .antMatchers("/admin", "/api/file/**").hasRole("ADMIN")            
+        	.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")   
             .anyRequest().authenticated()
             .and()
             .formLogin()
