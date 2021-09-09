@@ -74,9 +74,14 @@ public class FileController {
 	@GetMapping("/")
 	public ResponseEntity<byte[]> getMostRecentFile(@RequestParam("description") String description) {
 		FileDB fileDB = fileService.getMostRecentFileWithDescription(description);
-		return ResponseEntity.ok()
-		        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
-		        .body(fileDB.getData());
+		if(fileDB != null) {
+			return ResponseEntity.ok()
+			        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
+			        .body(fileDB.getData());	
+		} else {
+			return ResponseEntity.ok(null);
+		}
+		
 	}
 	
 	@GetMapping("/{id}")
