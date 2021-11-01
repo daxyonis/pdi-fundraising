@@ -94,14 +94,7 @@
 		<dependency>
 		    <groupId>org.apache.tomcat</groupId>
 		    <artifactId>tomcat-jdbc</artifactId>		    
-		</dependency>
-		<dependency>
-	        <groupId>com.filemaker</groupId>
-	        <artifactId>jdbc</artifactId>	
-	        <version>1.0</version>        
-	        <scope>system</scope>
-	        <systemPath>${basedir}/lib/fmjdbc.jar</systemPath>
-	    </dependency>
+		</dependency>		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
