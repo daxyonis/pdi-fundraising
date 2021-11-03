@@ -2,7 +2,9 @@ package com.poivredesiles.fundraising.service.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Gives the summary of sales for one group
@@ -10,6 +12,8 @@ import lombok.Data;
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PdiGroupRecapDTO {
 	
 	private Long groupId;
