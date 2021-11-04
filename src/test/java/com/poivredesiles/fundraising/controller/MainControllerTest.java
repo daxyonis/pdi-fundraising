@@ -37,9 +37,8 @@ public class MainControllerTest extends BaseControllerTest {
 	
 	@Test	
 	public void testHomePageGivenUserIsBuyer() throws Exception {
-		log.info("Test what is home page for buyer");
-		user.setRoles(Set.of(new Role(RoleEnum.ROLE_BUYER)));
-		MyUserDetails userDetails = new MyUserDetails(user);
+		log.info("Test what is home page for buyer");		
+		MyUserDetails userDetails = new MyUserDetails(buyer);
 		when(pdiSellerService.getSellerForUser(userDetails)).thenReturn(seller);
 		
 		this.mockMvc
@@ -60,5 +59,52 @@ public class MainControllerTest extends BaseControllerTest {
 		.andExpect(status().is3xxRedirection())
 		.andExpect(view().name("redirect:/ventes"));
 	}
+
+	@Test	
+	public void testHomePageGivenUserIsGroupLeader() throws Exception {
+		log.info("Test what is home page for group leader : ONE group");
+		user.setRoles(Set.of(new Role(RoleEnum.ROLE_SELLER), new Role(RoleEnum.ROLE_GROUP_LEADER)));
+		MyUserDetails userDetails = new MyUserDetails(user);
+		seller.setNumGroups(1);
+		seller.setPdiGroupId(11L);
+		when(pdiSellerService.getSellerForUser(userDetails)).thenReturn(seller);		
+		
+		this.mockMvc
+		.perform(get("/").with(user(userDetails)))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/synthese/groupe/11"));
+		
+		log.info("Test what is home page for group leader : MULTI groups");
+		seller.setNumGroups(4);
+		
+		this.mockMvc
+		.perform(get("/").with(user(userDetails)))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/synthese/groupes"));
+	}
 	
+	@Test
+	public void testHomePageGivenUserIsCampaignLeader() throws Exception {
+		log.info("Test what is home page for campaign leader");
+		user.setRoles(Set.of(new Role(RoleEnum.ROLE_SELLER), new Role(RoleEnum.ROLE_CAMPAIGN_LEADER)));
+		MyUserDetails userDetails = new MyUserDetails(user);
+		when(pdiSellerService.getSellerForUser(userDetails)).thenReturn(seller);
+		
+		this.mockMvc
+		.perform(get("/").with(user(userDetails)))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/synthese"));
+	}
+	
+	@Test
+	public void testHomePageGivenUserIsAdmin() throws Exception {
+		log.info("Test what is home page for Admin");		
+		user.setRoles(Set.of(new Role(RoleEnum.ROLE_ADMIN)));
+		MyUserDetails userDetails = new MyUserDetails(user);
+		
+		this.mockMvc
+		.perform(get("/").with(user(userDetails)))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/admin"));
+	}
 }
