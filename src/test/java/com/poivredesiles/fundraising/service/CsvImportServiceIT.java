@@ -2,8 +2,10 @@ package com.poivredesiles.fundraising.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +20,9 @@ import com.poivredesiles.fundraising.imports.dto.Section;
 import com.poivredesiles.fundraising.imports.dto.Seller;
 import com.poivredesiles.fundraising.imports.dto.TypeBC;
 
-public class CsvImportServiceTest {
+public class CsvImportServiceIT {
 	
-	private final String FILEMAKER_CSV_FOLDER =  "C:\\Users\\evita\\OneDrive\\Documents\\Projects\\PoivreDesIles\\filemaker\\PDI\\";
+	private static String FILEMAKER_CSV_FOLDER =  "src/test/resources/csv/";
 	
 	private final int NUM_SECTIONS = 16;
 	private final int NUM_PRODUCTS = 99;	
@@ -29,7 +31,15 @@ public class CsvImportServiceTest {
 	private final int NUM_GROUPS = 6;
 	private final int NUM_SELLERS = 28;
 	
-	Logger log = LoggerFactory.getLogger(CsvImportServiceTest.class);
+	Logger log = LoggerFactory.getLogger(CsvImportServiceIT.class);
+		
+	@BeforeAll
+	public static void setup() {
+		File file = new File(FILEMAKER_CSV_FOLDER);
+		String absolutePath = file.getAbsolutePath();
+		System.out.println(absolutePath);
+		FILEMAKER_CSV_FOLDER = absolutePath + file.separator;
+	}
 
 	private CsvImportService csvImportService = new CsvImportService();
 		
