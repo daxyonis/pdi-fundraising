@@ -1,1 +1,1 @@
-docker run --name pdi-jvm-limits -p 9000:8080 -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3309/pdi -e GMAIL_PASSWORD=npxjeoklzhyhnpqm -e GLOBAL_SHARED_SECRET=tlioIsgccQ -e JAVA_OPTS="-Xms512m -Xmx512m" daxyonis/pdi-fundraising:latest
+docker run --name pdi-jvm-limits -p 9000:8080 -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3309/pdi -e GMAIL_PASSWORD=npxjeoklzhyhnpqm -e GLOBAL_SHARED_SECRET=tlioIsgccQ -e JAVA_OPTS="-Xms512m -Xmx512m" daxyonis/pdi-fundraising:demo

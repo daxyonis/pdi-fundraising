@@ -90,7 +90,7 @@ public class CsvImportServiceITest {
 		int numSellers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdiseller where pdi_group_id is null", Integer.class);
 		int numUsers = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user", Integer.class);
 		assertEquals(NUM_SELLERS, numSellers);
-		assertEquals(4, numUsers);	// 2 Admins + 1 buyer and 1 seller
+		assertEquals(3, numUsers);	// 1 Admin + 1 buyer and 1 seller
 	}
 	
 	@Test
