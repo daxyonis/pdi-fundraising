@@ -55,6 +55,12 @@ public class PdiProduct extends AbstractAuditingEntity implements Serializable {
     @Column(name = "weight")
     private String weight;
 
+    @Column(name = "format_fr")
+    private String formatFr;
+
+    @Column(name = "format_en")
+    private String formatEn;
+
     @ManyToOne(fetch=FetchType.LAZY)
     @JsonIgnoreProperties("pdiProducts")
     private PdiCategory category;

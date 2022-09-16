@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<html class="h-100" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,23 +16,54 @@
   	<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
   	<link rel="stylesheet" href="/css/theme_1613591810408.css">
   	<script src="/webjars/jquery/jquery.min.js"></script>
-  	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>  	
+  	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+
+	<style>
+		.container {
+			width: auto;
+  			max-width: 680px;
+  			padding: 0 15px;
+		}
+		.footer {
+		  background-color: #f5f5f5;
+		}
+	</style>
 </head>
-<body>
-  <header>
+<body class="d-flex flex-column h-100">
+  <header class="flex-shrink-0">
   	<div class="container-fluid">
   		<div class="row">
-  			<div class="col-lg-12">
-		  		<div class="float-right">
+			<div class="col-6">
+				<img th:src="@{/image/LogoPDI.png}" class="img-logo mx-auto img-fluid"></img>
+			</div>
+  			<div class="col-6">
+		  		<div class="float-right pt-3">
 			  		<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:text="#{lang.change}">English</a>
 			  	</div>
   			</div>
   		</div>	  		  	
   	</div>
   </header>
-  <section layout:fragment="content">
+  <section layout:fragment="content" class="flex-shrink-0">
     <p>Page content goes here</p>
-  </section>  
+  </section>
   <div th:replace="fragments/footer :: footer"></div>  
 </body>
+<!--body class="d-flex flex-column h-100">
+
+<main role="main" class="flex-shrink-0">
+	<div class="container">
+		<h1 class="mt-5">Sticky footer</h1>
+		<p class="lead">Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
+		<p>Use <a href="/docs/4.6/examples/sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
+	</div>
+</main>
+
+<footer class="footer mt-auto py-3">
+	<div class="container">
+		<span class="text-muted">Place sticky footer content here.</span>
+	</div>
+</footer>
+
+</body-->
 </html>

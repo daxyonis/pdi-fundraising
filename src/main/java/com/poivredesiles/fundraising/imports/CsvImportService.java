@@ -350,6 +350,8 @@ public class CsvImportService {
 					product.setNumber(lineInArray[5]);
 					product.setSectionNum(Long.parseLong(lineInArray[6]));
 					product.setWeight(lineInArray[7]);
+					product.setFormatFr(lineInArray[8]);
+					product.setFormatEn(lineInArray[9]);
 					products.add(product);
 				} catch (NumberFormatException | ArrayIndexOutOfBoundsException e1) {
 					numFaultyLines += 1.0;

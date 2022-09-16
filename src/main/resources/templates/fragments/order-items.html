@@ -44,7 +44,8 @@
 	  						<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
 	  						<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
 	  					</div>
-	  					<div class="col-sm-2" th:text="${product.weight}">28 g</div> 	  					
+	  					<div class="col-sm-1" th:text="${product.weight}">28 g</div>
+						<div class="col-sm-1" th:text="${product.formatFr}">28 g</div>
 	  				</div>
 	  			</th:block>
 	  		</th:block>	  	

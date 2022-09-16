@@ -8,28 +8,24 @@
 </head>
 <body>
   <section layout:fragment="content">
-  	<div class="container-fluid">  		
-  		<div class="row mt-3">
-  			<div class="col-lg-4">
-  				<img th:src="@{/image/LogoPDI.png}" class="img-logo mx-auto img-fluid"></img>
-  			</div>
-  			<div class="col-lg-4">  								  			
+  	<div class="container mb-2">
+		<div class="row">
+  			<div class="col-lg-12">
   				<h1 class="text-center pt-5" th:text="#{login.titre}">Campagnes de financement</h1>  				
   			</div>  			
   		</div>
   		<div class="row">
-  			<div class="col-lg-4 offset-lg-4">
+  			<div class="col-lg-12">
   				<div th:if="${param.error}"><h4 class="text-center bg-warning" th:text="#{login.error}">Invalid username and password.</h4></div>
         		<div th:if="${param.logout}"><h4 class="text-center bg-success text-light py-2" th:text="#{login.logout}">You have been logged out.</h4></div>
   			</div>
   		</div>
   		<div class="row">
-  			<div class="col-lg-4"></div>
-  			<div class="col-lg-4">
+  			<div class="col-lg-12">
   				<div class="card">
   					<div class="card-body">
 			  			 <form id="loginForm" th:action="@{/login}" method="post">			  			 	
-				            <div class="form-group">				            	
+				            <div class="form-group text-center">
 				  			 	<div class="form-check form-check-inline">				  			 	
 								  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="buyer" checked>
 								  <label class="form-check-label" for="inlineRadio1" th:text="#{login.buyer}">Je suis Acheteur</label>

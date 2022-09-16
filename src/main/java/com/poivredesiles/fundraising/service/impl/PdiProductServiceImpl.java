@@ -107,6 +107,8 @@ public class PdiProductServiceImpl implements PdiProductService {
 		pdiProduct.setDescriptionFr(product.getDescFr());
 		pdiProduct.setDescriptionEn(product.getDescEn());
 		pdiProduct.setWeight(product.getWeight());
+		pdiProduct.setFormatFr(product.getFormatFr());
+		pdiProduct.setFormatEn(product.getFormatEn());
 		if(pdiProduct.getCategory() == null) {
 			PdiCategory category = pdiCategoryRepository.findByNumber(product.getSectionNum());
 			if(category != null) {
