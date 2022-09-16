@@ -64,11 +64,11 @@ public class PdiCampaignDTO implements Serializable {
     
     @JsonProperty("orderHeaderFilename")
     public String getOrderHeaderFilename() {    	
-    	return String.format("%d_enteteBC_%s.csv", organizationNum, ImportsUtils.formatLocalDate(LocalDate.now(), "dd-MM-yyyy"));
+    	return String.format("%d_enteteBC_%s.csv", number, ImportsUtils.formatLocalDate(LocalDate.now(), "dd-MM-yyyy"));
     }
     
     @JsonProperty("orderDetailFilename")
     public String getOrderDetailFilename() {    	
-    	return String.format("%d_detailBC_%s.csv", organizationNum, ImportsUtils.formatLocalDate(LocalDate.now(), "dd-MM-yyyy"));
+    	return String.format("%d_detailBC_%s.csv", number, ImportsUtils.formatLocalDate(LocalDate.now(), "dd-MM-yyyy"));
     }
 }
