@@ -234,21 +234,26 @@
                 </executions>
             </plugin>
             <plugin>
-			    <groupId>pl.project13.maven</groupId>
-			    <artifactId>git-commit-id-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <phase>initialize</phase>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>                        
-			        </execution>
-			    </executions>
+				<groupId>io.github.git-commit-id</groupId>
+				<artifactId>git-commit-id-maven-plugin</artifactId>
+				<version>5.0.0</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>initialize</phase>
+					</execution>
+				</executions>
 			    <configuration>
+					<verbose>true</verbose>
+					<failOnNoGitDirectory>true</failOnNoGitDirectory>
+					<failOnUnableToExtractRepoInfo>true</failOnUnableToExtractRepoInfo>
 			        <dateFormat>yyyyMMdd-HHmmss</dateFormat><!--  human-readable part of the version number -->
-			        <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-			        <generateGitPropertiesFile>true</generateGitPropertiesFile>			
-			        <offline>true</offline>        			       
+			        <generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+					<offline>true</offline>
 			    </configuration>
 			</plugin>
 			<plugin>

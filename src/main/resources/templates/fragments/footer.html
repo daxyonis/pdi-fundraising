@@ -6,10 +6,10 @@
 	<th:block th:fragment="footer"> 
 		<footer class="footer mt-auto py-3 bg-dark text-light">
 <!--		<nav class="navbar navbar-dark bg-dark d-none d-sm-block">-->
-			<div class="container">
+			<div class="container text-center">
 				<span >&copy; Copyright 2021 - Poivre des Îles </span>
 				<span class="bg-primary" th:unless="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}"> >>DÉVELOPPEMENT<< </span></span>
-				<span class="" th:unless="${#strings.isEmpty(buildVersion)}" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
+				<span class="" th:unless="${#strings.isEmpty(buildVersion)}" th:text="| Version ${buildVersion}-${gitCommitId}|">Version</span>
 			</div>
 		<!--/nav -->
   		</footer>
