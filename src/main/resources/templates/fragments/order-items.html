@@ -92,12 +92,6 @@
 	  					$('input[name="phone"]').val(orderData.phone);
 	  					$('input[name="note"]').val(orderData.note);
 	  					$('input[name="email"]').val(orderData.email);
-	  					$('input[name="address.line1"]').val(orderData.address.line1);
-	  					$('input[name="address.line2"]').val(orderData.address.line2);
-	  					$('input[name="address.line3"]').val(orderData.address.line3);	  						
-	  					$('input[name="address.city"]').val(orderData.address.city);
-	  					$('select[name="address.state"]').val(orderData.address.state);
-	  					$('input[name="address.postalCode"]').val(orderData.address.postalCode);		  						
 	  					
 	  					// Fill in item quantities
 	  					chosenProducts = orderData.items;
@@ -143,15 +137,6 @@
 		  					phone: $('input[name="phone"]').val(),
 		  					note: $('input[name="note"]').val(),
 		  					email: $('input[name="email"]').val(),
-		  					address: {
-		  						line1: $('input[name="address.line1"]').val(),
-		  						line2: $('input[name="address.line2"]').val(),
-		  						line3: $('input[name="address.line3"]').val(),
-		  						city:  $('input[name="address.city"]').val(),
-		  						state: $('select[name="address.state"]').val(),
-		  						postalCode:$('input[name="address.postalCode"]').val(),
-		  						country: "CANADA"
-		  					},
 		  					sellerId: /*[[${seller.id}]]*/ '0',
 		  					items: chosenProducts
 		  				};

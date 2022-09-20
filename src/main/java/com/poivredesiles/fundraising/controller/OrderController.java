@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
-import com.poivredesiles.fundraising.resource.ResourceUtils;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
@@ -33,9 +32,6 @@ public class OrderController extends BaseController {
 	
 	@Autowired
 	private OrderService orderService;
-	
-	@Autowired
-	private ResourceUtils resourceUtils;
 	
 	@Autowired
 	private LocaleResolver localeResolver;
@@ -55,7 +51,6 @@ public class OrderController extends BaseController {
 			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails);
 			model.addAttribute("products", products);						
 			model.addAttribute("globalServiceUrl", globalServiceUrl);
-			model.addAttribute("provinces", resourceUtils.getProvincesMap(localeResolver.resolveLocale(request)));
 			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
 			model.addAttribute("failure", failure);

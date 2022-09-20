@@ -51,5 +51,11 @@ public interface OrderService {
 	 * @param orderNumber	the order number
 	 */
 	void markOrderAsError(Long orderNumber);
-	
+
+	/**
+	 * Find one by order number
+	 * @param orderNumber
+	 * @return
+	 */
+	OrderHeader findByOrderNumber(Long orderNumber);
 }

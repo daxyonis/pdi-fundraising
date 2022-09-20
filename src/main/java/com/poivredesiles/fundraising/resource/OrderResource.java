@@ -19,7 +19,6 @@ public class OrderResource {
 	private Long sellerId;
 	
 	private String email;
-	private AddressResource address;
 	
 	private List<OrderItemResource> items;
 	
