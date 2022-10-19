@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
+import com.poivredesiles.fundraising.resource.ContactMessage;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 
@@ -86,4 +87,11 @@ public interface PdiCampaignService {
 	 */
 	void deleteBlockedFor1Year();
 
+	/**
+	 * Contact PDI with a message
+	 * @param id
+	 * @param contactMessage
+	 * @param resolveLocale
+	 */
+    void contactPdi(Long id, ContactMessage contactMessage, Locale resolveLocale);
 }

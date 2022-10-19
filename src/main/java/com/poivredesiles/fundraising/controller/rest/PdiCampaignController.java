@@ -6,17 +6,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.poivredesiles.fundraising.resource.ContactMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.poivredesiles.fundraising.exception.PdiExportDataException;
@@ -59,6 +55,13 @@ public class PdiCampaignController {
 	public PdiCampaignDTO close(@PathVariable Long id, HttpServletRequest request) {
 		 return pdiCampaignService.close(id, localeResolver.resolveLocale(request));
 	}
+
+
+	@PostMapping("/{id}/contact")
+	@Secured({"ROLE_ADMIN", "ROLE_CAMPAIGN_LEADER"})
+	public void contactPdi(@PathVariable Long id, @RequestBody ContactMessage contactMessage, HttpServletRequest request) {
+		pdiCampaignService.contactPdi(id, contactMessage, localeResolver.resolveLocale(request));
+	}
 	
 	/**
 	 * Block one given campaign : this puts blocked campaign state to true, and disables
@@ -69,7 +72,7 @@ public class PdiCampaignController {
 	@PostMapping("/{id}/block")
 	@Secured("ROLE_ADMIN")
 	public PdiCampaignDTO block(@PathVariable Long id) {
-		 return pdiCampaignService.block(id);
+		return pdiCampaignService.block(id);
 	}
 	
 	/**

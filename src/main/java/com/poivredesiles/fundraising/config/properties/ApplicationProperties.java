@@ -25,6 +25,8 @@ public class ApplicationProperties {
 
 		private String cc;
 
+		private String pdi;
+
 		public String getAdmin() {
 			return admin;
 		}
@@ -57,6 +59,9 @@ public class ApplicationProperties {
 			this.cc = cc;
 		}
 
+		public String getPdi() { return pdi; }
+
+		public void setPdi(String pdi) { this.pdi = pdi; }
 	}
 
 	public Mail getMail() {
