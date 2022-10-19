@@ -7,6 +7,7 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import com.poivredesiles.fundraising.resource.ContactMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -70,23 +71,23 @@ public class MailService {
 	}
 
 	@Async
-	public void sendEmailFromTemplate(PdiCampaignRecapDTO campaignRecap, String templateName, String titleKey, Locale locale) {
-		if (campaignRecap.getEmailTo() == null) {
-			log.warn("Email doesn't exist for campaign '{}'", campaignRecap.getCampaignId());
-			return;
-		}		
+	public void sendEmailFromTemplate(Object contentObject, String contentObjectName, String templateName,String to, String titleKey, Locale locale) {
 		Context context = new Context(locale);
-		context.setVariable("campaignRecap", campaignRecap);		
+		context.setVariable(contentObjectName, contentObject);
 		String content = templateEngine.process(templateName, context);
 		String subject = messageSource.getMessage(titleKey, null, locale);
-		String to = getEmailTo(campaignRecap);
 		sendEmail(to, subject, content, false, true);
 	}
 
 	@Async
 	public void sendCampaignRecapEmail(PdiCampaignRecapDTO campaignRecap, Locale locale) {
-		log.debug("Sending campaign summary email to '{}'", getEmailTo(campaignRecap));		
-		sendEmailFromTemplate(campaignRecap, "mail/campaignSummaryEmail", "email.summary.title", locale);
+		log.debug("Sending campaign summary email to '{}'", getEmailTo(campaignRecap));
+		if (campaignRecap.getEmailTo() == null) {
+			log.warn("Email doesn't exist for campaign '{}'", campaignRecap.getCampaignId());
+			return;
+		}
+		String to = getEmailTo(campaignRecap);
+		sendEmailFromTemplate(campaignRecap, "campaignRecap", "mail/campaignSummaryEmail", to, "email.summary.title", locale);
 	}
 	
 	private String getEmailTo(PdiCampaignRecapDTO campaignRecap) {
@@ -109,6 +110,11 @@ public class MailService {
 		String content = templateEngine.process("mail/errorEmail", context);		
 		String to = applicationProperties.getMail().getAdmin();
 		sendEmail(to, errorMessage.getSubject(), content, false, true);		
+	}
+
+	public void sendContactEmail(ContactMessage contactMessage, Locale locale) {
+		String to = applicationProperties.getMail().getPdi();
+		sendEmailFromTemplate(contactMessage, "contactMessage", "mail/contactMessageEmail", to, "email.contact.title", locale);
 	}
 
 }

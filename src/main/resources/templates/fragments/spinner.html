@@ -1,0 +1,15 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<th:block th:fragment="spinner">
+    <div id="spinning" class="d-none">
+        <div class="d-flex align-items-center">
+            <strong class="text-success" th:text="#{loading}">Loading...</strong>
+            <div class="spinner-border text-success ml-auto" role="status" aria-hidden="true"></div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

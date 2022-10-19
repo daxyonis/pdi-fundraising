@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.resource.ContactMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -346,7 +347,21 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			log.info("Deleted campaign #{}", pdiCampaign.getNumber());
 		}		
 	}
-	
-	
-	
+
+	@Override
+	public void contactPdi(Long id, ContactMessage contactMessage, Locale locale) {
+		Optional<PdiCampaign> campaign = pdiCampaignRepository.findById(id);
+		if (campaign.isPresent()) {
+			// Check message sender
+			if (campaign.get().getOrganizationName().equalsIgnoreCase(contactMessage.getOrganization())) {
+				mailService.sendContactEmail(contactMessage, locale);
+			} else {
+				throw new ResourceNotFoundException("Nom d'organisation invalide.");
+			}
+		} else {
+			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+		}
+	}
+
+
 }
