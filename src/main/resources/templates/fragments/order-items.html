@@ -12,8 +12,9 @@
 						</a>
 	  				</div>
 	  				<div class="col-sm-8 text-right">
-	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
-						<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+	  					<h3><span id="total" class="font-weight-bold mr-4 badge badge-pill badge-success">0.00$</span>
+							<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+						</h3>
 					</div>
 	  			</div>
 	  		</div>	  		 	
@@ -30,7 +31,7 @@
 	  					</div>
 	  				</th:block>
 	  				<!-- /* Print the product info */ -->
-	  				<div class="row my-1">
+	  				<div class="row my-1 border-bottom">
 	  					<div class="col-sm-1" th:text="${product.labelNumber}">#12</div>
 	  					<div class="col-sm-2">
 	  						<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
