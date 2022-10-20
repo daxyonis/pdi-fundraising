@@ -173,8 +173,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		for(PdiGroup pdiGroup : pdiCampaign.getPdiGroups()) {
 			for(PdiSeller pdiSeller : pdiGroup.getPdiSellers()) {
 				User me = pdiSeller.getMe();
-				// Disable this user if he is not null AND (we disable all OR this user is not a campaign leader) 
-				boolean disableMe = (me!= null) && (disableAll || !me.getRoles().contains(campaignLeader)); 
+				boolean disableMe = (me!= null) && disableAll;
 				if(disableMe) {																		
 					pdiSeller.getMe().setDisabled(true);					
 				}

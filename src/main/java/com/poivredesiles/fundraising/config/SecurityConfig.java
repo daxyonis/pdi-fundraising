@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
         	.antMatchers("/ventes").hasRole("SELLER")
         	.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
+				.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
         	.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")   
             .anyRequest().authenticated()

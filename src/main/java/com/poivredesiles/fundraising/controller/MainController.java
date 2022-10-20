@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,6 +63,7 @@ public class MainController extends BaseController {
 	}
 	
 	@GetMapping("/admin")
+	@Secured("ROLE_ADMIN")
 	public String admin(Model model) {
 		log.info("Requested Admin Page");				
 		model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
