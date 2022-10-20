@@ -3,20 +3,7 @@
 	<head>
 	</head>
 	<body>		
-	<th:block th:fragment="header">  		
-  		<div class="row">
-  			<div class="col-md-12">
-  				<h3 th:text="#{order.new}">nouvelle commande</h3>
-  			</div>
-  		</div>
-  		<!--/* Messages */-->
-		<div class="row">
-			<div class="col-md-12">
-				<div th:if="${failure}" class="alert alert-danger" th:text=#{order.error.failure}></div>
-				<div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
-			</div>
-		</div>
-  		<form id="buyerForm" class="needs-validation" novalidate>  			  			  	
+	<th:block th:fragment="header">
 	  		<fieldset>
     		<legend th:text="#{order.buyer.infos}">infos de l'acheteur</legend>
 	  		<div class="row">
@@ -97,8 +84,7 @@
 				<input type="checkbox" class="form-check-input" id="consent" required>
 				<label for="consent" class="form-check-label"><small th:text="#{order.buyer.consent}">je consens...</small></label>	  					  				  					  					  					  		
 				<div class="invalid-feedback" th:text="#{field.consent.required}"></div>
-			</div>	  				 		
-  		</form>
+			</div>
   	</th:block>
 	</body>
 </html>

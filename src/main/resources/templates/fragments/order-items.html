@@ -33,7 +33,8 @@
 	  				<div class="row my-1">
 	  					<div class="col-sm-1" th:text="${product.labelNumber}">#12</div>
 	  					<div class="col-sm-2">
-	  						<input type="number" min="0" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
+	  						<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
+							<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
 	  					</div>
 	  					<div class="col-sm-1" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
 	  					<div class="col-sm-3" th:switch="${#locale.language}">
