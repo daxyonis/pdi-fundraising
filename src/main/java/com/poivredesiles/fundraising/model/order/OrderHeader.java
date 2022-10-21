@@ -90,6 +90,8 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 	}
 	
 	public String getDetail() {		
-		return orderItems.stream().map(oi -> oi.getDetail(buyerLanguage).toLowerCase()).reduce("", (a,b) -> a.isEmpty() ? b : (a + "; " + b));		
+		return orderItems.stream()
+                         .map(oi -> oi.getDetail(buyerLanguage).toLowerCase())
+                         .reduce("", (a,b) -> a.isEmpty() ? b : (a + "; " + b));
 	}
 }

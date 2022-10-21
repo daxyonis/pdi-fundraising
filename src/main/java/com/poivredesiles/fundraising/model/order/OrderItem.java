@@ -53,12 +53,21 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
     @JsonIgnoreProperties(value = "orderItems", allowSetters = true)
     private OrderHeader header;
     
-    public String getDetail(String language) {    	
+    public String getDetail(String language) {
+        String detail = quantity.toString();
 		if(language.equals("fr")) {
-			return quantity.toString() + " " + product.getNameFr();
+            detail += " " + product.getNameFr();
+            if (product.getFormatFr() != null && !product.getFormatFr().isBlank()) {
+                detail += " (" + product.getFormatFr() + ")";
+            }
 		} else {
-			return quantity.toString() + " " + product.getNameEn();
-		}    	
+			detail += " " + product.getNameEn();
+            if (product.getFormatEn() != null && !product.getFormatEn().isBlank()) {
+                detail += " (" + product.getFormatEn() + ")";
+            }
+		}
+        detail += " [" + product.getLabelNumber() + "]";
+        return detail;
     }
     
     public BigDecimal getSubTotal() {
