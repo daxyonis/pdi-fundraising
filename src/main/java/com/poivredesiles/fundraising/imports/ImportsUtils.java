@@ -20,6 +20,8 @@ public class ImportsUtils {
 	}
 	
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+	public static final String DEFAULT_TIMEZONE = "America/Montreal";
 	
 	public static final NumberFormat currencyNf = NumberFormat.getCurrencyInstance(Locale.CANADA_FRENCH);
 
@@ -75,7 +77,7 @@ public class ImportsUtils {
 		if(instant == null) {
 			return null;
 		}
-		return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+		return instant.atZone(ZoneId.of(DEFAULT_TIMEZONE)).toLocalDateTime();
 	}
 	
 	/**

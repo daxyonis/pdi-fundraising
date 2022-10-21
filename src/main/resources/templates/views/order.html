@@ -3,6 +3,11 @@
 <head>
   <title th:text="#{pdi.order}">pdi commande</title>       
   <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod')} ? '/js/rxp-js.min.js' : '/js/rxp-js.js'"></script>
+    <style>
+        #invalid-alert{
+            font-size: 1em;
+        }
+    </style>
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">

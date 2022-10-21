@@ -56,9 +56,20 @@
   		</div>
   	</div>  	
   	 <script th:inline="javascript">
-  		$(function(){  			
+  	 	let role;
+  	 	if (typeof(Storage) !== "undefined") {
+  			role = localStorage.getItem("user.role");
+		}
+  		$(function(){
+  			if (role === 'seller') {
+  				$('#inlineRadio1').prop('checked',false);
+  				$('#inlineRadio2').prop('checked', true);
+  				$('#pwd').removeClass('invisible');
+  			}
+
   			$('input[name="inlineRadioOptions"]').on('change', function(){  				
-  					$('#pwd').toggleClass('invisible');  				
+  					$('#pwd').toggleClass('invisible');
+  					localStorage.setItem("user.role", $(this).val());
   			});  	
   			
   			$('#loginForm').on('submit', function(event){
