@@ -28,8 +28,6 @@ import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderItem;
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.product.PdiProduct;
-import com.poivredesiles.fundraising.resource.AddressResource;
-import com.poivredesiles.fundraising.resource.Country;
 import com.poivredesiles.fundraising.resource.OrderItemResource;
 import com.poivredesiles.fundraising.resource.OrderResource;
 
@@ -70,15 +68,6 @@ public class GlobalPaymentsServiceTest {
 		items.add(new OrderItemResource(23L, 1L));
 		
 		orderResource.setItems(items);
-		
-		AddressResource address = new AddressResource();
-		address.setLine1("100 rue Rhéaume");
-		address.setCity("Verdun");
-		address.setState("QC");
-		address.setPostalCode("H4G 3N1");
-		address.setCountry(Country.CANADA);
-		
-		orderResource.setAddress(address);
 		
 		orderHeader = getNewOrder();
 	}
@@ -124,9 +113,10 @@ public class GlobalPaymentsServiceTest {
 		assertTrue(hppJson.contains("\"ORDER_ID\":\"123456789\""));
 		assertTrue(hppJson.contains("\"AMOUNT\":\"1900\""));
 		assertTrue(hppJson.contains("\"HPP_CUSTOMER_EMAIL\":\"abc@example.com\""));
-		assertTrue(hppJson.contains("\"HPP_BILLING_STREET1\":\"100 rue Rhéaume\""));
-		assertTrue(hppJson.contains("\"HPP_BILLING_CITY\":\"Verdun\""));
-		assertTrue(hppJson.contains("\"HPP_BILLING_POSTALCODE\":\"H4G 3N1\""));
-		assertTrue(hppJson.contains("\"HPP_BILLING_COUNTRY\":\"124\""));
+		assertTrue(hppJson.contains("\"HPP_CUSTOMER_COUNTRY\":\"CA\""));
+		assertTrue(hppJson.contains("\"HPP_CUSTOMER_PHONENUMBER_MOBILE\":\"1|5149095505\""));
+		assertTrue(hppJson.contains("\"HPP_CUSTOMER_LASTNAME\":\"Jujube\""));
+		assertTrue(hppJson.contains("\"HPP_CUSTOMER_FIRSTNAME\":\"Bertrand\""));
+
 	}	
 }

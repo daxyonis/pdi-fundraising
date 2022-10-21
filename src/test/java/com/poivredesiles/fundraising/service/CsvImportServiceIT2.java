@@ -2,8 +2,11 @@ package com.poivredesiles.fundraising.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
+
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,9 +22,9 @@ import com.poivredesiles.fundraising.imports.CsvImportService;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestMethodOrder(OrderAnnotation.class)
-public class CsvImportServiceITest {	
+public class CsvImportServiceIT2 {	
 	
-	private final String FILEMAKER_CSV_FOLDER =  "C:\\Users\\evita\\OneDrive\\Documents\\Projects\\PoivreDesIles\\filemaker\\PDI\\";
+	private static String FILEMAKER_CSV_FOLDER =  "src/test/resources/csv/";
 	
 	private final int NUM_SECTIONS = 16;
 	private final int NUM_PRODUCTS = 99;
@@ -35,8 +38,16 @@ public class CsvImportServiceITest {
 	
 	private CsvImportService csvImportService;
 	
+	@BeforeAll
+	public static void setup() {
+		File file = new File(FILEMAKER_CSV_FOLDER);
+		String absolutePath = file.getAbsolutePath();
+		System.out.println(absolutePath);
+		FILEMAKER_CSV_FOLDER = absolutePath + file.separator;
+	}
+	
 	@Autowired
-	public CsvImportServiceITest(DataSource datasource, CsvImportService csvImportService) {
+	public CsvImportServiceIT2(DataSource datasource, CsvImportService csvImportService) {
 		this.csvImportService = csvImportService;
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 	}			

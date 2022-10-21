@@ -3,12 +3,31 @@
 <head>
   <title th:text="#{pdi.order}">pdi commande</title>       
   <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod')} ? '/js/rxp-js.min.js' : '/js/rxp-js.js'"></script>
+    <style>
+        #invalid-alert{
+            font-size: 1em;
+        }
+    </style>
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">
-  	<div class="container-fluid"> 
-  		<div th:replace="fragments/order-header :: header"></div>
-  		<div th:replace="fragments/order-items :: items"></div>
+  	<div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 th:text="#{order.new}">nouvelle commande</h3>
+            </div>
+        </div>
+        <!--/* Messages */-->
+        <div class="row">
+            <div class="col-md-12">
+                <div th:if="${failure}" class="alert alert-danger" th:text=#{order.error.failure}></div>
+                <div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
+            </div>
+        </div>
+        <form id="buyerForm" novalidate>
+            <div th:replace="fragments/order-header :: header"></div>
+            <div th:replace="fragments/order-items :: items"></div>
+        </form>
   	</div>
   	<script th:inline="javascript">
   		$('#logoutForm').on('submit', function(){

@@ -3,15 +3,15 @@
 	<head>
 	</head>
 	<body>		
-	<th:block th:fragment="footer"> 
-		<footer>  	  		   
-		<nav class="navbar fixed-bottom navbar-dark bg-dark d-none d-sm-block">
-			<div class="container">
-				<span class="navbar-text">&copy; Copyright 2021 - Choconaute</span> 
-				<span class="navbar-text bg-primary" th:unless="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}"><<<---- EN MODE DÉVELOPPEMENT ---->>> </span></span> 				
-				<span class="navbar-text" th:unless="${#strings.isEmpty(buildVersion)}" th:text="|Version ${buildVersion}-${gitCommitId}|">Version</span>
+	<th:block th:fragment="footer">
+		<footer class="footer mt-auto py-3 bg-dark text-light">
+<!--		<nav class="navbar navbar-dark bg-dark d-none d-sm-block">-->
+			<div class="container text-center">
+				<span >&copy; Copyright 2021 - Choconaute </span>
+				<!--span class="bg-primary" th:unless="${#arrays.contains(@environment.getActiveProfiles(), 'prod')}"> >>DÉVELOPPEMENT<< </span></span-->
+				<span class="" th:unless="${#strings.isEmpty(buildVersion)}" th:text="| Version ${buildVersion}-${gitCommitId}|">Version</span>
 			</div>
-		</nav>	    	   
+		<!--/nav -->
   		</footer>
 	</th:block>
 	</body>

@@ -15,7 +15,7 @@ import com.poivredesiles.fundraising.imports.JdbcImportService;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class JdbcImportServiceITest{
+public class JdbcImportServiceIT{
 	
 	private final int NUM_SECTIONS = 16;
 	private final int NUM_PRODUCTS = 99;
@@ -31,7 +31,7 @@ public class JdbcImportServiceITest{
 	private JdbcImportService jdbcImportService;
 	
 	@Autowired
-	public JdbcImportServiceITest(DataSource datasource, JdbcImportService jdbcImportService) {
+	public JdbcImportServiceIT(DataSource datasource, JdbcImportService jdbcImportService) {
 		this.jdbcImportService = jdbcImportService;
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 	}			

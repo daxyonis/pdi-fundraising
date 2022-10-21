@@ -11,12 +11,7 @@
 					<div class="alert alert-warning d-none" id="import-msg-error">L'importation des nouveaux groupes a echoue</div>
 				</div>
 			</div>
-			<div id="spinning" class="d-none">
-				<div class="d-flex align-items-center">
-	  				<strong class="text-success" th:text="#{loading}">Loading...</strong>  				
-	  				<div class="spinner-border text-success ml-auto" role="status" aria-hidden="true"></div>
-				</div>
-			</div>			
+			<div th:replace="fragments/spinner :: spinner"></div>
 			<!-- /* Sections and products import */ -->
 			<div class="row mt-3">
 				<div class="col-md-12">
@@ -30,7 +25,7 @@
 				
 				<div class="col-md-5">																								
 						<div class="fileBtn btn btn-outline-success px-lg-3">
-							<label for="inputFolder" th:text="#{admin.import.select}">Sélectionnez le répertoire des fichiers</label>
+							<label for="inputFolder" th:text="#{admin.import.select}">Sï¿½lectionnez le rï¿½pertoire des fichiers</label>
 							<input id="inputFolder" class="upload d-none" type="file" accept=".csv" webkitdirectory multiple />
 						</div>					  							
 				</div>
@@ -49,11 +44,18 @@
 			<div class="row">
 				<div class="col-md-4 pt-2">
 				</div>
-				<div class="col-md-5">
-					<img th:src="|@{/api/file/}?description=products|" class="img-products" />					
+				<div class="col-md-4">
+					<img id="image_fr" th:src="|@{/api/file/}?description=products_fr|" class="img-products" />
 					<div class="imgFileBtn btn btn-outline-success px-lg-3">
-						<label for="productsImage" th:text="#{admin.import.select.products}">Sélectionnez image produits</label>
-						<input id="productsImage" class="upload-products d-none" type="file" accept="image/*" />
+						<label for="productsImageFr" th:text="#{admin.import.select.products.fr}">Selectionnez image produits</label>
+						<input id="productsImageFr" data-lang="fr" class="upload-products d-none" type="file" accept="image/*" />
+					</div>
+				</div>
+				<div class="col-md-4">
+					<img id="image_en" th:src="|@{/api/file/}?description=products_en|" class="img-products" />
+					<div class="imgFileBtn btn btn-outline-success px-lg-3">
+						<label for="productsImageEn" th:text="#{admin.import.select.products.en}">Selectionnez image produits</label>
+						<input id="productsImageEn" data-lang="en" class="upload-products d-none" type="file" accept="image/*" />
 					</div>
 				</div>
 			</div>						
@@ -149,9 +151,10 @@
 					let fd = new FormData();
 					fd.append('file', file);					
 					let url = /*[[@{/api/file/upload}]]*/ '';
+					let lang = $(this).data('lang');
 					console.log(`Uploading file...`);
 					return $.post({
-						url: `${url}?description=products`,
+						url: `${url}?description=products_${lang}`,
 						data: fd,
 						contentType: false,						
 						processData: false,
@@ -159,7 +162,7 @@
 							$('#spinning').addClass('d-none');
 							displaySuccess('#import-msg-success', result.message);	
 							// Refresh image
-							$('.img-products').attr('src', $('.img-products').attr('src') + '&t=' + new Date().getTime());
+							$(`#image_${lang}`).attr('src', $(`#image_${lang}`).attr('src') + '&t=' + new Date().getTime());
 						}
 					})
 					.fail(function(err){

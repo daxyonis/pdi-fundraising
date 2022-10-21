@@ -6,14 +6,23 @@
 		<th:block th:fragment="items">	
 			<div class="sticky-top">
 	  			<div class="row">
-	  				<div class="col-sm-4">
-	  					<a th:href="@{/produits}" class="btn btn-info" target="_blank">
+	  				<div class="col-md-3">
+	  					<a th:href="@{/produits}" class="btn btn-info" target="_blank" th:text="#{order.formats}">
 						  Voir les produits
 						</a>
 	  				</div>
-	  				<div class="col-sm-8 text-right">
-	  					<span id="total" class="font-weight-bold mr-4">0.00$</span>	  						  						  					  					  					
-						<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+	  				<div class="col-md-9 text-right">
+						<div class="row">
+							<div class="col-md-7 col-lg-8">
+								<span id="invalid-alert" class="alert-danger d-none px-1">SVP veuillez corriger les erreurs dans le formulaire</span>
+							</div>
+							<div class="col-md-5 col-lg-4">
+								<h3>
+									<span id="total" class="font-weight-bold mr-4 badge badge-pill badge-success">0.00$</span>
+									<button id="checkout-button" class="btn btn-info btn-lg" type="button" disabled th:text="#{order.pay}">Payer</button>
+								</h3>
+							</div>
+						</div>
 					</div>
 	  			</div>
 	  		</div>	  		 	
@@ -30,10 +39,11 @@
 	  					</div>
 	  				</th:block>
 	  				<!-- /* Print the product info */ -->
-	  				<div class="row my-1">
+	  				<div class="row my-1 border-bottom">
 	  					<div class="col-sm-1" th:text="${product.labelNumber}">#12</div>
 	  					<div class="col-sm-2">
-	  						<input type="number" min="0" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
+	  						<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
+							<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
 	  					</div>
 	  					<div class="col-sm-1" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
 	  					<div class="col-sm-3" th:switch="${#locale.language}">
@@ -44,7 +54,8 @@
 	  						<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
 	  						<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
 	  					</div>
-	  					<div class="col-sm-2" th:text="${product.weight}">28 g</div> 	  					
+	  					<div class="col-sm-1" th:text="${product.weight}">28 g</div>
+						<div class="col-sm-1" th:text="${product.formatFr}">28 g</div>
 	  				</div>
 	  			</th:block>
 	  		</th:block>	  	
@@ -80,6 +91,21 @@
   						$('#checkout-button').attr('disabled', true);
   					}  					
 	  			}
+
+	  			function getValidationErrorMessage() {
+	  				if (!$('input#name')[0].checkValidity()) {
+	  					return /*[[#{field.required.name}]]*/'';
+	  				}
+	  				if (!$('input#phone')[0].checkValidity()) {
+	  					return /*[[#{field.required.phone}]]*/'';
+	  				}
+	  				if (!$('input#email')[0].checkValidity()) {
+	  					return /*[[#{field.required.email}]]*/'';
+	  				}
+	  				if (!$('input#consent')[0].checkValidity()) {
+	  					return /*[[#{field.consent.required}]]*/'';
+	  				}
+	  			}
 	  			
 	  			//***********************************************
 	  			// DOM READY
@@ -91,12 +117,6 @@
 	  					$('input[name="phone"]').val(orderData.phone);
 	  					$('input[name="note"]').val(orderData.note);
 	  					$('input[name="email"]').val(orderData.email);
-	  					$('input[name="address.line1"]').val(orderData.address.line1);
-	  					$('input[name="address.line2"]').val(orderData.address.line2);
-	  					$('input[name="address.line3"]').val(orderData.address.line3);	  						
-	  					$('input[name="address.city"]').val(orderData.address.city);
-	  					$('select[name="address.state"]').val(orderData.address.state);
-	  					$('input[name="address.postalCode"]').val(orderData.address.postalCode);		  						
 	  					
 	  					// Fill in item quantities
 	  					chosenProducts = orderData.items;
@@ -104,7 +124,14 @@
 	  						$('input.qty[data-id="' + item.id + '"]').val(item.qty);
 	  					});	
 	  					updateTotal();
-	  				}	  					  					  					  				
+	  				}
+
+	  				function clearErrorMsg() {
+	  					$('#invalid-alert').addClass('d-none');
+                    	$('#invalid-alert').text('');
+	  				}
+
+	  				$('input,checkbox').on('change', clearErrorMsg);
 	  				
 	  				$('.qty').on('change', function(){
 	  					// Add/update product in lookup table	  				  					
@@ -135,6 +162,8 @@
                         event.preventDefault();
                         event.stopPropagation();	  						  			
 		  		      	sessionStorage.clear();
+
+		  		      	clearErrorMsg();
 		  				
 		  		      	// Get the input data
 		  				let orderData = {
@@ -142,15 +171,6 @@
 		  					phone: $('input[name="phone"]').val(),
 		  					note: $('input[name="note"]').val(),
 		  					email: $('input[name="email"]').val(),
-		  					address: {
-		  						line1: $('input[name="address.line1"]').val(),
-		  						line2: $('input[name="address.line2"]').val(),
-		  						line3: $('input[name="address.line3"]').val(),
-		  						city:  $('input[name="address.city"]').val(),
-		  						state: $('select[name="address.state"]').val(),
-		  						postalCode:$('input[name="address.postalCode"]').val(),
-		  						country: "CANADA"
-		  					},
 		  					sellerId: /*[[${seller.id}]]*/ '0',
 		  					items: chosenProducts
 		  				};
@@ -160,6 +180,14 @@
 	  					
 	  					// Check validity
 	  					if (this.checkValidity() === false) {
+	  						// Display error message
+	  						let msg = getValidationErrorMessage();
+	  						if (!msg) {
+	  							// Then it's a qty that's invalid
+	  							msg = /*[[#{field.qty.invalid}]]*/'';
+	  						}
+	  						$('#invalid-alert').text(msg);
+	  						$('#invalid-alert').removeClass('d-none');
 		  					this.classList.add('was-validated');		  				
 		  		          	return false;
 		  		        }

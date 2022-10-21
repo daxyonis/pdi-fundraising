@@ -27,6 +27,10 @@ public class PdiProductDTO implements Serializable {
 
     private String weight;
 
+    private String formatFr;
+
+    private String formatEn;
+
     private Long categoryId;
     
     private String categoryDescEn;

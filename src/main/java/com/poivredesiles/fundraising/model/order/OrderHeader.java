@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
@@ -67,8 +68,10 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 
     @ManyToOne
     @JsonIgnoreProperties(value = "orderHeaders", allowSetters = true)
-    private PdiSeller pdiSeller;   
+    private PdiSeller pdiSeller;
 
+    @JsonIgnore
+    private String payTimestamp;
     
     public OrderHeader addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
@@ -87,6 +90,8 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 	}
 	
 	public String getDetail() {		
-		return orderItems.stream().map(oi -> oi.getDetail(buyerLanguage).toLowerCase()).reduce("", (a,b) -> a.isEmpty() ? b : (a + "; " + b));		
+		return orderItems.stream()
+                         .map(oi -> oi.getDetail(buyerLanguage).toLowerCase())
+                         .reduce("", (a,b) -> a.isEmpty() ? b : (a + "; " + b));
 	}
 }

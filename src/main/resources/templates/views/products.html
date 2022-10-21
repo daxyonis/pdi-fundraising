@@ -8,8 +8,8 @@
   	<div class="container-fluid"> 
   		<div class="row">
   			<div class="col-xs-12">
-  				<h3>Nos Produits</h3>
-  				<img th:src="|@{/api/file/}?description=products|" class="img-fluid" alt="Produits que nous vendons"/>
+  				<h3 th:text="#{pdi.products.title}">Nos Produits</h3>
+  				<img th:src="|@{/api/file/}?description=products_${#locale.language}|" class="img-fluid" th:alt="#{pdi.products.alt}"/>
   			</div>
   		</div>
   	</div>

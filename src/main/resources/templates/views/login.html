@@ -8,32 +8,38 @@
 </head>
 <body>
   <section layout:fragment="content">
-  	<div class="container-fluid">  		
-  		<div class="row mt-3">
-  			<div class="col-lg-4">
-  				<img th:src="@{/image/LogoPDI.png}" class="img-logo mx-auto img-fluid"></img>
-  			</div>
-  			<div class="col-lg-4">  								  			
+  	<div class="container mb-2">
+		<div class="row">
+  			<div class="col-lg-12">
   				<h1 class="text-center pt-5" th:text="#{login.titre}">Campagnes de financement</h1>  				
   			</div>  			
   		</div>
   		<div class="row">
-  			<div class="col-lg-4 offset-lg-4">
-  				<div th:if="${param.error}"><h4 class="text-center bg-warning">Invalid username and password.</h4></div>
+  			<div class="col-lg-12">
+  				<div th:if="${param.error}"><h4 class="text-center bg-warning" th:text="#{login.error}">Invalid username and password.</h4></div>
         		<div th:if="${param.logout}"><h4 class="text-center bg-success text-light py-2" th:text="#{login.logout}">You have been logged out.</h4></div>
   			</div>
   		</div>
   		<div class="row">
-  			<div class="col-lg-4"></div>
-  			<div class="col-lg-4">
+  			<div class="col-lg-12">
   				<div class="card">
   					<div class="card-body">
-			  			 <form th:action="@{/login}" method="post">
+			  			 <form id="loginForm" th:action="@{/login}" method="post">			  			 	
+				            <div class="form-group text-center">
+				  			 	<div class="form-check form-check-inline">				  			 	
+								  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="buyer" checked>
+								  <label class="form-check-label" for="inlineRadio1" th:text="#{login.buyer}">Je suis Acheteur</label>
+								</div>
+								<div class="form-check form-check-inline">
+								  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="seller">
+								  <label class="form-check-label" for="inlineRadio2" th:text="#{login.seller}">Je suis Vendeur ou autre</label>
+								</div>								
+							</div>
 				            <div class="form-group">
 				            	<label for="username" th:text="#{login.username}">Username</label>
 				            	<input type="text" name="username" id="username" th:placeholder="#{login.username.placeholder}" class="form-control"/>
 				            </div>
-				            <div class="form-group">
+				            <div class="form-group invisible" id="pwd">
 				            	<label for="password" th:text="#{login.password}">Password</label>
 				            	<input type="password" name="password" id="password" th:placeholder="#{login.password.placeholder}" class="form-control"/>
 				            </div>
@@ -48,7 +54,33 @@
 			     </div>
   			</div>
   		</div>
-  	</div>  	    
+  	</div>  	
+  	 <script th:inline="javascript">
+  	 	let role;
+  	 	if (typeof(Storage) !== "undefined") {
+  			role = localStorage.getItem("user.role");
+		}
+  		$(function(){
+  			if (role === 'seller') {
+  				$('#inlineRadio1').prop('checked',false);
+  				$('#inlineRadio2').prop('checked', true);
+  				$('#pwd').removeClass('invisible');
+  			}
+
+  			$('input[name="inlineRadioOptions"]').on('change', function(){  				
+  					$('#pwd').toggleClass('invisible');
+  					localStorage.setItem("user.role", $(this).val());
+  			});  	
+  			
+  			$('#loginForm').on('submit', function(event){
+  				if($('input[name="inlineRadioOptions"]:checked').val() === "buyer"){
+  					let username =  $('input[name="username"]').val();
+  					$('input[name="password"]').val(username);
+  				}
+  				return true;
+  			});
+  		});
+  	 </script>   
   </section>
   <!-- <footer>
     <p layout:fragment="custom-footer">This is some footer content from content page 1</p>

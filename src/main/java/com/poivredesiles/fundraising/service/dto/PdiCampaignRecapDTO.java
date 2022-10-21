@@ -2,8 +2,10 @@ package com.poivredesiles.fundraising.service.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * Gives the summary of sales per group for a campaign
@@ -12,6 +14,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(exclude = "pdiGroupRecaps")
+@AllArgsConstructor
+@NoArgsConstructor
 public class PdiCampaignRecapDTO {
 
 	private Long campaignId;

@@ -26,7 +26,6 @@ import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
 import com.poivredesiles.fundraising.repository.order.OrderItemRepository;
 import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
-import com.poivredesiles.fundraising.resource.AddressResource;
 import com.poivredesiles.fundraising.resource.OrderItemResource;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.BusinessNumberService;
@@ -111,26 +110,9 @@ public class OrderServiceImpl implements OrderService {
 			throw new InvalidOrderException(messageSource.getMessage("order.error.email", null, locale));
 		}
 		
-		valid = validateAddress(orderResource.getAddress(), locale);		
+//		valid = validateAddress(orderResource.getAddress(), locale);
 		
 		return valid;
-	}
-
-	private boolean validateAddress(AddressResource address, Locale locale) throws InvalidOrderException {	
-		if(address == null ||
-		   address.getLine1() == null || address.getLine1().isBlank() ||
-		   address.getCity() == null ||  address.getCity().isBlank() ||
-		   address.getState() == null || address.getState().isBlank() ||
-		   address.getPostalCode() == null || address.getPostalCode().isBlank() ||
-		   address.getCountry() == null) {
-			throw new InvalidOrderException(messageSource.getMessage("order.error.address", null, locale));
-		}
-		
-		if(!address.getPostalCode().matches("^(?!.*[DFIOQU])[A-VXY][0-9][A-Z] ?[0-9][A-Z][0-9]$")) {
-			throw new InvalidOrderException(messageSource.getMessage("order.error.postalCode", null, locale));
-		}
-		
-		return true;
 	}
 
 	@Override
@@ -179,6 +161,16 @@ public class OrderServiceImpl implements OrderService {
 		} else {
 			throw new ResourceNotFoundException("Invalid argument");
 		}		
+	}
+
+	@Override
+	public OrderHeader findByOrderNumber(Long orderNumber) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
+		if(optionalOrderHeader.isPresent()) {
+			return  optionalOrderHeader.get();
+		} else {
+			throw new ResourceNotFoundException("Invalid argument");
+		}
 	}
 
 }

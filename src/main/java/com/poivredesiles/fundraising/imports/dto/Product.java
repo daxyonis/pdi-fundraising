@@ -23,6 +23,10 @@ public class Product {
 	private String descFr;
 	
 	private String weight;
+
+	private String formatFr;
+
+	private String formatEn;
 	
 	// As seen by customers
 	private String labelNumber;
