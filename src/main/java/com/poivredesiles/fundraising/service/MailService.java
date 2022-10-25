@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import com.poivredesiles.fundraising.resource.ContactMessage;
+import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -117,4 +118,17 @@ public class MailService {
 		sendEmailFromTemplate(contactMessage, "contactMessage", "mail/contactMessageEmail", to, "email.contact.title", locale);
 	}
 
+	@Async
+	public void sendOrderConfirmationEmail(OrderHeaderDTO orderHeader, Locale locale) {
+		String to = applicationProperties.getMail().getTo();
+
+		/******************************************************/
+		/** In production, send confirmation to real buyer **/
+		if(Arrays.asList(env.getActiveProfiles()).contains("prod")) {
+			to = orderHeader.getBuyerEmail();
+		}
+		/******************************************************/
+
+		sendEmailFromTemplate(orderHeader, "order", "mail/orderConfirmationEmail", to, "email.order.confirmation", locale);
+	}
 }

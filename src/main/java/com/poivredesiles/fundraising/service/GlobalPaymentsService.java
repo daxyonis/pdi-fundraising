@@ -188,7 +188,8 @@ public class GlobalPaymentsService {
 		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
 		    if(responseCode.compareTo("00") == 0) {
 		    	// Success !
-				this.checkResponseValues(responseValues, locale);
+				this.validateOrderResponse(responseValues, locale);
+				this.orderService.confirmOrder(Long.parseLong(orderNumber));
 		    	return Long.parseLong(orderNumber);
 		    } else {
 		    	log.error("Failed transaction, code = {}, message={}", responseCode, responseMessage);
@@ -208,7 +209,7 @@ public class GlobalPaymentsService {
 	 * @param responseValues    response values map as returned by Global HPP service
 	 * @param locale
 	 */
-	private void checkResponseValues(HashMap<String, String> responseValues, Locale locale) {
+	private void validateOrderResponse(HashMap<String, String> responseValues, Locale locale) {
 
 //		String errorMessage = "";
 		try {

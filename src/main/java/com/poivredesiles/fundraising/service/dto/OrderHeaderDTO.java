@@ -23,6 +23,8 @@ public class OrderHeaderDTO implements Serializable {
 
     private String buyerPhone;
 
+    private String buyerEmail;
+
     private String buyerNote;
 
     private String buyerLanguage;
@@ -36,4 +38,8 @@ public class OrderHeaderDTO implements Serializable {
     private List<OrderItemDTO> orderItems;
     
     private String formattedTotal;
+
+    private String formattedConfirmationDate;
+
+    private String campaignName;
 }

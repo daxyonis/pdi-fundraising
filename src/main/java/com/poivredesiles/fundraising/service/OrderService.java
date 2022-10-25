@@ -27,11 +27,17 @@ public interface OrderService {
 	OrderHeader save(OrderHeader order);
 
 	/**
-	 * Confirm a successful (i.e. paid) order if pending, then return it
+	 * Check an order is confirmed, then return it
 	 * @param orderNumber	order number
 	 * @return the confirmed order
 	 */
 	OrderHeaderDTO getConfirmedOrder(Long orderNumber);
+
+	/**
+	 * Confirm a successful (i.e. paid) order if pending
+	 * @param orderNumber
+	 */
+	void confirmOrder(Long orderNumber);
 
 	/**
 	 * Get the list of orders assigned to a given seller

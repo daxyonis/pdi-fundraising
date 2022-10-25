@@ -28,7 +28,7 @@ public class OrderItemDTO implements Serializable {
 
     private Long quantity;
 
-    private BigDecimal unitPrice;
+    private String formattedUnitPrice;
 
     private String formatFr;
 
