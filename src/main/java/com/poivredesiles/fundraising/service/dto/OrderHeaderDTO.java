@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 
@@ -28,9 +29,11 @@ public class OrderHeaderDTO implements Serializable {
 
     private OrderStatusEnum orderStatus;
 
-    private String confirmationNumber;    
-    
+    private String confirmationNumber;
+
     private String detail;
+
+    private List<OrderItemDTO> orderItems;
     
     private String formattedTotal;
 }

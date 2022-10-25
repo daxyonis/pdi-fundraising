@@ -58,7 +58,7 @@
   	 <script th:inline="javascript">
   	 	let role;
   	 	if (typeof(Storage) !== "undefined") {
-  			role = localStorage.getItem("user.role");
+  			role = sessionStorage.getItem("user.role");
 		}
   		$(function(){
   			if (role === 'seller') {
@@ -69,7 +69,7 @@
 
   			$('input[name="inlineRadioOptions"]').on('change', function(){  				
   					$('#pwd').toggleClass('invisible');
-  					localStorage.setItem("user.role", $(this).val());
+  					sessionStorage.setItem("user.role", $(this).val());
   			});  	
   			
   			$('#loginForm').on('submit', function(event){
