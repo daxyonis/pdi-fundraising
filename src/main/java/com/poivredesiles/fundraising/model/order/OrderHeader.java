@@ -105,4 +105,20 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
     public String getCampaignName() {
         return this.getPdiSeller().getPdiGroup().getPdiCampaign().getProject();
     }
+
+    public String getSellerName() {
+        return this.getPdiSeller().getName();
+    }
+
+    public String getGroupName() {
+        return this.getPdiSeller().getPdiGroup().getName();
+    }
+
+    public String getGroupLeaderName() {
+        String name = "";
+        if (this.getPdiSeller().getPdiGroup().getGroupLeader() != null) {
+            name = this.getPdiSeller().getPdiGroup().getGroupLeader().getName();
+        }
+        return name;
+    }
 }

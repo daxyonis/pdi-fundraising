@@ -42,4 +42,11 @@ public class OrderHeaderDTO implements Serializable {
     private String formattedConfirmationDate;
 
     private String campaignName;
+
+    private String sellerName;
+
+    private String groupName;
+
+    private String groupLeaderName;
+
 }

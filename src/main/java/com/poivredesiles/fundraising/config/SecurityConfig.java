@@ -4,17 +4,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(securedEnabled = true)
+public class SecurityConfig {
 	
 	// The public endpoints
 	private static final String[] PUBLIC = new String[]{"/error", "/login", "/logout", "/actuator/**"}; 
@@ -23,33 +24,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}	 
+	}
 
-	@Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-        	.antMatchers(PUBLIC).permitAll()      
-        	.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN") 
-        	.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
-        	.antMatchers("/ventes").hasRole("SELLER")
-        	.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
-				.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
-        	.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")   
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            	.loginPage("/login")
-            .and()
-            .logout()           
-            	.logoutUrl("/logout")
-            .and()
-            .csrf()
-            	.ignoringAntMatchers("/api/global/response");            	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/response"))
+				.formLogin(login -> login.loginPage("/login"))
+				.logout(logout -> logout.logoutUrl("/logout"))
+				.authorizeHttpRequests(authz -> authz
+					.antMatchers(PUBLIC).permitAll()
+					.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
+					.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
+					.antMatchers("/ventes").hasRole("SELLER")
+					.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
+					.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
+					.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
+					.antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
+					.anyRequest().authenticated()
+				);
+
+		return http.build();
     }
-	
-	@Override
-	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers("/static/**", "/js/**", "/css/**","/image/**", "/favicon.ico","/webjars/**");
+
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().antMatchers("/static/**", "/js/**", "/css/**","/image/**", "/favicon.ico","/webjars/**");
 	}
 }

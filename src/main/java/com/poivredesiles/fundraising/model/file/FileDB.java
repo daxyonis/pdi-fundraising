@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.model.file;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import com.poivredesiles.fundraising.imports.ImportsUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
@@ -41,6 +43,6 @@ public class FileDB {
 		this.type = type;
 		this.data = data;
 		this.description = description;
-		this.updatedTime = LocalDateTime.now();
+		this.updatedTime = ImportsUtils.convertToLocalDateTime(Instant.now());
 	}
 }

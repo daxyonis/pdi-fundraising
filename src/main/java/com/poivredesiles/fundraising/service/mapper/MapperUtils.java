@@ -13,14 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MapperUtils {
 
-	private DateTimeFormatter formatter = 
-			DateTimeFormatter.ofLocalizedDate( FormatStyle.SHORT )
-							 .withLocale( Locale.CANADA )
-							 .withZone( ZoneId.of(ImportsUtils.DEFAULT_TIMEZONE) );
-	
-	
 	@Named("instantToString")
 	public String instantToString(Instant instant) {
-		return formatter.format(instant);
+		return ImportsUtils.formatToDate(instant);
 	}
 }

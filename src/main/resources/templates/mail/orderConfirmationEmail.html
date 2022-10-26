@@ -63,6 +63,14 @@
         </td>
     </tr>
     <tr>
+        <td class="font-weight-bold text-right top" th:text="#{order.seller}">Vendeur</td>
+        <td>
+            <span th:text="${order.sellerName}">Gaston Thibault</span><br/>
+            <span th:if="${!#strings.isEmpty(order.groupName)}" th:text="|#{order.seller.group} :|">Groupe</span>&nbsp;&nbsp;<span th:text="${order.groupName}">Classe 405</span><br/>
+            <span th:if="${!#strings.isEmpty(order.groupLeaderName)}" th:text="|#{summary.groupLeader} :|">Responsable du groupe</span>&nbsp;&nbsp;<span th:text="${order.groupLeaderName}">Classe 405</span><br/>
+        </td>
+    </tr>
+    <tr>
         <td class="font-weight-bold text-right top" th:text="#{order.success.detail}">Detail de la commande</td>
         <td colspan="3">
                 Total: <span class="font-weight-bold" th:text="${order.formattedTotal}">18.00$</span>

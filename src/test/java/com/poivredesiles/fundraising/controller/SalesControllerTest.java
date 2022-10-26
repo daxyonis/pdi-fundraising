@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.poivredesiles.fundraising.config.SecurityConfig;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
@@ -33,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @WebMvcTest(SalesController.class)
+@Import(SecurityConfig.class)
 public class SalesControllerTest extends BaseControllerTest{
 
 	@Autowired

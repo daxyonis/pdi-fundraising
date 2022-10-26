@@ -3,12 +3,14 @@ package com.poivredesiles.fundraising.service.impl;
 import static com.poivredesiles.fundraising.imports.ImportsUtils.convertToLocalDate;
 
 import java.io.PrintWriter;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.resource.ContactMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -329,7 +331,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	@Override
 	public void deleteBlockedFor1Year() {
 		// find and delete all campaigns that were blocked prior to 1 year ago
-		LocalDate limitDate = LocalDate.now().minusYears(1L);		
+		LocalDate limitDate = ImportsUtils.convertToLocalDate(Instant.now()).minusYears(1L);
 		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByClosedTrueAndBlockedTrueAndExportDateNotNullAndBlockedDateLessThan(limitDate);
 		// Delete the whole tree : campaign -> groups -> sellers -> orders 
 		for(PdiCampaign pdiCampaign : pdiCampaigns) {
