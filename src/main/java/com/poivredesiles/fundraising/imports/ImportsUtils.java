@@ -14,12 +14,16 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ImportsUtils {
-	
+
 	public static enum DataTypeEnum {
 		SECTION, PRODUIT, TYPEBC, CAMPAGNE, GROUPE, VENDEUR, LIENGROUPE
 	}
-	
-	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
+
+	private static final DateFormat df = new SimpleDateFormat(DATE_PATTERN);
+
+	private static final String DATETIME_PATTERN = "dd/MM/yyyy HH:mm";
 
 	public static final String DEFAULT_TIMEZONE = "America/Montreal";
 	
@@ -51,7 +55,7 @@ public class ImportsUtils {
 			return ((java.sql.Date) dateToConvert).toLocalDate();
 		} else {
 			return dateToConvert.toInstant()
-				      .atZone(ZoneId.systemDefault())
+				      .atZone(ZoneId.of(DEFAULT_TIMEZONE))
 				      .toLocalDate();
 		}
 	}
@@ -65,7 +69,7 @@ public class ImportsUtils {
 		if(instant == null) {
 			return null;
 		}
-		return instant.atZone(ZoneId.systemDefault()).toLocalDate();
+		return instant.atZone(ZoneId.of(DEFAULT_TIMEZONE)).toLocalDate();
 	}
 	
 	/**
@@ -88,10 +92,20 @@ public class ImportsUtils {
 	public static String formatInstant(Instant instant) {
 		LocalDateTime localDateTime = convertToLocalDateTime(instant);
 		if(localDateTime != null) {
-			return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+			return localDateTime.format(DateTimeFormatter.ofPattern(DATETIME_PATTERN));
 		} else {
 			return "-";
 		}
+	}
+
+	/**
+	 * Format an instant to a date string
+	 * @param instant
+	 * @return
+	 */
+	public static String formatToDate(Instant instant) {
+		LocalDate date = convertToLocalDate(instant);
+		return formatLocalDate(date, DATE_PATTERN);
 	}
 	
 	/**

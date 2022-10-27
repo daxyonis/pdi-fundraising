@@ -109,15 +109,15 @@ public class PdiProductServiceImpl implements PdiProductService {
 		pdiProduct.setWeight(product.getWeight());
 		pdiProduct.setFormatFr(product.getFormatFr());
 		pdiProduct.setFormatEn(product.getFormatEn());
-		if(pdiProduct.getCategory() == null) {
-			PdiCategory category = pdiCategoryRepository.findByNumber(product.getSectionNum());
-			if(category != null) {
-				pdiProduct.setCategory(category);
-			} else {
-				log.error("Product number {} has unknown category: {}", product.getNumber(), product.getSectionNum());
-				throw new ResourceNotFoundException(String.format("Le produit numéro %s a une catégorie inconnue", product.getNumber()));
-			}
+
+		PdiCategory category = pdiCategoryRepository.findByNumber(product.getSectionNum());
+		if(category != null) {
+			pdiProduct.setCategory(category);
+		} else {
+			log.error("Product number {} has unknown category: {}", product.getNumber(), product.getSectionNum());
+			throw new ResourceNotFoundException(String.format("Le produit numéro %s a une catégorie inconnue", product.getNumber()));
 		}
+
 		pdiProduct.setLastModifiedBy("system");
 		pdiProductRepository.save(pdiProduct);
 	}

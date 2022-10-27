@@ -1,12 +1,11 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.service.MailService;
+import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +57,9 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired
 	private OrderHeaderMapper orderHeaderMapper;
+
+	@Autowired
+	private MailService mailService;
 	
 	@Value("${application.order.confirmation}")
 	private String orderConfirmationFormat;
@@ -72,6 +74,7 @@ public class OrderServiceImpl implements OrderService {
 			orderHeader.setOrderNumber(businessNumberService.getNextNumber(BusinessNumberTypeEnum.ORDER));
 			orderHeader.setBuyerName(orderResource.getName());
 			orderHeader.setBuyerPhone(orderResource.getPhone());
+			orderHeader.setBuyerEmail(orderResource.getEmail());
 			orderHeader.setBuyerNote(orderResource.getNote());
 			orderHeader.setBuyerLanguage(locale.getLanguage());
 			orderHeader.setCreatedBy("system");
@@ -120,17 +123,51 @@ public class OrderServiceImpl implements OrderService {
 		return orderHeaderRepository.save(order);
 	}
 
+
+
 	@Override
 	public OrderHeaderDTO getConfirmedOrder(Long orderNumber) {
 		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
 		if(optionalOrderHeader.isPresent()) {
 			OrderHeader order = optionalOrderHeader.get();
-			if(order.getConfirmationNumber() == null) {
+			if(order.getConfirmationNumber() != null && order.getOrderStatus() == OrderStatusEnum.PAID) {
+				OrderHeaderDTO orderDTO = orderHeaderMapper.toDto(order);
+				sortOrderItems(orderDTO);
+				return orderDTO;
+			} else {
+				throw new ResourceNotFoundException("Order not confirmed");
+			}
+		} else {
+			throw new ResourceNotFoundException("Invalid argument");
+		}
+	}
+
+	private void sortOrderItems(OrderHeaderDTO orderDTO) {
+		List<OrderItemDTO> sortedOrderItems = orderDTO.getOrderItems();
+		if (orderDTO.getBuyerLanguage().equalsIgnoreCase("fr")) {
+			Collections.sort(sortedOrderItems, Comparator.comparing(OrderItemDTO::getUnitPrice).reversed()
+					.thenComparing(OrderItemDTO::getFormatFr)
+					.thenComparing(OrderItemDTO::getNameFr));
+		} else {
+			Collections.sort(sortedOrderItems, Comparator.comparing(OrderItemDTO::getUnitPrice).reversed()
+					.thenComparing(OrderItemDTO::getFormatEn)
+					.thenComparing(OrderItemDTO::getNameEn));
+		}
+	}
+
+	@Override
+	public void confirmOrder(Long orderNumber) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
+		if(optionalOrderHeader.isPresent()) {
+			OrderHeader order = optionalOrderHeader.get();
+			if (order.getConfirmationNumber() == null) {
 				order.setConfirmationNumber(String.format(orderConfirmationFormat, order.getOrderNumber()));
 				order.setOrderStatus(OrderStatusEnum.PAID);
+				order.setConfirmationDate(Instant.now());
+				OrderHeaderDTO orderHeaderDto = orderHeaderMapper.toDto(order);
+				sortOrderItems(orderHeaderDto);
+				mailService.sendOrderConfirmationEmail(orderHeaderDto, Locale.forLanguageTag(order.getBuyerLanguage()));
 			}
-			OrderHeaderDTO orderDTO = orderHeaderMapper.toDto(order);
-			return orderDTO;
 		} else {
 			throw new ResourceNotFoundException("Invalid argument");
 		}

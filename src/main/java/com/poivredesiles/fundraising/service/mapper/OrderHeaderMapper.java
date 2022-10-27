@@ -13,20 +13,16 @@ import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 /**
  * Mapper for the entity {@link OrderHeader} and its DTO {@link OrderHeaderDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {OrderItemMapper.class, CurrencyFormattingMapper.class, MapperUtils.class})
 public interface OrderHeaderMapper extends EntityMapper<OrderHeaderDTO, OrderHeader> {	
 	
 	@Mapping(source="total", target="formattedTotal", qualifiedByName="formatCurrency")
+    @Mapping(source="confirmationDate", target="formattedConfirmationDate", qualifiedByName = "instantToString")
     OrderHeaderDTO toDto(OrderHeader orderHeader);
 
     @Mapping(target = "pdiSeller", ignore = true)
     @Mapping(target = "orderItems", ignore = true)    
     OrderHeader toEntity(OrderHeaderDTO orderHeaderDTO);
-
-    @Named("formatCurrency")
-    public static String formatCurrency(BigDecimal amount) {  
-    	return ImportsUtils.formatCurrency(amount);
-    }
     
     default OrderHeader fromId(Long id) {
         if (id == null) {

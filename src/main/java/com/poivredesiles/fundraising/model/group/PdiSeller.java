@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.model.group;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +20,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
@@ -111,7 +113,7 @@ public class PdiSeller extends AbstractAuditingEntity implements Serializable {
     
     public boolean isDueDateArrived() {
     	if(this.pdiGroup.getPdiCampaign().getDueDate() != null) {
-    		return this.pdiGroup.getPdiCampaign().getDueDate().compareTo(LocalDate.now()) <= 0;
+    		return this.pdiGroup.getPdiCampaign().getDueDate().compareTo(ImportsUtils.convertToLocalDate(Instant.now())) <= 0;
     	} else {
     		return false;
     	}

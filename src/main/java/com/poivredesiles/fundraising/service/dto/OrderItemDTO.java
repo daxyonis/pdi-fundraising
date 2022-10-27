@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 /**
- * A DTO for the {@link com.poivredesiles.fundraising.domain.OrderItem} entity.
+ * A DTO for the {@link com.poivredesiles.fundraising.model.order.OrderItem} entity.
  */
 @Data
 public class OrderItemDTO implements Serializable {
@@ -20,10 +20,20 @@ public class OrderItemDTO implements Serializable {
 
     private Long orderNumber;
 
-    private String productNumber;
+    private String labelNumber;
+
+    private String nameFr;
+
+    private String nameEn;
 
     private Long quantity;
 
     private BigDecimal unitPrice;
+
+    private String formattedUnitPrice;
+
+    private String formatFr;
+
+    private String formatEn;
 
 }

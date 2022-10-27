@@ -9,9 +9,10 @@ import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
 /**
  * Mapper for the entity {@link OrderItem} and its DTO {@link OrderItemDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {CurrencyFormattingMapper.class})
 public interface OrderItemMapper extends EntityMapper<OrderItemDTO, OrderItem> {
 
+    @Mapping(source="unitPrice", target="formattedUnitPrice", qualifiedByName="formatCurrency")
     OrderItemDTO toDto(OrderItem orderItem);
 
     @Mapping(target = "product", ignore=true)

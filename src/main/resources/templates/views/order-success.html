@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="#{pdi.order}">pdi commande</title>    
+  <title th:text="#{pdi.order}">pdi commande</title>
+	<style>
+		.flex-container-vert {
+			 display: flex;
+  			 flex-direction: column;
+		}
+		.flex-container-hor {
+			 display: flex;
+			 flex-direction: row;
+		}
+
+	</style>
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">
@@ -12,21 +23,36 @@
   			<div class="col-md-12">
   				<div class="row">
   					<div class="col-md-3 text-md-right"><span th:text="#{order.success.buyer}">Acheteur</span> : </div>
-  					<div class="col-md-3">
-  						<span th:text="${order.buyerName}">Ginette Thibault</span>
-  					</div>
-  					<div class="col-md-3 text-md-center" th:text="${order.buyerPhone}">514-321-9876</div>
-  					<div class="col-md-3 text-md-center font-weight-bold" th:text="${order.formattedTotal}">18.00$</div>
+  					<div class="col-md-9">
+						<div class="flex-container-hor" style="justify-content: space-between;">
+							<div th:text="${order.buyerName}">Ginette Thibault</div>
+							<div th:text="${order.buyerPhone}">514-321-9876</div>
+							<div class="font-weight-bold" th:text="${order.formattedTotal}">18.00$</div>
+						</div>
+					</div>
   				</div>
+				<br/>
   				<div class="row">
   					<div class="col-md-3 text-md-right"><span th:text="#{order.success.detail}">Detail de la commande</span> : </div>
-  					<div class="col-md-9"><span th:text="${order.detail}">1 Poivre blanc, 2 Ail en poudre</span></div>
+  					<div class="col-md-9">
+						<div class="flex-container-vert">
+							<div class="flex-container-hor" th:each="orderItem : ${order.orderItems}">
+								<div th:text="|${orderItem.quantity} x|">2 x</div>
+								<div th:text="|&nbsp;[${orderItem.labelNumber}]&nbsp;|">[148T]</div>
+								<div th:text="${#strings.equalsIgnoreCase(order.buyerLanguage,'fr') ? orderItem.nameFr : orderItem.nameEn}">
+									TRIO ASS. SAUCE Ã€ FONDUE </div>
+								<div>&nbsp;&nbsp;</div>
+								<div th:text="${#strings.equalsIgnoreCase(order.buyerLanguage,'fr') ? orderItem.formatFr : orderItem.formatEn}">
+									3 sachets</div>
+							</div>
+						</div>
+					</div>
   				</div>
   			</div>
   		</div>
   		<div class="row mt-5">
   			<div class="col-md-2"></div>
-  			<div class="col-md-8 text-center" th:text="#{order.success.message}">Votre commande sera livrée à l'organisme responsable...</div>
+  			<div class="col-md-8 text-center" th:text="#{order.success.message}">Votre commande sera livrï¿½e ï¿½ l'organisme responsable...</div>
   			<div class="col-md-2"></div>
   		</div>
   		<div class="row mt-5">
