@@ -97,6 +97,7 @@
   	let organizationName = /*[[${campaignRecap.organizationName}]]*/'';
   	let leaderName = /*[[${campaignRecap.leaderName}]]*/'';
   	let campaignId = /*[[${campaignRecap.campaignId}]]*/0;
+  	let campaignNumber = /*[[${campaignRecap.campaignNumber}]]*/0;
   	
   	$(function () {
   	  $('[data-toggle="tooltip"]').tooltip();
@@ -125,6 +126,7 @@
   	  	if (msg) {
   	  		let data = {
   	  			message: msg,
+  	  			campaignNumber: campaignNumber,
   	  			organization: organizationName ?? organizationName.trim(),
   	  			name: leaderName ?? leaderName.trim()
   	  		}
