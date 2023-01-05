@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.service.mapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -24,8 +25,10 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Mapping(source = "pdiGroup.id", target = "pdiGroupId")
     @Mapping(source = "pdiGroup.number", target = "pdiGroupNumber")
     @Mapping(source = "pdiGroup.name", target = "pdiGroupName")
-    @Mapping(source = "pdiGroup.pdiCampaign.dueDate", target = "formattedPdiCampaignDueDate", qualifiedByName="formatDate")
+    @Mapping(source = "pdiGroup.pdiCampaign.dueDate", target = "pdiCampaignDueDate", qualifiedByName = "localDateToDate")
     @Mapping(source = "pdiGroup.pdiCampaign.organizationName", target = "pdiCampaignOrganization")
+    @Mapping(source = "pdiGroup.pdiCampaign.number", target = "pdiCampaignNumber")
+    @Mapping(source = "pdiGroup.pdiCampaign.id", target = "pdiCampaignId")
     @Mapping(source = "pdiGroup.pdiCampaign.project", target = "pdiCampaignProject")
     @Mapping(source = "pdiGroup.pdiCampaign.closed", target = "pdiCampaignClosed")
     @Mapping(source="ordersTotal", target="formattedOrdersTotal", qualifiedByName="formatCurrency")    
@@ -38,18 +41,18 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Mapping(source = "pdiGroupId", target = "pdiGroup")
     PdiSeller toEntity(PdiSellerDTO pdiSellerDTO);
 
-    @Named("formatDate")
-    public static String formatDate(LocalDate date) {  
-    	return ImportsUtils.formatLocalDate(date, "dd/MM/yyyy");
+    @Named("localDateToDate")
+    static Date localDateToDate(LocalDate localDate) {
+    	return ImportsUtils.convertToDate(localDate);
     }
     
     @Named("formatCurrency")
-    public static String formatCurrency(BigDecimal amount) {  
+    static String formatCurrency(BigDecimal amount) {
     	return ImportsUtils.formatCurrency(amount);
     }
     
     @AfterMapping
-	public static void cleanGroupName(@MappingTarget PdiSellerDTO pdiSellerDTO) {
+    static void cleanGroupName(@MappingTarget PdiSellerDTO pdiSellerDTO) {
     	String groupName = pdiSellerDTO.getPdiGroupName() == null ? "" : pdiSellerDTO.getPdiGroupName(); 
 		if(groupName.strip().compareTo("--") == 0) {
 			groupName = "";

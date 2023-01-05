@@ -39,23 +39,23 @@
 	  					</div>
 	  				</th:block>
 	  				<!-- /* Print the product info */ -->
-	  				<div class="row my-1 border-bottom">
-	  					<div class="col-sm-1" th:text="${product.labelNumber}">#12</div>
-	  					<div class="col-sm-2">
+	  				<div class="d-lg-flex flex-lg-row justify-content-around my-1 border-bottom">
+	  					<div class="flex-item" th:text="${product.labelNumber}">#12</div>
+	  					<div class="flex-item">
 	  						<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
 							<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
 	  					</div>
-	  					<div class="col-sm-1" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
-	  					<div class="col-sm-3" th:switch="${#locale.language}">
+	  					<div class="flex-item" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
+	  					<div class="flex-long" th:switch="${#locale.language}">
 	  						<span th:case="'en'" th:text="${product.nameEn}">Black Pepper</span>
 	  						<span th:case="*" th:text="${product.nameFr}">Poivre blanc</span>
 	  					</div>
-	  					<div class="col-sm-3" th:switch="${#locale.language}">
+	  					<div class="flex-long" th:switch="${#locale.language}">
 	  						<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
 	  						<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
 	  					</div>
-	  					<div class="col-sm-1" th:text="${product.weight}">28 g</div>
-						<div class="col-sm-1" th:switch="${#locale.language}">
+	  					<div class="flex-item" th:text="${product.weight}">28 g</div>
+						<div class="flex-item" th:switch="${#locale.language}">
 							<span th:case="'en'" th:text="${product.formatEn}">bag</span>
 							<span th:case="*" th:text="${product.formatFr}">sachet</span>
 						</div>

@@ -33,6 +33,12 @@ public class Seller {
 			return false;
 		}
 		return true;
-	}		
+	}
+
+	@Override
+	public String toString(){
+		return "Seller [number=" + number + ", name=" + name + ", authorization=" + authorization + "]";
+	}
+
 	
 }

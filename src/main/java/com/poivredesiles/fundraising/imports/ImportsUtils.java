@@ -51,13 +51,10 @@ public class ImportsUtils {
 		if(dateToConvert == null) {
 			return null;
 		}
-		if(dateToConvert instanceof java.sql.Date) {
-			return ((java.sql.Date) dateToConvert).toLocalDate();
-		} else {
-			return dateToConvert.toInstant()
-				      .atZone(ZoneId.of(DEFAULT_TIMEZONE))
-				      .toLocalDate();
-		}
+		System.out.println("dateToConvert: " + dateToConvert);
+		return dateToConvert.toInstant()
+				  .atZone(ZoneId.of(DEFAULT_TIMEZONE))
+				  .toLocalDate();
 	}
 	
 	/**
@@ -147,4 +144,16 @@ public class ImportsUtils {
     	currencyNf.setMaximumFractionDigits(2);
     	return currencyNf.format(amount); 
     }
+
+	/**
+	 * Convert a localDate to a Date
+	 * @param localDate
+	 * @return
+	 */
+	public static Date convertToDate(LocalDate localDate) {
+		if(localDate == null) {
+			return null;
+		}
+		return Date.from(localDate.atStartOfDay(ZoneId.of(DEFAULT_TIMEZONE)).toInstant());
+	}
 }

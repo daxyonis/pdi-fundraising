@@ -62,4 +62,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
 			return roles.contains(new Role(roleEnum));
 		}
 	}
+
+	@Override
+	public String toString(){
+		return "User [id=" + id + ", username=" + username + ", firstname=" + firstname + ", lastname=" + lastname + ", language=" + language + ", disabled=" + disabled + "]";
+	}
 }

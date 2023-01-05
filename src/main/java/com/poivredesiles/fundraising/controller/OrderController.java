@@ -41,14 +41,17 @@ public class OrderController extends BaseController {
 	
 	
 	@GetMapping("/commande")
-	public String order(@RequestParam(required = false)boolean failure, @AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
+	public String order(@RequestParam(required = false) String lang, @RequestParam(required = false)boolean failure, @AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
 		log.info("Requested Order Page");		
 		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
 		model.addAttribute("seller", seller);
 		if(seller.isPdiCampaignClosed()) {
 			return "views/closed";
 		} else {
-			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails);
+			if (lang == null) {
+				lang = localeResolver.resolveLocale(request).getLanguage();
+			}
+			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails, lang);
 			model.addAttribute("products", products);						
 			model.addAttribute("globalServiceUrl", globalServiceUrl);
 			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());

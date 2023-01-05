@@ -61,9 +61,13 @@
 					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/produits')? 'active' : ''">
 						<a class="nav-link" th:href="@{/produits}" th:text="#{menu.products}">Nos Produits</a>
 					</li>
+					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/faq')? 'active' : ''">
+						<a class="nav-link" th:href="@{/faq}" th:text="#{menu.faq}">FAQ</a>
+					</li>
 				</ul>
 				<ul th:if="${seller}" class="navbar-nav mr-auto">
-					<li class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.formattedPdiCampaignDueDate}|">date de fin de campagne prevue: 15/09/2021</li>					
+					<li th:if="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${#dates.format(seller.pdiCampaignDueDate, 'dd/MM/yyyy')} |">date de fin de campagne prevue: 15/09/2021</li>
+					<li th:unless="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${#dates.format(seller.pdiCampaignDueDate, 'MM/dd/yyyy')} |">expected end of campaign: 09/15/2021</li>
 				</ul>
 				<form id="logoutForm" class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">					
 					<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:if="${showLangChange}"

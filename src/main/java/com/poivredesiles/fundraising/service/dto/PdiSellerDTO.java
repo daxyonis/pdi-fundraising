@@ -1,11 +1,12 @@
 package com.poivredesiles.fundraising.service.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.Data;
 
 /**
- * A DTO for the {@link com.poivredesiles.fundraising.domain.PdiSeller} entity.
+ * A DTO for the {@link com.poivredesiles.fundraising.model.group.PdiSeller} entity.
  */
 @Data
 public class PdiSellerDTO implements Serializable {
@@ -26,9 +27,13 @@ public class PdiSellerDTO implements Serializable {
     
     private Long pdiGroupNumber;
     
-    private String pdiGroupName;     
-       
-    private String formattedPdiCampaignDueDate;
+    private String pdiGroupName;
+
+    private Long pdiCampaignId;
+
+    private Long pdiCampaignNumber;
+
+    private Date pdiCampaignDueDate;
     
     private String pdiCampaignOrganization;
     

@@ -76,4 +76,9 @@ public class MainController extends BaseController {
 	public String showProducts() {
 		return "views/products";
 	}
+
+	@GetMapping("/faq")
+	public String showFaq() {
+		return "views/faq";
+	}
 }

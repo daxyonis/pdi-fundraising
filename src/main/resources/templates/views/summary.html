@@ -15,14 +15,7 @@
   		</div>  		
   		<div class="row">
   			<div class="col-md-6 offset-md-1">
-  				<button id="contactBtn" href="#" class="btn btn-light" th:text="#{summary.contact}">contactez-nous</button>
-				<fieldset id="emailForm" class="d-none">
-					<textarea id="emailMsg" class="form-control" style="margin-top:5px;" th:placeholder="#{pdi.contact.message}"></textarea>
-					<button id="emailSendBtn" class="btn btn-success" style="margin-top:5px; float:right;" th:text="#{pdi.contact.send}">Envoyer</button>
-				</fieldset>
-				<div id="msg-error" class="d-none alert alert-danger" style="margin-top:5px;">Une erreur s'est produite</div>
-				<div id="msg-success" class="d-none alert alert-success" style="margin-top:5px;">Succes !</div>
-				<div th:replace="fragments/spinner :: spinner"></div>
+				<div th:replace="fragments/contact-pdi :: contact-pdi"></div>
   			</div>
   			<div class="col-md-3 text-md-right"><h4><span class="font-weight-bold" th:text="#{summary.profit}">profit</span></h4></div>
   			<div class="col-md-2"><h4 class="text-right"><span class="badge badge-info p-2" th:text="${campaignRecap.formattedTotalProfit}">2250.00$</span></h4></div>
@@ -116,47 +109,7 @@
   		location.reload();
   	  });
 
-  	  $('#contactBtn').on('click', ()=> {
-  	  		$('#emailForm').toggleClass('d-none');
-  	  	});
-
-  	  $('#emailSendBtn').on('click', ()=> {
-  	  	let msg = $('#emailMsg').val().trim();
-  	  	let url = /*[[@{/api/campaign}]]*/'/api/campaign';
-  	  	if (msg) {
-  	  		let data = {
-  	  			message: msg,
-  	  			campaignNumber: campaignNumber,
-  	  			organization: organizationName ?? organizationName.trim(),
-  	  			name: leaderName ?? leaderName.trim()
-  	  		}
-  	  		$('#emailForm').addClass('d-none');
-  	  		$('#spinning').removeClass('d-none');
-  	  		$.post({
-  	  		url: `${url}/${campaignId}/contact`,
-  	  		data: JSON.stringify(data),
-  	  		contentType: 'application/json',
-  	  		success: () => {
-  	  			displaySuccess('#msg-success', /*[[#{email.send.success}]]*/'Succès');
-  	  			},
-  	  		error: displayFailure,
-  	  		complete: () => {
-  	  			$('#emailMsg').val('');
-  	  			$('#spinning').addClass('d-none');
-  	  			}
-  	  		});
-  	  	}
-  	  });
-
-  	  function displayFailure (err){
-			console.log(err.responseJSON);
-			if(err.responseJSON && err.responseJSON.message){
-				displayError(err, '#msg-error', `ERREUR : ${err.responseJSON.message}`);
-			} else {
-				displayError(err, '#msg-error', /*[[#{email.send.error}]]*/'Erreur');
-			}
-		}
-  	})
+  	});
   	</script>
   	
   </section>

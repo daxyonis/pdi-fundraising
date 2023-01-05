@@ -1,9 +1,7 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.text.Collator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -62,10 +60,14 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	
 	@Autowired
 	private MessageSource messageSource;
-	
+
+	private static final Collator frCollator = Collator.getInstance(new Locale("fr", "CA"));
+	private static final Collator enCollator = Collator.getInstance(new Locale("en", "CA"));
 	private static Comparator<PdiProduct> compareByCategory = (p1, p2) -> p1.getCategory().getNumber().compareTo(p2.getCategory().getNumber());
-	private static Comparator<PdiProduct> compareByName = Comparator.comparing(PdiProduct::getNameFr);
-	private static Comparator<PdiProduct> compareByCategoryAndName = compareByCategory.thenComparing(compareByName);
+	private static Comparator<PdiProduct> compareByNameFr = (p1, p2) -> frCollator.compare(p1.getNameFr(), p2.getNameFr());
+	private static Comparator<PdiProduct> compareByNameEn = (p1, p2) -> enCollator.compare(p1.getNameEn(), p2.getNameEn());
+	private static Comparator<PdiProduct> compareByCategoryAndNameFr = compareByCategory.thenComparing(compareByNameFr);
+	private static Comparator<PdiProduct> compareByCategoryAndNameEn = compareByCategory.thenComparing(compareByNameEn);
 
 	@Override
 	public void importSellers(List<Seller> sellers) throws InvalidUsernameException {
@@ -234,7 +236,7 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 	}
 
 	@Override
-	public List<PdiProductDTO> getProductsForUser(MyUserDetails userDetails) {
+	public List<PdiProductDTO> getProductsForUser(MyUserDetails userDetails, String lang) {
 		Optional<User> user = userService.findUserById(userDetails.getUserId());
 		if(user.isPresent()) {
 			Optional<PdiSeller> pdiSeller = pdiSellerRepository.findOneByMeOrBuyer(user.get(), user.get());
@@ -242,8 +244,12 @@ public class PdiSellerServiceImpl implements PdiSellerService {
 				// Get the products for the order type of the group that the seller is part of
 				PdiGroup pdiGroup = pdiSeller.get().getPdiGroup();
 				OrderType orderType = pdiGroup.getOrderType();
-				Set<PdiProduct> pdiProducts = orderType.getPdiProducts();					
-				return pdiProductMapper.toDto(pdiProducts.stream().sorted(compareByCategoryAndName).collect(Collectors.toList()));
+				Set<PdiProduct> pdiProducts = orderType.getPdiProducts();
+				if (lang.equalsIgnoreCase("fr")) {
+					return pdiProductMapper.toDto(pdiProducts.stream().sorted(compareByCategoryAndNameFr).collect(Collectors.toList()));
+				} else {
+					return pdiProductMapper.toDto(pdiProducts.stream().sorted(compareByCategoryAndNameEn).collect(Collectors.toList()));
+				}
 			} else {
 				log.error("Seller not found for connected user id={}", user.get().getId());
 				throw new ResourceNotFoundException(messageSource.getMessage("seller.error.notfound", null, LocaleContextHolder.getLocale()));

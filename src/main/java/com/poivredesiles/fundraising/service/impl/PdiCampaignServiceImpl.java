@@ -197,10 +197,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		if(pdiCampaign.getLeaderEmail() != null && !pdiCampaign.getLeaderEmail().isBlank()) {
 			PdiCampaignRecapDTO campaignRecap = pdiCampaignRecapMapper.toDto(pdiCampaign);
 			// Set the leader name as it is not in the entity
-			Optional<PdiSeller> leader = pdiCampaign.getPdiGroups().stream()
-													.flatMap(g -> g.getPdiSellers().stream())
-													.filter(s -> s != null && s.getMe() != null && s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
-													.findFirst();
+			Optional<PdiSeller> leader = getLeader(pdiCampaign);
 			if(leader.isPresent()) {
 				campaignRecap.setLeaderName(leader.get().getName());				
 			} else {
@@ -211,6 +208,14 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		} else {
 			log.warn("No leader email specified for campaign {}", pdiCampaign.getId());
 		}
+	}
+
+	private Optional<PdiSeller> getLeader(PdiCampaign pdiCampaign) {
+		Optional<PdiSeller> leader = pdiCampaign.getPdiGroups().stream()
+												.flatMap(g -> g.getPdiSellers().stream())
+												.filter(s -> s != null && s.getMe() != null && s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
+												.findFirst();
+		return leader;
 	}
 
 	@Override
@@ -355,6 +360,13 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		if (campaign.isPresent()) {
 			// Check message sender
 			if (campaign.get().getOrganizationName().equalsIgnoreCase(contactMessage.getOrganization())) {
+				if (contactMessage.getName().isBlank()) {
+					// get leader
+					Optional<PdiSeller> leader = getLeader(campaign.get());
+					if (leader.isPresent()) {
+						contactMessage.setName(leader.get().getName());
+					}
+				}
 				mailService.sendContactEmail(contactMessage, locale);
 			} else {
 				throw new ResourceNotFoundException("Nom d'organisation invalide.");

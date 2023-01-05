@@ -1,0 +1,60 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:fragment="contact-pdi">
+    <button id="contactBtn" href="#" class="btn btn-light" th:text="#{summary.contact}">contactez-nous</button>
+    <fieldset id="emailForm" class="d-none">
+        <textarea id="emailMsg" class="form-control" style="margin-top:5px;" th:placeholder="#{pdi.contact.message}"></textarea>
+        <button id="emailSendBtn" class="btn btn-success" style="margin-top:5px; float:right;" th:text="#{pdi.contact.send}">Envoyer</button>
+    </fieldset>
+    <div id="msg-error" class="d-none alert alert-danger" style="margin-top:5px;">Une erreur s'est produite</div>
+    <div id="msg-success" class="d-none alert alert-success" style="margin-top:5px;">Succes !</div>
+    <div th:replace="fragments/spinner :: spinner"></div>
+
+    <script th:inline="javascript">
+
+    $(function () {
+
+      $('#contactBtn').on('click', ()=> {
+  	  	$('#emailForm').toggleClass('d-none');
+  	  });
+
+  	  $('#emailSendBtn').on('click', ()=> {
+  	  	let msg = $('#emailMsg').val().trim();
+  	  	let url = /*[[@{/api/campaign}]]*/'/api/campaign';
+  	  	if (msg) {
+  	  		let data = {
+  	  			message: msg,
+  	  			campaignNumber: campaignNumber,
+  	  			organization: organizationName ?? organizationName.trim(),
+  	  			name: leaderName ?? leaderName.trim()
+  	  		}
+  	  		$('#emailForm').addClass('d-none');
+  	  		$('#spinning').removeClass('d-none');
+  	  		$.post({
+                url: `${url}/${campaignId}/contact`,
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                success: () => {
+                    displaySuccess('#msg-success', /*[[#{email.send.success}]]*/'Succès');
+                    },
+                error: (err) => {
+                        displayError(err, '#msg-error');
+                    },
+                complete: () => {
+                    $('#emailMsg').val('');
+                    $('#spinning').addClass('d-none');
+                    }
+  	  		});
+  	  	}
+  	  });
+
+  	  });
+
+
+    </script>
+</div>
+</body>
+</html>

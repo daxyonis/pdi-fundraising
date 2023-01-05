@@ -134,7 +134,10 @@ public class GlobalPaymentsService {
 				((ObjectNode) hppNode).put("HPP_CAPTURE_ADDRESS", "true");
 				((ObjectNode) hppNode).put("HPP_DO_NOT_RETURN_ADDRESS", "true");
 				((ObjectNode) hppNode).put("HPP_REMOVE_SHIPPING", "true");
-				((ObjectNode) hppNode).put("HPP_LANG", "fr");
+
+				if (locale.getLanguage().equalsIgnoreCase("fr")) {
+					((ObjectNode) hppNode).put("HPP_LANG", "fr_ca");
+				}
 
 				hppJson = mapper.writeValueAsString(hppNode);
 
