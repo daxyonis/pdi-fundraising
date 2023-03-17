@@ -156,15 +156,14 @@
 	  			
 		  			// GLOBAL stuff		  			
 		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
-		  			
+
                     $('#checkout-button').on('click', function(){
                         $('#buyerForm').submit();
                     })
                         
                     $('#buyerForm').on('submit', function(event){
                         event.preventDefault();
-                        event.stopPropagation();	  						  			
-		  		      	sessionStorage.clear();
+                        event.stopPropagation();
 
 		  		      	clearErrorMsg();
 		  				
@@ -197,16 +196,19 @@
 		  		          	return false;
 		  		        }
 		  				this.classList.add('was-validated');
+
+		  				// Disable button to prevent double-click
+		  				$('#checkout-button').attr('disabled', true);
 		  				
 	  					// Validated, go !	  					
 		  				$.post({
-		  					url: location.origin + '/api/global/checkout/',
+		  					url: '/api/global/checkout/',
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
-		  					let responseUrl = location.origin + '/api/global/response';		  					  					
+		  					let responseUrl = '/api/global/response';
 		  					RealexHpp.lightbox.init("autoload", responseUrl, hppData);
 		  					$('body').addClass('loaded');
 		  				})	  				
@@ -217,7 +219,13 @@
 							} else {
 								displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
 							}
-						});		  				
+							return true;
+						})
+						.done(function(){
+						    console.log('done');
+							$('#checkout-button').attr('disabled', false);
+							sessionStorage.clear();	// should be in a callback to the payment success
+						});
 		  			});
 		  			
 	  			});
@@ -241,6 +249,7 @@
 					  } else if (mutation.removedNodes.length > 0 && mutation.removedNodes[0].id && mutation.removedNodes[0].id.includes('rxp-overlay')) {
 					  	console.log('Put back sticky');
 					  	$('#pay-sticky').addClass('sticky-top');
+					  	$('#checkout-button').attr('disabled', false);
 					  }
 					}
 				  }
