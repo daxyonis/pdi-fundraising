@@ -78,10 +78,10 @@ public class GlobalPaymentsService {
 	 * @throws OrderProcessingException	if HPP json could not be formed
 	 */
 	public String getHppJson(OrderResource orderResource, Locale locale) throws InvalidOrderException, OrderProcessingException {
-		log.info("Charging payment");		
 		
 		// Create new order
 		OrderHeader pendingOrder = orderService.createNewOrder(orderResource, locale);
+		log.info("Charging payment for order #{}", pendingOrder.getOrderNumber());
 		
 		// configure client, request and HPP settings
 		GatewayConfig config = getGatewayConfig();		
@@ -189,13 +189,15 @@ public class GlobalPaymentsService {
 		    String responseCode = response.getResponseCode();
 		    String responseMessage = response.getResponseMessage();
 		    HashMap<String, String> responseValues = response.getResponseValues(); // get values accessible by key
+			log.info("Processing Global Response for order #{}", orderNumber);
 		    if(responseCode.compareTo("00") == 0) {
 		    	// Success !
 				this.validateOrderResponse(responseValues, locale);
 				this.orderService.confirmOrder(Long.parseLong(orderNumber));
+				log.info("Order #{} confirmed !", orderNumber);
 		    	return Long.parseLong(orderNumber);
 		    } else {
-		    	log.error("Failed transaction, code = {}, message={}", responseCode, responseMessage);
+		    	log.error("Failed transaction for order #{}, code = {}, message={}", orderNumber, responseCode, responseMessage);
 		    	orderService.markOrderAsError(Long.parseLong(orderNumber));
 		    	throw new OrderProcessingException(messageSource.getMessage("order.error.failure", null, locale));
 		    }
