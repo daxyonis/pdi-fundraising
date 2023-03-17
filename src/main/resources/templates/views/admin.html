@@ -4,7 +4,8 @@
   <title>PDI Admin</title>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.23/fh-3.1.8/r-2.2.7/datatables.min.css"/> 
   <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}"/>
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.23/fh-3.1.8/r-2.2.7/datatables.min.js"></script>      
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.23/fh-3.1.8/r-2.2.7/datatables.min.js"></script>
+
 </head>
 <body>
   <section layout:fragment="content">
@@ -25,11 +26,15 @@
 		  <li class="nav-item" role="presentation">
 		    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false" th:text="#{admin.export}">Contact</a>
 		  </li>
+		  <li class="nav-item" role="presentation">
+			<a class="nav-link" id="orders-tab" data-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false" th:text="#{admin.orders}">Orders</a>
+		  </li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
 		  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" th:insert="fragments/admin-import :: import"></div>
 		  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" th:insert="fragments/admin-terminate :: terminate"></div>
 		  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" th:insert="fragments/admin-export :: export"></div>
+			<div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" th:insert="fragments/admin-orders :: orders"></div>
 		</div> 
 	</div> 	
 	
@@ -61,6 +66,17 @@
 	</div>	
 	  	
 	<script th:inline="javascript">
+		// options common to all datatables
+		var datatablesOptions = {
+				paging: false,
+				searching : false,
+				responsive: true,
+				info: false,
+				language: {
+					url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/French.json'
+				}
+		};
+
 		$(function(){			
 			$('#blockCampaignConfirmed').on('click', blockCampaign);			
 		});

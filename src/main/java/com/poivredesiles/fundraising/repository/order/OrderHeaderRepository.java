@@ -12,5 +12,7 @@ public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Long> 
 
 	Set<OrderHeader> findByOrderStatusAndPdiSeller_id(OrderStatusEnum status, Long id);
 
+	Set<OrderHeader> findByOrderStatus(OrderStatusEnum status);
+
 	Optional<OrderHeader> findOneByOrderNumber(Long number);
 }

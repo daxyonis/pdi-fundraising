@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service.dto;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
@@ -16,6 +17,8 @@ public class OrderHeaderDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+
+    private String formattedCreatedDate;
 
     private Long orderNumber;
 
@@ -43,10 +46,14 @@ public class OrderHeaderDTO implements Serializable {
 
     private String campaignName;
 
+    private Long campaignNumber;
+
     private String sellerName;
 
     private String groupName;
 
     private String groupLeaderName;
+
+    private String organizationName;
 
 }

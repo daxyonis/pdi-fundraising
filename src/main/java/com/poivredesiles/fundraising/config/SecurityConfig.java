@@ -40,6 +40,7 @@ public class SecurityConfig {
 					.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
 					.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
 					.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
+						.antMatchers("/api/admin/**").hasRole("ADMIN")
 					.antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
 					.anyRequest().authenticated()
 				);

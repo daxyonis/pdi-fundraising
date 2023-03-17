@@ -1,12 +1,8 @@
 package com.poivredesiles.fundraising.service.mapper;
 
-import java.math.BigDecimal;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
-import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 
@@ -18,6 +14,7 @@ public interface OrderHeaderMapper extends EntityMapper<OrderHeaderDTO, OrderHea
 	
 	@Mapping(source="total", target="formattedTotal", qualifiedByName="formatCurrency")
     @Mapping(source="confirmationDate", target="formattedConfirmationDate", qualifiedByName = "instantToString")
+    @Mapping(source="createdDate", target="formattedCreatedDate", qualifiedByName = "instantToString")
     OrderHeaderDTO toDto(OrderHeader orderHeader);
 
     @Mapping(target = "pdiSeller", ignore = true)

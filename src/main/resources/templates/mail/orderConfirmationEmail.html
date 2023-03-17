@@ -68,6 +68,7 @@
             <span th:text="${order.sellerName}">Gaston Thibault</span><br/>
             <span th:if="${!#strings.isEmpty(order.groupName)}" th:text="|#{order.seller.group} :|">Groupe</span>&nbsp;&nbsp;<span th:text="${order.groupName}">Classe 405</span><br/>
             <span th:if="${!#strings.isEmpty(order.groupLeaderName)}" th:text="|#{summary.groupLeader} :|">Responsable du groupe</span>&nbsp;&nbsp;<span th:text="${order.groupLeaderName}">Classe 405</span><br/>
+            <span th:if="${!#strings.isEmpty(order.organizationName)}" th:text="|#{order.organization} :|">Organisme</span>&nbsp;&nbsp;<span th:text="${order.organizationName}">Ecole ABC</span><br/>
         </td>
     </tr>
     <tr>

@@ -19,13 +19,7 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 @Controller
 public class MainController extends BaseController {
 	
-	private final Logger log = LoggerFactory.getLogger(MainController.class);	
-	
-	@Autowired
-	private CsvImportService csvImportService;
-	
-	@Autowired
-	private PdiCampaignService pdiCampaignService;
+	private final Logger log = LoggerFactory.getLogger(MainController.class);
 	
 	@GetMapping("/")
 	public String home(@AuthenticationPrincipal MyUserDetails userDetails, RedirectAttributes redirectAttrs) {
@@ -61,16 +55,6 @@ public class MainController extends BaseController {
 		log.info("Requested Login Page");
 		return "views/login";
 	}
-	
-	@GetMapping("/admin")
-	@Secured("ROLE_ADMIN")
-	public String admin(Model model) {
-		log.info("Requested Admin Page");				
-		model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
-		model.addAttribute("groupsAndSellersLastImport", csvImportService.getGroupsAndSellersLastImportDate());
-		model.addAttribute("showWarning", pdiCampaignService.thereAreActiveCampaigns());
-		return "views/admin";
-	}		
 	
 	@GetMapping("/produits")
 	public String showProducts() {

@@ -210,4 +210,23 @@ public class OrderServiceImpl implements OrderService {
 		}
 	}
 
+	@Override
+	public List<OrderHeaderDTO> getPendingOrders() {
+		Set<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatus(OrderStatusEnum.PENDING);
+		return orderHeaderMapper.toDto(orderHeaders.stream().sorted(Comparator.comparing(OrderHeader::getId).reversed()).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void cancelOrder(Long orderNumber) {
+		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
+		if(optionalOrderHeader.isPresent()) {
+			OrderHeader order = optionalOrderHeader.get();
+			if (order.getConfirmationNumber() == null && order.getConfirmationDate() == null && order.getOrderStatus() == OrderStatusEnum.PENDING) {
+				order.setOrderStatus(OrderStatusEnum.CANCELLED);
+			}
+		} else {
+			throw new ResourceNotFoundException("Invalid argument");
+		}
+	}
+
 }

@@ -1,0 +1,131 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+	</head>
+	<body>
+		<div th:fragment="orders">
+			<!--/* Messages */-->
+			<div class="row mt-3">
+				<div class="col-md-12">
+					<div class="alert alert-info d-none" id="orders-msg-success">La commande a été confirmée reussi</div>
+					<div class="alert alert-warning d-none" id="orders-msg-error">La commande n'a pu être confirmée</div>
+				</div>
+			</div>
+			<!-- /* Export */ -->
+			<div class="row mt-3">
+				<div class="col-md-12">
+					<h4 th:text="#{admin.orders.subtitle}">commandes en attente</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<!-- /* Use Datatables for Ajax display */ -->
+					<table style="width: 100%; font-size:10pt" id="ordersTable" class="table table-bordered table-striped">
+						<thead class="thead-light">
+							<tr>
+								<th th:text="#{order.number}">no commande</th>
+								<th th:text="#{order.date}">date création</th>
+								<th th:text="#{order.buyer.name}">nom</th>
+								<th th:text="#{order.buyer.email}">email</th>
+								<th th:text="#{order.buyer.phone}">tel</th>
+								<th th:text="#{order.seller}">vendeur (son nom)</th>
+								<th th:text="#{order.campaign.number}">no campagne</th>
+								<th th:text="#{order.organization}">nom organisation</th>
+								<th th:text="#{admin.orders.confirm}">Confirmer</th>
+								<th th:text="#{admin.orders.cancel}">Annuler</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+			
+			<script th:inline="javascript">
+				function confirmOrder(orderNumber) {
+					console.log('confirmOrder #' + orderNumber);
+					$.ajax({
+						url: '/api/admin/orders/confirm/?orderNumber=' + orderNumber,
+						type: 'PUT',
+						success: function(data) {
+							displaySuccess('#orders-msg-success', /*[[#{admin.orders.success}]]*/'succes!');
+							reloadAllPendingOrders();
+						},
+						error: ordersFailureHandler
+					});
+				}
+
+				function cancelOrder(orderNumber) {
+					console.log('cancelOrder #' + orderNumber);
+					$.ajax({
+						url: '/api/admin/orders/cancel/?orderNumber=' + orderNumber,
+						type: 'PUT',
+						success: function(data) {
+							displaySuccess('#orders-msg-success', /*[[#{admin.orders.cancel.success}]]*/'succes!');
+							reloadAllPendingOrders();
+						},
+						error: ordersFailureHandler
+					});
+				}
+
+				function ordersFailureHandler (err){
+					console.log(err.responseJSON);
+					if(err.responseJSON && err.responseJSON.message){
+						displayError(err, '#orders-msg-error', `ERREUR : ${err.responseJSON.message}`);
+					} else {
+						displayError(err, '#orders-msg-error', /*[[#{admin.action.error}]]*/'Erreur');
+					}
+				}
+
+				function reloadAllPendingOrders(){
+					ordersTable.ajax.reload();
+				}
+
+				/*
+				function initOrdersButtonHandlers(){
+					$('button.action-confirm').off();
+					$('button.action-confirm').on('click', function(){
+						let campaignId = $(this).data('id');
+						$('#blockCampaignConfirmed').data('id', campaignId);
+						$('#blockConfirm').modal('show');
+					});
+				}*/
+
+				const confirmButtonLabel = /*[[#{admin.orders.confirm}]]*/'confirmer';
+				const cancelButtonLabel = /*[[#{admin.orders.cancel}]]*/'annuler';
+
+				const ordersTable = $('#ordersTable')
+					//.on('draw.dt', initOrdersButtonHandlers)
+					.DataTable(
+						Object.assign({
+						    ajax: {
+						        url: /*[[@{/api/admin/orders/pending}]]*/'/api/admin/orders/pending',
+						        dataSrc: ''
+						    },
+						    columns: [
+						    	{data: 'orderNumber'},
+						    	{data: 'formattedCreatedDate'},
+						    	{data: 'buyerName'},
+						    	{data: 'buyerEmail'},
+						    	{data: 'buyerPhone'},
+						    	{data: 'sellerName'},
+						    	{data: 'campaignNumber'},
+						    	{data: 'organizationName'},
+						    	{data: 'id', orderable: false, width: "100px", render: function(data, type, row){
+						    		return `<button type='button'
+						    						class='btn btn-success btn-sm action-confirm'
+						    						onclick='confirmOrder(${row.orderNumber})'
+						    				><i class='fa fa-check-circle'></i></button>`;
+						    	}},
+						    	{data: 'id', orderable: false, width: "100px", render: function(data, type, row){
+						    		return `<button type='button'
+						    						class='btn btn-danger btn-sm action-cancel'
+						    						onclick='cancelOrder(${row.orderNumber})'
+						    				><i class='fa fa-times-circle'></i></button>`;
+						    	}}
+						    ]
+						},  datatablesOptions));
+				
+			</script>
+			
+		</div>
+	</body>
+</html>
