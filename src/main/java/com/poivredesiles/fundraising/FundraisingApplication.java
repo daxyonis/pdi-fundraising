@@ -20,7 +20,7 @@ public class FundraisingApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry
 						.addMapping("/api/global/response")
-						.allowedOrigins("https://pay.sandbox.realexpayments.com", "https://pay.realexpayments.co");
+						.allowedOrigins("https://pay.sandbox.realexpayments.com", "https://pay.realexpayments.com");
 			}
 		};
 	}
