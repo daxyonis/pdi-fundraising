@@ -41,28 +41,38 @@
 			
 			<script th:inline="javascript">
 				function confirmOrder(orderNumber) {
-					console.log('confirmOrder #' + orderNumber);
-					$.ajax({
-						url: '/api/admin/orders/confirm/?orderNumber=' + orderNumber,
-						type: 'PUT',
-						success: function(data) {
-							displaySuccess('#orders-msg-success', /*[[#{admin.orders.success}]]*/'succes!');
-							reloadAllPendingOrders();
-						},
-						error: ordersFailureHandler
+					$('#confirmOrder').modal('show');
+					$('#confirmOrderConfirmed').off();
+					$('#confirmOrderConfirmed').on('click', function(){
+						$('#confirmOrder').modal('hide');
+						console.log('confirmOrder #' + orderNumber);
+						$.ajax({
+							url: '/api/admin/orders/confirm/?orderNumber=' + orderNumber,
+							type: 'PUT',
+							success: function(data) {
+								displaySuccess('#orders-msg-success', /*[[#{admin.orders.success}]]*/'succes!');
+								reloadAllPendingOrders();
+							},
+							error: ordersFailureHandler
+						});
 					});
 				}
 
 				function cancelOrder(orderNumber) {
-					console.log('cancelOrder #' + orderNumber);
-					$.ajax({
-						url: '/api/admin/orders/cancel/?orderNumber=' + orderNumber,
-						type: 'PUT',
-						success: function(data) {
-							displaySuccess('#orders-msg-success', /*[[#{admin.orders.cancel.success}]]*/'succes!');
-							reloadAllPendingOrders();
-						},
-						error: ordersFailureHandler
+					$('#cancelOrder').modal('show');
+					$('#cancelOrderConfirmed').off();
+					$('#cancelOrderConfirmed').on('click', function(){
+						$('#cancelOrder').modal('hide');
+						console.log('cancelOrder #' + orderNumber);
+						$.ajax({
+							url: '/api/admin/orders/cancel/?orderNumber=' + orderNumber,
+							type: 'PUT',
+							success: function(data) {
+								displaySuccess('#orders-msg-success', /*[[#{admin.orders.cancel.success}]]*/'succes!');
+								reloadAllPendingOrders();
+							},
+							error: ordersFailureHandler
+						});
 					});
 				}
 
@@ -78,16 +88,6 @@
 				function reloadAllPendingOrders(){
 					ordersTable.ajax.reload();
 				}
-
-				/*
-				function initOrdersButtonHandlers(){
-					$('button.action-confirm').off();
-					$('button.action-confirm').on('click', function(){
-						let campaignId = $(this).data('id');
-						$('#blockCampaignConfirmed').data('id', campaignId);
-						$('#blockConfirm').modal('show');
-					});
-				}*/
 
 				const confirmButtonLabel = /*[[#{admin.orders.confirm}]]*/'confirmer';
 				const cancelButtonLabel = /*[[#{admin.orders.cancel}]]*/'annuler';
