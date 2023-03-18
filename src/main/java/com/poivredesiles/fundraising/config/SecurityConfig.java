@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +30,8 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/response"))
+				.cors(Customizer.withDefaults())
+				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/**"))
 				.formLogin(login -> login.loginPage("/login"))
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz

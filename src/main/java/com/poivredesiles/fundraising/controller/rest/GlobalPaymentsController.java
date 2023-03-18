@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
@@ -40,6 +37,7 @@ public class GlobalPaymentsController {
 	}
 	
 	// Note: expected content type from Global is 'application/x-www-form-urlencoded;charset=UTF-8'
+	@CrossOrigin
 	@PostMapping(value="/response")
 	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {

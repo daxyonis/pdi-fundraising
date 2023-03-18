@@ -59,11 +59,15 @@ public class GlobalPaymentsControllerTest {
     }
 
     @Test
-    public void shouldNotAccessCheckoutWithNoCsrf() throws Exception {
+    public void canAccessCheckoutWithNoCsrf() throws Exception {
         log.info("=====> Try to access checkout with no CSRF...");
+        when(globalPaymentsService.getHppJson(orderResource, Locale.FRENCH)).thenReturn("ok");
         this.mockMvc.perform(
-                        post("/api/global/checkout"))
-                .andExpect(status().isForbidden());
+                        post("/api/global/checkout")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"name\": \"Bob\", \"email\":\"bob@example.com\", \"phone\": \"0123456789\", \"sellerId\": \"1\"}")
+                            .with(user("bidon").roles("BUYER")))
+                .andExpect(status().isOk());
     }
 
     @Test
