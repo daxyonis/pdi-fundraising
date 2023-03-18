@@ -1,11 +1,13 @@
 package com.poivredesiles.fundraising.controller.rest;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
@@ -37,9 +39,9 @@ public class GlobalPaymentsController {
 	    return hppJson;
 	}
 	
-	
+	// Note: expected content type from Global is 'application/x-www-form-urlencoded;charset=UTF-8'
 	@PostMapping(value="/response")
-	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {		
+	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			Long orderNumber = globalPaymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
 			response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
