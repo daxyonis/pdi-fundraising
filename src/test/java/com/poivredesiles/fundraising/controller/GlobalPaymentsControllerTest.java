@@ -59,15 +59,12 @@ public class GlobalPaymentsControllerTest {
     }
 
     @Test
-    public void canAccessCheckoutWithNoCsrf() throws Exception {
+    public void shouldNotAccessCheckoutWithoutCsrf() throws Exception {
         log.info("=====> Try to access checkout with no CSRF...");
-        when(globalPaymentsService.getHppJson(orderResource, Locale.FRENCH)).thenReturn("ok");
         this.mockMvc.perform(
                         post("/api/global/checkout")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("{\"name\": \"Bob\", \"email\":\"bob@example.com\", \"phone\": \"0123456789\", \"sellerId\": \"1\"}")
                             .with(user("bidon").roles("BUYER")))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -85,8 +82,20 @@ public class GlobalPaymentsControllerTest {
 
 
     @Test
-    public void canAccessResponseIfAnonymous() throws Exception {
+    public void shouldNotAccessResponseIfAnonymous() throws Exception {
         log.info("=====> Try to access response when anonymous...");
+
+
+        this.mockMvc.perform(
+                post("/api/global/response")
+                )
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlPattern("**/login"));
+    }
+
+    @Test
+    public void canAccessResponseIfAuthenticated() throws Exception {
+        log.info("=====> Try to access response when authenticated...");
         MultiValueMap<String, String> responseData = new LinkedMultiValueMap<>();
         responseData.add("hppResponse", "adfkjaslfkja");
         when(globalPaymentsService.processResponse(responseData, Locale.FRENCH)).thenReturn(2250L);
@@ -95,6 +104,7 @@ public class GlobalPaymentsControllerTest {
         request.content("hppResponse=adfkjaslfkja");
         request.locale(Locale.FRENCH);
         request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
+        request.with(user("bidon").roles("BUYER"));
 
         this.mockMvc.perform(request)
                 .andExpect(status().isFound())

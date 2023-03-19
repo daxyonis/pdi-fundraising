@@ -30,15 +30,13 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-				.cors(Customizer.withDefaults())
-				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/**"))
+				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/response"))
 				.formLogin(login -> login.loginPage("/login"))
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz
 					.antMatchers(PUBLIC).permitAll()
-					.antMatchers("/api/global/response").permitAll()
 					.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
-					.antMatchers("/commande/**", "/api/global/checkout").hasRole("BUYER")
+					.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
 					.antMatchers("/ventes").hasRole("SELLER")
 					.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
 					.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")

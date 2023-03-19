@@ -41,8 +41,8 @@ public class GlobalPaymentsController {
 	}
 	
 	// Note: expected content type from Global is 'application/x-www-form-urlencoded;charset=UTF-8'
-	@CrossOrigin
 	@PostMapping(value="/response")
+	@Secured({"ROLE_BUYER"})
 	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			log.info("Received from: " + request.getRemoteAddr() + " - " + request.getRemoteHost() + " - " + request.getRemoteUser() + " - " + request.getRemotePort() + " - " + request.getRemoteUser());
