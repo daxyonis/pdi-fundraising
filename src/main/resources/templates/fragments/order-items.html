@@ -3,7 +3,8 @@
 	<head>
 	</head>
 	<body>
-		<th:block th:fragment="items">	
+		<th:block th:fragment="items">
+			<iframe id="payIframe" style="display:none; width: 100%; min-height: 800px; border:none;"></iframe>
 			<div id="pay-sticky" class="sticky-top">
 	  			<div class="row">
 	  				<div class="col-md-3">
@@ -25,43 +26,45 @@
 						</div>
 					</div>
 	  			</div>
-	  		</div>	  		 	
-	  		<div class="row">
-	  			<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
 	  		</div>
-	  		<th:block th:each="product, iterStatus : ${products}">	  			
-	  			<th:block th:with="previousCategory=${iterStatus.index < 1 ? -1 : products[iterStatus.index-1].categoryId}">
-	  				<th:block th:if="${previousCategory != product.categoryId}">
-	  					<!-- /* Print the category info */ -->
-	  					<div class="row bg-primary text-white p-3" th:switch="${#locale.language}">
-	  						<div th:case="'en'" class="col-md-12 text-center" th:text="${product.categoryDescEn}">category</div>
-	  						<div th:case="*" class="col-md-12 text-center" th:text="${product.categoryDescFr}">categorie</div>
-	  					</div>
-	  				</th:block>
-	  				<!-- /* Print the product info */ -->
-	  				<div class="d-lg-flex flex-lg-row justify-content-around my-1 border-bottom">
-	  					<div class="flex-item" th:text="${product.labelNumber}">#12</div>
-	  					<div class="flex-item">
-	  						<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
-							<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
-	  					</div>
-	  					<div class="flex-item" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
-	  					<div class="flex-long" th:switch="${#locale.language}">
-	  						<span th:case="'en'" th:text="${product.nameEn}">Black Pepper</span>
-	  						<span th:case="*" th:text="${product.nameFr}">Poivre blanc</span>
-	  					</div>
-	  					<div class="flex-long" th:switch="${#locale.language}">
-	  						<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
-	  						<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
-	  					</div>
-	  					<div class="flex-item" th:text="${product.weight}">28 g</div>
-						<div class="flex-item" th:switch="${#locale.language}">
-							<span th:case="'en'" th:text="${product.formatEn}">bag</span>
-							<span th:case="*" th:text="${product.formatFr}">sachet</span>
+			<div id="orderItems">
+				<div class="row">
+					<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
+				</div>
+				<th:block th:each="product, iterStatus : ${products}">
+					<th:block th:with="previousCategory=${iterStatus.index < 1 ? -1 : products[iterStatus.index-1].categoryId}">
+						<th:block th:if="${previousCategory != product.categoryId}">
+							<!-- /* Print the category info */ -->
+							<div class="row bg-primary text-white p-3" th:switch="${#locale.language}">
+								<div th:case="'en'" class="col-md-12 text-center" th:text="${product.categoryDescEn}">category</div>
+								<div th:case="*" class="col-md-12 text-center" th:text="${product.categoryDescFr}">categorie</div>
+							</div>
+						</th:block>
+						<!-- /* Print the product info */ -->
+						<div class="d-lg-flex flex-lg-row justify-content-around my-1 border-bottom">
+							<div class="flex-item" th:text="${product.labelNumber}">#12</div>
+							<div class="flex-item">
+								<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
+								<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
+							</div>
+							<div class="flex-item" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
+							<div class="flex-long" th:switch="${#locale.language}">
+								<span th:case="'en'" th:text="${product.nameEn}">Black Pepper</span>
+								<span th:case="*" th:text="${product.nameFr}">Poivre blanc</span>
+							</div>
+							<div class="flex-long" th:switch="${#locale.language}">
+								<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
+								<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
+							</div>
+							<div class="flex-item" th:text="${product.weight}">28 g</div>
+							<div class="flex-item" th:switch="${#locale.language}">
+								<span th:case="'en'" th:text="${product.formatEn}">bag</span>
+								<span th:case="*" th:text="${product.formatFr}">sachet</span>
+							</div>
 						</div>
-	  				</div>
+					</th:block>
 	  			</th:block>
-	  		</th:block>	  	
+			</div>
 	  		
 	  		<script th:inline="javascript">
 	  			var total = 0.0;
@@ -209,8 +212,21 @@
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
 		  					let responseUrl = location.origin + '/api/global/response';
-		  					RealexHpp.lightbox.init("autoload", responseUrl, hppData);
-		  					$('body').addClass('loaded');
+
+		  					//RealexHpp.lightbox.init("autoload", responseUrl, hppData);
+		  					//RealexHpp.redirect.init("payButton", responseUrl, hppData); erreur
+
+		  					RealexHpp.embedded.init("autoload", "payIframe", responseUrl, hppData,
+		  					{
+								onResize:function(data){
+									$('#payIframe').css(data)
+								}
+							});
+							$('body').addClass('loaded');
+
+							// Hide
+							$('#orderHeader').addClass('d-none');
+							window.scrollTo(0,0);
 		  				})	  				
 		  				.fail(function(err){ 						
 							console.log(err.responseJSON);
@@ -221,11 +237,11 @@
 							}
 							return true;
 						})
-						.done(function(){
+						/*.done(function(){
 						    console.log('done');
 							$('#checkout-button').attr('disabled', false);
 							sessionStorage.clear();	// should be in a callback to the payment success
-						});
+						});*/
 		  			});
 		  			
 	  			});
