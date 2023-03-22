@@ -212,10 +212,6 @@
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
 		  					let responseUrl = location.origin + '/api/global/response';
-
-		  					//RealexHpp.lightbox.init("autoload", responseUrl, hppData);
-		  					//RealexHpp.redirect.init("payButton", responseUrl, hppData); erreur
-
 		  					RealexHpp.embedded.init("autoload", "payIframe", responseUrl, hppData,
 		  					{
 								onResize:function(data){
@@ -226,6 +222,10 @@
 
 							// Hide
 							$('#orderHeader').addClass('d-none');
+							$('#newOrderTitle').addClass('d-none');
+							$('#orderTitle').removeClass('d-none');
+							$('#orderTitle').text($('#orderTitle').text() + hppData['ORDER_ID'] + '...');
+							$('#orderTitleHelp').removeClass('d-none');
 							window.scrollTo(0,0);
 		  				})	  				
 		  				.fail(function(err){ 						
@@ -236,12 +236,7 @@
 								displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
 							}
 							return true;
-						})
-						/*.done(function(){
-						    console.log('done');
-							$('#checkout-button').attr('disabled', false);
-							sessionStorage.clear();	// should be in a callback to the payment success
-						});*/
+						});
 		  			});
 		  			
 	  			});

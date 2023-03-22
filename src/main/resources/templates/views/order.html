@@ -23,7 +23,9 @@
   	<div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <h3 th:text="#{order.new}">nouvelle commande</h3>
+                <h3 id="newOrderTitle" th:text="#{order.new}">nouvelle commande</h3>
+                <h3 id="orderTitle" class="d-none" th:text="#{order.payment}">paiement de la commande #2845...</h3>
+                <h5 id="orderTitleHelp" class="d-none" th:text="#{order.payment.help}">Veuillez entrer vos informations de facturation dans le formulaire ci-dessoous.</h5>
             </div>
         </div>
         <!--/* Messages */-->
