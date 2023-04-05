@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
 		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
 		if(optionalOrderHeader.isPresent()) {
 			OrderHeader order = optionalOrderHeader.get();
-			if (order.getConfirmationNumber() == null) {
+			if (order.getConfirmationNumber() == null || order.getCancelDate() != null) {
 				order.setConfirmationNumber(String.format(orderConfirmationFormat, order.getOrderNumber()));
 				order.setOrderStatus(OrderStatusEnum.PAID);
 				order.setConfirmationDate(Instant.now());
@@ -212,8 +212,14 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<OrderHeaderDTO> getPendingOrders() {
-		Set<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatus(OrderStatusEnum.PENDING);
-		return orderHeaderMapper.toDto(orderHeaders.stream().sorted(Comparator.comparing(OrderHeader::getId).reversed()).collect(Collectors.toList()));
+		List<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatusOrderByIdDesc(OrderStatusEnum.PENDING);
+		return orderHeaderMapper.toDto(orderHeaders);
+	}
+
+	@Override
+	public List<OrderHeaderDTO> getOrders() {
+		List<OrderHeader> orderHeaders = orderHeaderRepository.findAllByOrderByIdDesc();
+		return orderHeaderMapper.toDto(orderHeaders);
 	}
 
 	@Override
@@ -221,8 +227,17 @@ public class OrderServiceImpl implements OrderService {
 		Optional<OrderHeader> optionalOrderHeader = orderHeaderRepository.findOneByOrderNumber(orderNumber);
 		if(optionalOrderHeader.isPresent()) {
 			OrderHeader order = optionalOrderHeader.get();
-			if (order.getConfirmationNumber() == null && order.getConfirmationDate() == null && order.getOrderStatus() == OrderStatusEnum.PENDING) {
+			var previousOrderStatus = order.getOrderStatus();
+			if (order.getOrderStatus() == OrderStatusEnum.PENDING || order.getOrderStatus() == OrderStatusEnum.PAID) {
 				order.setOrderStatus(OrderStatusEnum.CANCELLED);
+				order.setCancelDate(Instant.now());
+				OrderHeaderDTO orderHeaderDto = orderHeaderMapper.toDto(order);
+				sortOrderItems(orderHeaderDto);
+				if (previousOrderStatus == OrderStatusEnum.PAID) {
+					mailService.sendOrderCancelEmail(orderHeaderDto, Locale.forLanguageTag(order.getBuyerLanguage()));
+				}
+			} else {
+				throw new UnsupportedOperationException("Cannot cancel order in status " + order.getOrderStatus());
 			}
 		} else {
 			throw new ResourceNotFoundException("Invalid argument");

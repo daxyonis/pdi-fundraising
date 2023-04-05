@@ -17,7 +17,7 @@
 					<h4 th:text="#{admin.orders.subtitle}">commandes en attente</h4>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mb-4">
 				<div class="col-lg-12">
 					<!-- /* Use Datatables for Ajax display */ -->
 					<table style="width: 100%; font-size:10pt" id="ordersTable" class="table table-bordered table-striped">
@@ -31,6 +31,7 @@
 								<th th:text="#{order.seller}">vendeur (son nom)</th>
 								<th th:text="#{order.campaign.number}">no campagne</th>
 								<th th:text="#{order.organization}">nom organisation</th>
+								<th th:text="#{order.status}">statut</th>
 								<th th:text="#{admin.orders.confirm}">Confirmer</th>
 								<th th:text="#{admin.orders.cancel}">Annuler</th>
 							</tr>
@@ -92,6 +93,16 @@
 				const confirmButtonLabel = /*[[#{admin.orders.confirm}]]*/'confirmer';
 				const cancelButtonLabel = /*[[#{admin.orders.cancel}]]*/'annuler';
 
+				var ordersDatatablesOptions = {
+									paging: true,
+									searching : true,
+									responsive: true,
+									info: true,
+									language: {
+										url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/French.json'
+									}
+							};
+
 				const ordersTable = $('#ordersTable')
 					//.on('draw.dt', initOrdersButtonHandlers)
 					.DataTable(
@@ -109,20 +120,31 @@
 						    	{data: 'sellerName'},
 						    	{data: 'campaignNumber'},
 						    	{data: 'organizationName'},
+						    	{data: 'orderStatus', render: function(data, type, row){
+						    		return `<span class='badge badge-pill badge-${row.orderStatus}'>${row.orderStatus}</span>`;
+						    	}},
 						    	{data: 'id', orderable: false, width: "100px", render: function(data, type, row){
+						    	  if (row.orderStatus === 'PENDING' || row.orderStatus == 'CANCELLED') {
 						    		return `<button type='button'
 						    						class='btn btn-success btn-sm action-confirm'
 						    						onclick='confirmOrder(${row.orderNumber})'
 						    				><i class='fa fa-check-circle'></i></button>`;
+						    				} else {
+						    				return '';
+						    				}
 						    	}},
 						    	{data: 'id', orderable: false, width: "100px", render: function(data, type, row){
-						    		return `<button type='button'
-						    						class='btn btn-danger btn-sm action-cancel'
-						    						onclick='cancelOrder(${row.orderNumber})'
-						    				><i class='fa fa-times-circle'></i></button>`;
+						    	    if (row.orderStatus === 'PENDING' || row.orderStatus == 'PAID') {
+											return `<button type='button'
+															class='btn btn-danger btn-sm action-cancel'
+															onclick='cancelOrder(${row.orderNumber})'
+													><i class='fa fa-times-circle'></i></button>`;
+						    				} else {
+						    				return '';
+						    				}
 						    	}}
 						    ]
-						},  datatablesOptions));
+						},  ordersDatatablesOptions));
 				
 			</script>
 			

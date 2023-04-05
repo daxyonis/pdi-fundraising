@@ -72,6 +72,12 @@ public interface OrderService {
 	List<OrderHeaderDTO> getPendingOrders();
 
 	/**
+	 * Get the list of all orders
+	 * @return : the list of pending orders
+	 */
+	List<OrderHeaderDTO> getOrders();
+
+	/**
 	 * Cancel an order
 	 * @param orderNumber
 	 */

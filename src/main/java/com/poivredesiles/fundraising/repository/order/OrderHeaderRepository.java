@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.repository.order;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +13,9 @@ public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Long> 
 
 	Set<OrderHeader> findByOrderStatusAndPdiSeller_id(OrderStatusEnum status, Long id);
 
-	Set<OrderHeader> findByOrderStatus(OrderStatusEnum status);
+	List<OrderHeader> findByOrderStatusOrderByIdDesc(OrderStatusEnum status);
 
 	Optional<OrderHeader> findOneByOrderNumber(Long number);
+
+    List<OrderHeader> findAllByOrderByIdDesc();
 }

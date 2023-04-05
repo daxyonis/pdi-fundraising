@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        .font-weight-bold {
+            font-weight: bold;
+        }
+
+        .font-italic {
+            font-style: italic;
+        }
+
+        .pt {
+			padding-top: 10px;
+		}
+
+		.mt {
+		    margin-top: 10px;
+		}
+
+		.text-center {
+			text-align: center;
+		}
+
+		.text-right {
+		    text-align: right;
+		}
+		.table-container {
+		    width: 75%;
+		    margin-right: auto;
+		    margin-left: auto;
+		}
+
+        table {
+            border-collapse: collapse;
+        }
+
+		td { border: 1px solid black;
+		     padding: 5px;}
+
+		td.top {
+		    vertical-align: top;
+		}
+     </style>
+</head>
+<body>
+<h1 th:text="#{order.cancel.title}" class="pt">Annulation</h1>
+<h2>Poivre des Îles - <span th:text="#{email.order.campaign(${order.campaignName})}">campagne Action Benevole</span></h2>
+<h2 th:text="#{order.cancel.subtitle(${order.orderNumber})}" class="pt">Votre commande #nnn a ete annulee par Poivre des Iles</h2>
+<div  class="table-container">
+<table>
+    <tr>
+        <td class="font-weight-bold text-right" th:text="#{order.cancel.date}">Date d'annulation</td>
+        <td colspan="3" th:text="${order.formattedCancelDate}">
+        </td>
+    </tr>
+    <tr>
+        <td class="font-weight-bold text-right" th:text="#{order.success.date}">Date de la commande</td>
+        <td colspan="3" th:text="${order.formattedConfirmationDate}">
+        </td>
+    </tr>
+
+    <tr>
+        <td class="font-weight-bold text-right top" th:text="#{order.success.buyer}">Acheteur</td>
+        <td>
+            <span th:text="${order.buyerName}">Ginette Thibault</span><br/>
+            <span th:text="${order.buyerPhone}">514-321-9876</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="font-weight-bold text-right top" th:text="#{order.seller}">Vendeur</td>
+        <td>
+            <span th:text="${order.sellerName}">Gaston Thibault</span><br/>
+            <span th:if="${!#strings.isEmpty(order.groupName)}" th:text="|#{order.seller.group} :|">Groupe</span>&nbsp;&nbsp;<span th:text="${order.groupName}">Classe 405</span><br/>
+            <span th:if="${!#strings.isEmpty(order.groupLeaderName)}" th:text="|#{summary.groupLeader} :|">Responsable du groupe</span>&nbsp;&nbsp;<span th:text="${order.groupLeaderName}">Classe 405</span><br/>
+            <span th:if="${!#strings.isEmpty(order.organizationName)}" th:text="|#{order.organization} :|">Organisme</span>&nbsp;&nbsp;<span th:text="${order.organizationName}">Ecole ABC</span><br/>
+        </td>
+    </tr>
+    <tr>
+        <td class="font-weight-bold text-right top" th:text="#{order.success.detail}">Detail de la commande</td>
+        <td colspan="3">
+                Total: <span class="font-weight-bold" th:text="${order.formattedTotal}">18.00$</span>
+                <ul>
+                    <li th:each="orderItem : ${order.orderItems}">
+                        <span th:text="|${orderItem.quantity} x|">2 x</span>
+                        <span th:text="|&nbsp;[${orderItem.labelNumber}]&nbsp;|">[148T]</span>
+                        <span th:text="${#strings.equalsIgnoreCase(order.buyerLanguage,'fr') ? orderItem.nameFr : orderItem.nameEn}">
+                            TRIO ASS. SAUCE À FONDUE </span>
+                        <span>&nbsp;&nbsp;</span>
+                        <span th:text="${#strings.equalsIgnoreCase(order.buyerLanguage,'fr') ? orderItem.formatFr : orderItem.formatEn}">
+                            3 sachets</span>
+                        <span>  </span>
+                        <span th:text="|(${orderItem.formattedUnitPrice})|"> (3.00$)</span>
+                        <br/>
+                    </li>
+                </ul>
+        </td>
+    </tr>
+</table>
+</div>
+<p th:text="#{order.cancel.message}">Pour toute question veuillez contacter Poivre des Iles directement via
+    le formulaire au <a href="https://poivredesiles.com/contact.html" target="_blank">poivredesiles.com</a>
+    ou au 450-656-1020.
+</p>
+
+<p class="font-weight-bold font-italic" th:text="#{pdi.team}">L'equipe de Poivre des Iles</p>
+
+<p class="font-italic" th:text="#{email.noreply}">Veuillez ne pas repondre a ce message.</p>
+<p class="font-italic" th:text="#{email.generated}">
+    Ce courriel a ete genere automatiquement par la plateforme
+</p>
+</body>
+</html>

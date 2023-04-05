@@ -129,6 +129,26 @@ public class MailService {
 		}
 		/******************************************************/
 
-		sendEmailFromTemplate(orderHeader, "order", "mail/orderConfirmationEmail", to, "email.order.confirmation", locale);
+		String subject = "email.order.confirmation";
+		if (orderHeader.getFormattedCancelDate() != null && !orderHeader.getFormattedCancelDate().isBlank())
+		{
+			subject = "email.order.reconfirmation";
+		}
+		sendEmailFromTemplate(orderHeader, "order", "mail/orderConfirmationEmail", to, subject, locale);
+
 	}
+
+	@Async
+    public void sendOrderCancelEmail(OrderHeaderDTO orderHeader, Locale locale) {
+		String to = applicationProperties.getMail().getTo();
+
+		/******************************************************/
+		/** In production, send confirmation to real buyer **/
+		if(Arrays.asList(env.getActiveProfiles()).contains("prod")) {
+			to = orderHeader.getBuyerEmail();
+		}
+		/******************************************************/
+
+		sendEmailFromTemplate(orderHeader, "order", "mail/orderCancelEmail", to, "email.order.cancel", locale);
+    }
 }

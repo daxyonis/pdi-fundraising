@@ -14,6 +14,7 @@ public interface OrderHeaderMapper extends EntityMapper<OrderHeaderDTO, OrderHea
 	
 	@Mapping(source="total", target="formattedTotal", qualifiedByName="formatCurrency")
     @Mapping(source="confirmationDate", target="formattedConfirmationDate", qualifiedByName = "instantToString")
+    @Mapping(source="cancelDate", target="formattedCancelDate", qualifiedByName = "instantToString")
     @Mapping(source="createdDate", target="formattedCreatedDate", qualifiedByName = "instantToString")
     OrderHeaderDTO toDto(OrderHeader orderHeader);
 

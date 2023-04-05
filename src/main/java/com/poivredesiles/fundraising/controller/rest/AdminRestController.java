@@ -22,7 +22,7 @@ public class AdminRestController {
     @GetMapping("/orders/pending")
     @Secured("ROLE_ADMIN")
     public List<OrderHeaderDTO> getPendingOrders() {
-        return orderService.getPendingOrders();
+        return orderService.getOrders();
     }
 
     // confirm one order

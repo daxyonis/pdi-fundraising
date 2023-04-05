@@ -32,7 +32,7 @@ public class OrderHeaderDTO implements Serializable {
 
     private String buyerLanguage;
 
-    private OrderStatusEnum orderStatus;
+    private String orderStatus;
 
     private String confirmationNumber;
 
@@ -43,6 +43,8 @@ public class OrderHeaderDTO implements Serializable {
     private String formattedTotal;
 
     private String formattedConfirmationDate;
+
+    private String formattedCancelDate;
 
     private String campaignName;
 
