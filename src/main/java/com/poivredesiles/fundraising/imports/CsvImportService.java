@@ -451,7 +451,11 @@ public class CsvImportService {
 					campaign.setLeaderNumber(lineInArray[7]);
 					campaign.setNumTypeBC(Long.valueOf(lineInArray[8]));
 					campaign.setProject(lineInArray[9]);
-					campaign.setPercentProfit(Double.valueOf(lineInArray[10]));
+					try {
+						campaign.setPercentProfit(Double.valueOf(lineInArray[10]));
+					} catch (ArrayIndexOutOfBoundsException e) {
+						campaign.setPercentProfit(50.0);
+					}
 					campaigns.add(campaign);
 				} catch (NumberFormatException e1) {
 					numFaultyLines += 1.0;
