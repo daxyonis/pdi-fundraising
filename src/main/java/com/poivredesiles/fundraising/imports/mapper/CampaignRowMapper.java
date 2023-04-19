@@ -21,10 +21,10 @@ public class CampaignRowMapper implements RowMapper<Campaign> {
 		campaign.setProject(sanitize(rs.getString("Projet")));
 		campaign.setLeaderNumber(sanitize(rs.getString("NoResponsable")));
 		campaign.setLeaderEmail(sanitize(rs.getString("CourrielResponsable")));
-		campaign.setDueDate(rs.getDate("DateLimite"));
+		campaign.setDueDate(rs.getString("DateLimite"));
 		campaign.setNumTypeBC(rs.getLong("NoTypeBC"));
 		campaign.setBlockedAsString(rs.getString("Bloqué"));		
-		campaign.setClosedDate(rs.getDate("DateTerminée"));	
+		campaign.setClosedDate(rs.getString("DateTerminée"));
 		return campaign;
 	}	
 

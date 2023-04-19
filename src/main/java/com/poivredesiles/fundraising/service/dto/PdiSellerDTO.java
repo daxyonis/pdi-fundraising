@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.Data;
@@ -33,7 +34,7 @@ public class PdiSellerDTO implements Serializable {
 
     private Long pdiCampaignNumber;
 
-    private Date pdiCampaignDueDate;
+    private String pdiCampaignDueDate;
     
     private String pdiCampaignOrganization;
     

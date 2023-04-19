@@ -66,8 +66,8 @@
 					</li>
 				</ul>
 				<ul th:if="${seller}" class="navbar-nav mr-auto">
-					<li th:if="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${#dates.format(seller.pdiCampaignDueDate, 'dd/MM/yyyy')} |">date de fin de campagne prevue: 15/09/2021</li>
-					<li th:unless="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${#dates.format(seller.pdiCampaignDueDate, 'MM/dd/yyyy')} |">expected end of campaign: 09/15/2021</li>
+					<li th:if="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.pdiCampaignDueDate} |">date de fin de campagne prevue: 15/09/2021</li>
+					<li th:unless="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.pdiCampaignDueDate} |">expected end of campaign: 09/15/2021</li>
 				</ul>
 				<form id="logoutForm" class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">					
 					<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:if="${showLangChange}"

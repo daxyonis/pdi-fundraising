@@ -43,21 +43,6 @@ public class ImportsUtils {
 	}
 	
 	/**
-	 * Converts a Date to LocalDate (handles null)
-	 * @param dateToConvert
-	 * @return
-	 */
-	public static LocalDate convertToLocalDate(Date dateToConvert) {
-		if(dateToConvert == null) {
-			return null;
-		}
-		System.out.println("dateToConvert: " + dateToConvert);
-		return dateToConvert.toInstant()
-				  .atZone(ZoneId.of(DEFAULT_TIMEZONE))
-				  .toLocalDate();
-	}
-	
-	/**
 	 * Converts an Instant to LocalDate (handles null)
 	 * @param instant
 	 * @return
@@ -111,15 +96,11 @@ public class ImportsUtils {
 	 * @return the Date object
 	 * @throws ParseException
 	 */
-	public static Date parseDate(String dateToParse, DateFormat myDateFormat) throws ParseException {		
+	public static LocalDate parseDate(String dateToParse) throws ParseException {
 		if(dateToParse == null || dateToParse.isBlank()) {
 			return null;
 		}
-		if(myDateFormat == null) {
-			return df.parse(dateToParse);
-		} else {
-			return myDateFormat.parse(dateToParse);
-		}
+		return LocalDate.parse(dateToParse, DateTimeFormatter.ofPattern(DATE_PATTERN));
 	}
 
 	/**
@@ -145,15 +126,4 @@ public class ImportsUtils {
     	return currencyNf.format(amount); 
     }
 
-	/**
-	 * Convert a localDate to a Date
-	 * @param localDate
-	 * @return
-	 */
-	public static Date convertToDate(LocalDate localDate) {
-		if(localDate == null) {
-			return null;
-		}
-		return Date.from(localDate.atStartOfDay(ZoneId.of(DEFAULT_TIMEZONE)).toInstant());
-	}
 }

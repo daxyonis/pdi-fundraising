@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
@@ -47,10 +48,10 @@ public class PdiCampaignServiceTest {
 	OrderType orderType;
 	
 	@BeforeEach
-	public void setUp() {
+	public void setUp() throws ParseException {
 		campaign = new Campaign();
 		campaign.setBlocked(false);
-		campaign.setDueDate(new Date());
+		campaign.setDueDate("15/12/2023");
 		campaign.setLeaderEmail("toto@example.com");
 		campaign.setLeaderNumber("12345");
 		campaign.setNumber(9999L);
@@ -66,10 +67,10 @@ public class PdiCampaignServiceTest {
 		orderType.setNumber(campaign.getNumTypeBC());
 	}
 	
-	private PdiCampaign getPdiCampaignFrom(Campaign campaign) {
+	private PdiCampaign getPdiCampaignFrom(Campaign campaign) throws ParseException {
 		PdiCampaign myPdiCampaign = new PdiCampaign();
 		myPdiCampaign.setBlocked(false);
-		myPdiCampaign.setDueDate(ImportsUtils.convertToLocalDate(campaign.getDueDate()));
+		myPdiCampaign.setDueDate(ImportsUtils.parseDate(campaign.getDueDate()));
 		myPdiCampaign.setLeaderEmail(campaign.getLeaderEmail());
 		myPdiCampaign.setLeaderNum(campaign.getLeaderNumber());
 		myPdiCampaign.setNumber(campaign.getNumber());
@@ -90,12 +91,7 @@ public class PdiCampaignServiceTest {
 	private Campaign modifiedCampaign(OrderType orderType) {
 		Campaign modifiedCampaign = new Campaign();
 		modifiedCampaign.setBlocked(campaign.isBlocked());
-		try {
-			modifiedCampaign.setDueDate(ImportsUtils.parseDate("27/12/2035", new SimpleDateFormat("dd/M/yyyy")));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		modifiedCampaign.setDueDate("27/12/2035");
 		modifiedCampaign.setLeaderEmail("james.bond@example.com");
 		modifiedCampaign.setLeaderNumber("007");
 		modifiedCampaign.setNumber(campaign.getNumber());
@@ -120,7 +116,7 @@ public class PdiCampaignServiceTest {
 	}
 	
 	@Test
-	void importExistingCampaignTest() {
+	void importExistingCampaignTest() throws ParseException {
 		OrderType modifiedOrderType = new OrderType();
 		modifiedOrderType.setId(2L);
 		modifiedOrderType.setNumber(500L);

@@ -443,14 +443,15 @@ public class CsvImportService {
 					Campaign campaign = new Campaign();
 					campaign.setBlockedAsString(lineInArray[0]);
 					campaign.setLeaderEmail(lineInArray[1]);
-					campaign.setDueDate(ImportsUtils.parseDate(lineInArray[2], new SimpleDateFormat("dd/M/yyyy")));
-					campaign.setClosedDate(ImportsUtils.parseDate(lineInArray[3], new SimpleDateFormat("dd/M/yyyy")));
+					campaign.setDueDate(lineInArray[2]);
+					campaign.setClosedDate(lineInArray[3]);
 					campaign.setNumber(Long.valueOf(lineInArray[4]));
 					campaign.setOrganizationName(lineInArray[5]);
 					campaign.setOrganizationNumber(lineInArray[6]);
 					campaign.setLeaderNumber(lineInArray[7]);
 					campaign.setNumTypeBC(Long.valueOf(lineInArray[8]));
 					campaign.setProject(lineInArray[9]);
+					campaign.setPercentProfit(Double.valueOf(lineInArray[10]));
 					campaigns.add(campaign);
 				} catch (NumberFormatException e1) {
 					numFaultyLines += 1.0;
@@ -461,7 +462,7 @@ public class CsvImportService {
 			if((numFaultyLines / reader.getLinesRead()) > 0.1) {
 				throw new PdiImportDataException("Plus de 10% des données du fichier présentent une erreur de lecture.");
 			}
-		} catch (CsvValidationException | IOException | ParseException e) {
+		} catch (CsvValidationException | IOException  e) {
 			log.error("Error while reading csv file", e);
 			throw new PdiImportDataException("Erreur de lecture des campagnes - verifier le fichier.");
 		}

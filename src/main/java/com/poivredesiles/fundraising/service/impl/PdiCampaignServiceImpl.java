@@ -1,8 +1,7 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import static com.poivredesiles.fundraising.imports.ImportsUtils.convertToLocalDate;
-
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -126,12 +125,17 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			pdiCampaign.setNumber(campaign.getNumber());
 			pdiCampaign.setProject(campaign.getProject());
 			pdiCampaign.setBlocked(campaign.isBlocked());
-			pdiCampaign.setDueDate(convertToLocalDate(campaign.getDueDate()));
+			try {
+				pdiCampaign.setDueDate(ImportsUtils.parseDate(campaign.getDueDate()));
+			} catch (ParseException e) {
+				log.warn("Could not parse date: {}", campaign.getDueDate());
+			}
 			pdiCampaign.setLeaderNum(campaign.getLeaderNumber());
 			pdiCampaign.setLeaderEmail(campaign.getLeaderEmail());
 			pdiCampaign.setOrderTypeNum(campaign.getNumTypeBC());
 			pdiCampaign.setOrganizationNum(campaign.getOrganizationNumber());
 			pdiCampaign.setOrganizationName(campaign.getOrganizationName());
+			pdiCampaign.setPercentProfit(campaign.getPercentProfit());
 
 			updateOrderType(pdiCampaign);
 			pdiCampaignRepository.save(pdiCampaign);

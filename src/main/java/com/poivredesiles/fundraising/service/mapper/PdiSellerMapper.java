@@ -25,7 +25,7 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Mapping(source = "pdiGroup.id", target = "pdiGroupId")
     @Mapping(source = "pdiGroup.number", target = "pdiGroupNumber")
     @Mapping(source = "pdiGroup.name", target = "pdiGroupName")
-    @Mapping(source = "pdiGroup.pdiCampaign.dueDate", target = "pdiCampaignDueDate", qualifiedByName = "localDateToDate")
+    @Mapping(source = "pdiGroup.pdiCampaign.dueDate", target = "pdiCampaignDueDate", qualifiedByName="formatDate")
     @Mapping(source = "pdiGroup.pdiCampaign.organizationName", target = "pdiCampaignOrganization")
     @Mapping(source = "pdiGroup.pdiCampaign.number", target = "pdiCampaignNumber")
     @Mapping(source = "pdiGroup.pdiCampaign.id", target = "pdiCampaignId")
@@ -40,15 +40,15 @@ public interface PdiSellerMapper extends EntityMapper<PdiSellerDTO, PdiSeller> {
     @Mapping(target = "removeOrderHeader", ignore = true)
     @Mapping(source = "pdiGroupId", target = "pdiGroup")
     PdiSeller toEntity(PdiSellerDTO pdiSellerDTO);
-
-    @Named("localDateToDate")
-    static Date localDateToDate(LocalDate localDate) {
-    	return ImportsUtils.convertToDate(localDate);
-    }
     
     @Named("formatCurrency")
     static String formatCurrency(BigDecimal amount) {
     	return ImportsUtils.formatCurrency(amount);
+    }
+
+    @Named("formatDate")
+    public static String formatDate(LocalDate date) {
+        return ImportsUtils.formatLocalDate(date, "dd/MM/yyyy");
     }
     
     @AfterMapping

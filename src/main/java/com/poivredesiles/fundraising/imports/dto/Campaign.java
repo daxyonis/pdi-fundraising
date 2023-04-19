@@ -1,6 +1,6 @@
 package com.poivredesiles.fundraising.imports.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -19,13 +19,15 @@ public class Campaign {
 	
 	private String leaderEmail;
 	
-	private Date dueDate;
+	private String dueDate;
 	
 	private Long numTypeBC;
 	
 	private boolean blocked;
 	
-	private Date closedDate;
+	private String closedDate;
+
+	private Double percentProfit = Double.valueOf(50);
 
 	public boolean valid() {
 		if(number == null) {
