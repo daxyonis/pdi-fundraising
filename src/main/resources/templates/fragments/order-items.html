@@ -212,6 +212,14 @@
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
 		  					let responseUrl = location.origin + '/api/global/response';
+		  					//*******************************************
+		  					// Log the response url for debug purposes
+		  					$.post({
+		  						url: '/api/global/logs/',
+		  						data: JSON.stringify({responseUrl, oderId: hppData.ORDER_ID}),
+		  						contentType: 'application/json'
+		  					});
+		  					//*******************************************
 		  					RealexHpp.embedded.init("autoload", "payIframe", responseUrl, hppData,
 		  					{
 								onResize:function(data){

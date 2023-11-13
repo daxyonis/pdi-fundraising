@@ -51,4 +51,9 @@ public class GlobalPaymentsController {
 			response.sendRedirect("/commande?failure=true");
 		}		
 	}
+
+	@PostMapping("/logs")
+	public void logRequest(@RequestBody Map<String, String> request) {
+		log.info("Global Payments Request: {}", request);
+	}
 }
