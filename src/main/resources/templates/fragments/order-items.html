@@ -211,7 +211,10 @@
 		  				})	  				
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
-		  					let responseUrl = location.origin + '/api/global/response';
+		  					let baseUrl = /*[[${baseUrl}]]*/ location.origin;
+		  					let responseUrl = baseUrl + '/api/global/response';
+		  					console.log(baseUrl);
+		  					console.log(responseUrl);
 		  					RealexHpp.embedded.init("autoload", "payIframe", responseUrl, hppData,
 		  					{
 								onResize:function(data){

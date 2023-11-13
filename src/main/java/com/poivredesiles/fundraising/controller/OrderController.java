@@ -57,6 +57,10 @@ public class OrderController extends BaseController {
 			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
 			model.addAttribute("failure", failure);
+
+			String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+			model.addAttribute("baseUrl", baseUrl);
+
 			return "views/order";
 		}
 	}		
