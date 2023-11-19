@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,7 +53,7 @@ public class JdbcImportServiceIT{
 	}
 	
 //	@Test
-	public void importCampaignGroupsAndSellersTest() {
+	public void importCampaignGroupsAndSellersTest() throws PdiImportDataException {
 		jdbcImportService.importCampaignGroupsAndSellers();
 		
 		int numCampaigns = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM pdicampaign", Integer.class);

@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.resource.ContactMessage;
 import org.slf4j.Logger;
@@ -96,7 +97,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	private OrderItemCsvMapper orderItemCsvMapper;
 	
 	@Override
-	public void importCampaigns(List<Campaign> campaigns) {
+	public void importCampaigns(List<Campaign> campaigns) throws PdiImportDataException {
 		if (campaigns != null) {
 			log.info("Importing {} campaigns", campaigns.size());
 			for (Campaign campaign : campaigns) {
@@ -119,7 +120,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	 * @param pdiCampaign PDI campaign to be updated/created
 	 * @param campaign
 	 */
-	private void updateCampaign(PdiCampaign pdiCampaign, Campaign campaign) {
+	private void updateCampaign(PdiCampaign pdiCampaign, Campaign campaign) throws PdiImportDataException {
 		// First validate the input data is valid
 		if (campaign.valid()) {
 			pdiCampaign.setNumber(campaign.getNumber());
@@ -140,7 +141,8 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			updateOrderType(pdiCampaign);
 			pdiCampaignRepository.save(pdiCampaign);
 		} else {
-			log.warn("Did not save invalid campaign: {}", campaign.toString());
+			log.error("Did not save invalid campaign: {}", campaign.toString());
+			throw new PdiImportDataException("Invalid campaign data");
 		}
 	}
 

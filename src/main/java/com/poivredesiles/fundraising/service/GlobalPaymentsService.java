@@ -184,7 +184,7 @@ public class GlobalPaymentsService {
 			 
 			// get the response json from the form data
 			String hppResponse = responseData.getFirst("hppResponse");
-		    Transaction response = service.parseResponse(hppResponse, true);
+		    Transaction response = service.parseResponse(hppResponse, false);
 		    String orderNumber = response.getOrderId();
 		    String responseCode = response.getResponseCode();
 		    String responseMessage = response.getResponseMessage();
@@ -205,7 +205,7 @@ public class GlobalPaymentsService {
 		} catch (Exception e) {
 			log.error("Error post-processing payment response : {}", e.getLocalizedMessage());
 			throw new OrderProcessingException(messageSource.getMessage("order.error.postprocess", null, locale));
-		}		
+		}
 	}
 
 	/**

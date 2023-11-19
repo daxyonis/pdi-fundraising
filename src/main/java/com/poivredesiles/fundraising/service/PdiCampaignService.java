@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.poivredesiles.fundraising.exception.PdiExportDataException;
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.resource.ContactMessage;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
@@ -16,7 +17,7 @@ public interface PdiCampaignService {
 	 * Import a list of campaigns to PDI campaign
 	 * @param campaigns
 	 */
-	void importCampaigns(List<Campaign> campaigns);
+	void importCampaigns(List<Campaign> campaigns) throws PdiImportDataException;
 
 	/**
 	 * Queries whether there are active PDI campaigns (not blocked, not closed)

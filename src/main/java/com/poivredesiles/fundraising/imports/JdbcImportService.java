@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.imports;
 
 import java.util.List;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class JdbcImportService {
 	/**
 	 * JDBC IMPORT of Campaigns, Groups and Sellers 
 	 */
-	public void importCampaignGroupsAndSellers() {
+	public void importCampaignGroupsAndSellers() throws PdiImportDataException {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(fileMakerDatasource.create());
 		
 		List<Campaign> campaigns = readCampaigns(jdbcTemplate);

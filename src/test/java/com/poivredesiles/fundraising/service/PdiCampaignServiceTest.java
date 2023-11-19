@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -103,7 +104,7 @@ public class PdiCampaignServiceTest {
 	}
 	
 	@Test
-	void importNewCampaignTest() {
+	void importNewCampaignTest() throws PdiImportDataException {
 		// Check import works correctly				
 		when(pdiCampaignRepository.findOneByNumber(campaign.getNumber())).thenReturn(Optional.ofNullable(null));
 		when(orderTypeRepository.findByNumber(campaign.getNumTypeBC())).thenReturn(Optional.of(orderType));
@@ -116,7 +117,7 @@ public class PdiCampaignServiceTest {
 	}
 	
 	@Test
-	void importExistingCampaignTest() throws ParseException {
+	void importExistingCampaignTest() throws ParseException, PdiImportDataException {
 		OrderType modifiedOrderType = new OrderType();
 		modifiedOrderType.setId(2L);
 		modifiedOrderType.setNumber(500L);

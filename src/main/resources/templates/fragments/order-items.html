@@ -159,6 +159,8 @@
 	  			
 		  			// GLOBAL stuff		  			
 		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
+		  			let responseUrl = /*[[${responseUrl}]]*/;
+		  			responseUrl = responseUrl || (location.origin + '/api/global/response');
 
                     $('#checkout-button').on('click', function(){
                         $('#buyerForm').submit();
@@ -211,7 +213,6 @@
 		  				})	  				
 		  				.then(function(hppJson){
 		  					let hppData = JSON.parse(hppJson);
-		  					let responseUrl = location.origin + '/api/global/response';
 		  					//*******************************************
 		  					// Log the response url for debug purposes
 		  					$.post({
@@ -219,13 +220,35 @@
 		  						data: JSON.stringify({responseUrl, oderId: hppData.ORDER_ID}),
 		  						contentType: 'application/json'
 		  					});
-		  					//*******************************************
-		  					RealexHpp.embedded.init("autoload", "payIframe", responseUrl, hppData,
-		  					{
-								onResize:function(data){
-									$('#payIframe').css(data)
-								}
-							});
+
+							// Embedded with callback
+							RealexHpp.embedded.init(
+								"autoload",
+								"payIframe",
+								function(answer, close) {
+									close();
+									// Log the answer for debug purposes
+									$.post({
+										url: '/api/global/logs/',
+										data: JSON.stringify({action: "RECEIVED ANSWER", result: answer.RESULT, oderId: answer.ORDER_ID}),
+										contentType: 'application/json'
+									});
+									// Confirm the transaction
+									$.post({
+										url: '/api/global/response/',
+										data: {"hppResponse" : JSON.stringify(answer)},
+									})
+									.then(function(response){
+										window.location.href = response;
+									})
+									.fail(function(error){
+										window.location.href = '/error';
+										console.log(error);
+									});
+								},
+								hppData
+							);
+
 							$('body').addClass('loaded');
 
 							// Hide
@@ -236,7 +259,7 @@
 							$('#orderTitleHelp').removeClass('d-none');
 							window.scrollTo(0,0);
 		  				})	  				
-		  				.fail(function(err){ 						
+		  				.fail(function(err){
 							console.log(err.responseJSON);
 							if(err.responseJSON && err.responseJSON.message){
 								displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);	
@@ -248,36 +271,6 @@
 		  			});
 		  			
 	  			});
-	  			//***********************************************
-				// Code below is to react when HPP overlay appears in the page : we then want to remove sticky
-				// elements, and put them back when overlay disappears.
-				// Select the node that will be observed for mutations
-	  			const bodyNode = document.body;
-
-	  			// Options for the observer (which mutations to observe)
-	  			const config = { childList: true};
-
-				// Callback function to execute when mutations are observed
-				const callback = (mutationList, observer) => {
-				  for (const mutation of mutationList) {
-					if (mutation.type === 'childList') {
-					  //console.log('A child node has been added or removed.');
-					  if (mutation.addedNodes.length > 0 && mutation.addedNodes[0].id && mutation.addedNodes[0].id.includes('rxp-overlay')) {
-					  	console.log('Remove sticky');
-					  	$('#pay-sticky').removeClass('sticky-top');
-					  } else if (mutation.removedNodes.length > 0 && mutation.removedNodes[0].id && mutation.removedNodes[0].id.includes('rxp-overlay')) {
-					  	console.log('Put back sticky');
-					  	$('#pay-sticky').addClass('sticky-top');
-					  	$('#checkout-button').attr('disabled', false);
-					  }
-					}
-				  }
-				};
-				// Create an observer instance linked to the callback function
-				const observer = new MutationObserver(callback);
-
-				// Start observing the target node for configured mutations
-				observer.observe(bodyNode, config);
 	  		</script>
 	  			  		
 		</th:block>
