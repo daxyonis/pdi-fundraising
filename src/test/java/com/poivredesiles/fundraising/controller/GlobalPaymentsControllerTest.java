@@ -107,7 +107,7 @@ public class GlobalPaymentsControllerTest {
         request.with(user("bidon").roles("BUYER"));
 
         this.mockMvc.perform(request)
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrlPattern("/commande/succes?orderNum=2250"));
+                .andExpect(status().isOk())
+                .andExpect(content().string("/commande/succes?orderNum=2250"));
     }
 }
