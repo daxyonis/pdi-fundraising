@@ -3,24 +3,12 @@
 <head>
   <title th:text="#{pdi.order}">pdi commande</title>       
   <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod') or #arrays.contains(@environment.getActiveProfiles(), 'dev')} ? '/js/rxp-js.min.js' : '/js/rxp-js.js'"></script>
-    <style>
-        #invalid-alert{
-            font-size: 1em;
-        }
-
-        .flex-item {
-          flex-basis: 112px;
-          max-width: 112px;
-         }
-
-         .flex-long {
-            flex-basis: 224px;
-         }
-    </style>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/order.css}"/>
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">
   	<div class="container-fluid">
+
         <div class="row">
             <div class="col-md-12">
                 <h3 id="newOrderTitle" th:text="#{order.new}">nouvelle commande</h3>

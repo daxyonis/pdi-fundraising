@@ -121,7 +121,13 @@
 					        dataSrc: ''
 					    },
 					    columns: [ 
-					    	{data: 'formattedDueDate'},
+					    	{data: 'formattedDueDate', render: function(data, type, row){
+					    		if(type ==='sort'){
+					    			return row.dueDate;
+					    		} else {
+					    			return row.formattedDueDate;
+					    		}
+					    	}},
 					    	{data: 'number'},
 					    	{data: 'organizationName'},
 					    	{data: 'project'},
@@ -140,8 +146,20 @@
 					        dataSrc: ''
 					    },
 					    columns: [ 
-					    	{data: 'formattedDueDate'},
-					    	{data: 'formattedClosedDate'},
+					    	{data: 'formattedDueDate', render: function(data, type, row){
+					    		if(type === 'sort'){
+					    			return row.dueDate;
+					    		} else {
+					    			return row.formattedDueDate;
+					    		}
+					    	}},
+					    	{data: 'formattedClosedDate', render: function(data, type, row){
+					    		if(type === 'sort'){
+					    			return row.closedDate;
+					    		} else {
+					    			return row.formattedClosedDate;
+					    		}
+					    	}},
 					    	{data: 'number'},
 					    	{data: 'organizationName'},
 					    	{data: 'project'},

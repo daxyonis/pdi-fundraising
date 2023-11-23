@@ -205,21 +205,16 @@
 		  				// Disable button to prevent double-click
 		  				$('#checkout-button').attr('disabled', true);
 		  				
-	  					// Validated, go !	  					
+	  					// Validated, go !
+	  					$('.overlay').removeClass('d-none');
 		  				$.post({
 		  					url: '/api/global/checkout/',
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				
 		  				.then(function(hppJson){
+		  					$('.overlay').addClass('d-none');
 		  					let hppData = JSON.parse(hppJson);
-		  					//*******************************************
-		  					// Log the response url for debug purposes
-		  					$.post({
-		  						url: '/api/global/logs/',
-		  						data: JSON.stringify({responseUrl, oderId: hppData.ORDER_ID}),
-		  						contentType: 'application/json'
-		  					});
 
 							// Embedded with callback
 							RealexHpp.embedded.init(
@@ -227,6 +222,7 @@
 								"payIframe",
 								function(answer, close) {
 									close();
+									$('.overlay').removeClass('d-none');
 									// Log the answer for debug purposes
 									$.post({
 										url: '/api/global/logs/',

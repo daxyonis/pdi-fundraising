@@ -25,7 +25,7 @@
 			<div class="row">
 				<div class="col-lg-10 offset-lg-2">
 					<!-- /* Use Datatables for Ajax display */ -->
-					<table id="closedCamp2" class="table table-bordered table-striped">
+					<table id="closedCamp2" class="table table-bordered table-striped" style="width:100%">
 						<thead class="thead-light">
 							<tr>
 								<th th:text="#{campaign.duedate}">date limite</th>
@@ -100,15 +100,33 @@
 						        dataSrc: ''
 						    },
 						    columns: [ 
-						    	{data: 'formattedDueDate'},
-						    	{data: 'formattedClosedDate'},
+						    	{data: 'formattedDueDate', render: function(data, type, row){
+									if(type === 'sort'){
+										return row.dueDate;
+									} else {
+										return row.formattedDueDate;
+									}
+						    	}},
+						    	{data: 'formattedClosedDate', render: function(data, type, row){
+									if(type === 'sort'){
+										return row.closedDate;
+									} else {
+										return row.formattedClosedDate;
+									}
+						    	}},
 						    	{data: 'number'},
 						    	{data: 'organizationName'},
 						    	{data: 'project'},
 						    	{data: 'id', orderable: false, render: function(data, type, row){
 						    		return `<button type='button' class='btn btn-primary action-export' data-campaign='${JSON.stringify(row)}'>${exportButtonLabel}</button>`;
 						    	}},
-						    	{data: 'formattedExportDate'}
+						    	{data: 'formattedExportDate', render: function(data, type, row){
+									if(type === 'sort'){
+										return row.exportDate;
+									} else {
+										return row.formattedExportDate;
+									}
+						    	}}
 						    ]
 						},  datatablesOptions));
 				
