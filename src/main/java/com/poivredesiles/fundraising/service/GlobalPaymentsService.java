@@ -177,14 +177,18 @@ public class GlobalPaymentsService {
 	 * @throws OrderProcessingException
 	 */
 	public Long processResponse(MultiValueMap<String, String> responseData, Locale locale) throws OrderProcessingException {
-		
+
+		// get the response json from the form data
+		String hppResponse = responseData.getFirst("hppResponse");
+		if (hppResponse == null || hppResponse.isBlank()) {
+			log.error("No hppResponse provided.");
+			throw new OrderProcessingException(messageSource.getMessage("order.error.invalidresponse", null, locale));
+		}
+
 		GatewayConfig config = getGatewayConfig();
 		try {
 			HostedService service = new HostedService(config);
-			 
-			// get the response json from the form data
-			String hppResponse = responseData.getFirst("hppResponse");
-		    Transaction response = service.parseResponse(hppResponse, false);
+		    Transaction response = service.parseResponse(hppResponse, true);
 		    String orderNumber = response.getOrderId();
 		    String responseCode = response.getResponseCode();
 		    String responseMessage = response.getResponseMessage();

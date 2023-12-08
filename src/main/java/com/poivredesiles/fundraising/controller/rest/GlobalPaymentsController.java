@@ -41,16 +41,16 @@ public class GlobalPaymentsController {
 	}
 	
 	// Note: expected content type from Global is 'application/x-www-form-urlencoded;charset=UTF-8'
+	// This method must not be secured because called by Global Payments
 	@PostMapping(value="/response")
-	@Secured({"ROLE_BUYER"})
-	public String processResponse(@RequestBody MultiValueMap<String, String> responseData, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			Long orderNumber = globalPaymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
-			return "/commande/succes?orderNum=" + orderNumber;
-			//response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
+			//return "/commande/succes?orderNum=" + orderNumber;
+			response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
 		} catch (OrderProcessingException e) {
-			//response.sendRedirect("/commande?failure=true");
-			return "/commande?failure=true";
+			response.sendRedirect("/commande?failure=true");
+			//return "/commande?failure=true";
 		}
 	}
 

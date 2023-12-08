@@ -35,8 +35,9 @@ public class SecurityConfig {
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz
 					.antMatchers(PUBLIC).permitAll()
+					.antMatchers("/api/global/response").permitAll()
 					.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
-					.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
+					.antMatchers("/commande/**", "/api/global/checkout").hasRole("BUYER")
 					.antMatchers("/ventes").hasRole("SELLER")
 					.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
 					.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")

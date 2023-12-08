@@ -2,6 +2,7 @@ package com.poivredesiles.fundraising.controller;
 
 import com.poivredesiles.fundraising.config.SecurityConfig;
 import com.poivredesiles.fundraising.controller.rest.GlobalPaymentsController;
+import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.GlobalPaymentsService;
 import lombok.extern.slf4j.Slf4j;
@@ -80,17 +81,40 @@ public class GlobalPaymentsControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void wrongResponseFails() throws  Exception {
+        log.info("=====> Try to access response with wrong response...");
+        MultiValueMap<String, String> responseData = new LinkedMultiValueMap<>();
+        responseData.add("asdf", "ghjk");
+        when(globalPaymentsService.processResponse(responseData, Locale.FRENCH)).thenThrow(new OrderProcessingException("Wrong response"));
+
+        MockHttpServletRequestBuilder request = post("/api/global/response");
+        request.content("asdf=ghjk");
+        request.locale(Locale.FRENCH);
+        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/commande?failure=true"));
+    }
+
 
     @Test
-    public void shouldNotAccessResponseIfAnonymous() throws Exception {
+    public void canAccessResponseIfAnonymous() throws Exception {
         log.info("=====> Try to access response when anonymous...");
 
+        MultiValueMap<String, String> responseData = new LinkedMultiValueMap<>();
+        responseData.add("hppResponse", "adfkjaslfkja");
+        when(globalPaymentsService.processResponse(responseData, Locale.FRENCH)).thenReturn(2250L);
 
-        this.mockMvc.perform(
-                post("/api/global/response")
-                )
+        MockHttpServletRequestBuilder request = post("/api/global/response");
+        request.content("hppResponse=adfkjaslfkja");
+        request.locale(Locale.FRENCH);
+        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        this.mockMvc.perform(request)
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrlPattern("**/login"));
+                .andExpect(redirectedUrlPattern("/commande/succes?orderNum=2250"));
     }
 
     @Test
@@ -107,7 +131,7 @@ public class GlobalPaymentsControllerTest {
         request.with(user("bidon").roles("BUYER"));
 
         this.mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(content().string("/commande/succes?orderNum=2250"));
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrlPattern("/commande/succes?orderNum=2250"));
     }
 }

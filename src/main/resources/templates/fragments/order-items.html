@@ -220,28 +220,7 @@
 							RealexHpp.embedded.init(
 								"autoload",
 								"payIframe",
-								function(answer, close) {
-									close();
-									$('.overlay').removeClass('d-none');
-									// Log the answer for debug purposes
-									$.post({
-										url: '/api/global/logs/',
-										data: JSON.stringify({action: "RECEIVED ANSWER", result: answer.RESULT, oderId: answer.ORDER_ID}),
-										contentType: 'application/json'
-									});
-									// Confirm the transaction
-									$.post({
-										url: '/api/global/response/',
-										data: {"hppResponse" : JSON.stringify(answer)},
-									})
-									.then(function(response){
-										window.location.href = response;
-									})
-									.fail(function(error){
-										window.location.href = '/error';
-										console.log(error);
-									});
-								},
+								responseUrl,
 								hppData
 							);
 
