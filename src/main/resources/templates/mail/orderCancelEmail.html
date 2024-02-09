@@ -46,8 +46,8 @@
 </head>
 <body>
 <h1 th:text="#{order.cancel.title}" class="pt">Annulation</h1>
-<h2>Poivre des Îles - <span th:text="#{email.order.campaign(${order.campaignName})}">campagne Action Benevole</span></h2>
-<h2 th:text="#{order.cancel.subtitle(${order.orderNumber})}" class="pt">Votre commande #nnn a ete annulee par Poivre des Iles</h2>
+<h2>Choconaute - <span th:text="#{email.order.campaign(${order.campaignName})}">campagne Action Benevole</span></h2>
+<h2 th:text="#{order.cancel.subtitle(${order.orderNumber})}" class="pt">Votre commande #nnn a ete annulee par Choconaute</h2>
 <div  class="table-container">
 <table>
     <tr>
@@ -99,12 +99,12 @@
     </tr>
 </table>
 </div>
-<p th:text="#{order.cancel.message}">Pour toute question veuillez contacter Poivre des Iles directement via
-    le formulaire au <a href="https://poivredesiles.com/contact.html" target="_blank">poivredesiles.com</a>
-    ou au 450-656-1020.
+<p th:text="#{order.cancel.message}">Pour toute question veuillez contacter Choconaute directement via
+    le formulaire au <a href="https://choconaute.com/contact.html" target="_blank">Choconaute.com</a>
+    ou au 450-123-4567.
 </p>
 
-<p class="font-weight-bold font-italic" th:text="#{pdi.team}">L'equipe de Poivre des Iles</p>
+<p class="font-weight-bold font-italic" th:text="#{pdi.team}">L'equipe de Choconaute</p>
 
 <p class="font-italic" th:text="#{email.noreply}">Veuillez ne pas repondre a ce message.</p>
 <p class="font-italic" th:text="#{email.generated}">
