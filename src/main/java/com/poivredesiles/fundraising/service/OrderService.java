@@ -64,4 +64,22 @@ public interface OrderService {
 	 * @return
 	 */
 	OrderHeader findByOrderNumber(Long orderNumber);
+
+	/**
+	 * Get the list of pending orders
+	 * @return : the list of pending orders
+	 */
+	List<OrderHeaderDTO> getPendingOrders();
+
+	/**
+	 * Get the list of all orders
+	 * @return : the list of pending orders
+	 */
+	List<OrderHeaderDTO> getOrders();
+
+	/**
+	 * Cancel an order
+	 * @param orderNumber
+	 */
+	void cancelOrder(Long orderNumber);
 }

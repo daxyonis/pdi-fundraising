@@ -18,3 +18,12 @@ function displayError(jqXHR, selector, message) {
 	console.log("Status: " + jqXHR.responseText);
 	displayDisappear(selector, message);
 }
+
+function displayFailure (err, selector){
+    console.log(err.responseJSON);
+    if(err.responseJSON && err.responseJSON.message){
+        displayError(err, selector, `ERREUR : ${err.responseJSON.message}`);
+    } else {
+        displayError(err, selector, /*[[#{email.send.error}]]*/'Erreur');
+    }
+}

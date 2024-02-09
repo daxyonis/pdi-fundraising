@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,12 +35,14 @@ public class SecurityConfig {
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz
 					.antMatchers(PUBLIC).permitAll()
+					.antMatchers("/api/global/response").permitAll()
 					.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
-					.antMatchers("/commande/**", "/api/global/**").hasRole("BUYER")
+					.antMatchers("/commande/**", "/api/global/checkout").hasRole("BUYER")
 					.antMatchers("/ventes").hasRole("SELLER")
 					.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
 					.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
 					.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
+						.antMatchers("/api/admin/**").hasRole("ADMIN")
 					.antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
 					.anyRequest().authenticated()
 				);
@@ -51,4 +54,5 @@ public class SecurityConfig {
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().antMatchers("/static/**", "/js/**", "/css/**","/image/**", "/favicon.ico","/webjars/**");
 	}
+
 }

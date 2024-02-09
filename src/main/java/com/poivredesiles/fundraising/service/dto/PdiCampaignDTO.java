@@ -53,6 +53,8 @@ public class PdiCampaignDTO implements Serializable {
     private LocalDate closedDate;
     
     private String formattedClosedDate;
+
+    private LocalDate exportDate;
     
     private String formattedExportDate;
 

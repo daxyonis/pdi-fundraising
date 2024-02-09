@@ -12,6 +12,8 @@ import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 
+import java.time.LocalDate;
+
 @PropertySource("classpath:git.properties")
 public class BaseController {
 
@@ -28,7 +30,8 @@ public class BaseController {
 	public void populateModel(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
 		model.addAttribute("gitCommitId", gitCommitId);
 		model.addAttribute("buildVersion", buildVersion);
-		model.addAttribute("showLangChange", true); 
+		model.addAttribute("showLangChange", true);
+		model.addAttribute("year", LocalDate.now().getYear());
 		if(userDetails != null) {
 			model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 			model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));

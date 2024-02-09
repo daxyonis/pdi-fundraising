@@ -76,6 +76,9 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     
     @Column(name = "export_date")
     private LocalDate exportDate;
+
+    @Column(name = "percent_profit")
+    private Double percentProfit = Double.valueOf(50);
     
     @OneToMany(mappedBy = "pdiCampaign", fetch = FetchType.LAZY)    
     private Set<PdiGroup> pdiGroups = new HashSet<>();  
@@ -88,7 +91,7 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     }
     
     public BigDecimal getTotalProfit() {
-    	return getTotalSales().divide(BigDecimal.valueOf(2));
+    	return getTotalSales().multiply(BigDecimal.valueOf(percentProfit/100));
     }
     
     public Long getTotalNumGroups() {

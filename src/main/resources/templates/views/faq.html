@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{pdi.faq}">Foire aux questions</title>
+    <style>
+        p {
+         font-size: 1.2em;
+         }
+    </style>
+</head>
+<body>
+<section class="p-3" layout:fragment="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="text-center p-4" th:text="#{pdi.faq}"></h2>
+                <h3 th:text="#{faq.q1}">Question 1 ?</h3>
+                <p th:text="#{faq.a1}" class="pb-3">Réponse 1</p>
+
+                <h3 th:text="#{faq.q2}">Question 2 ?</h3>
+                <p th:text="#{faq.a2}" class="pb-3">Réponse 2</p>
+
+                <h3 th:text="#{faq.q3}">Question 3 ?</h3>
+                <p th:text="#{faq.a3}" class="pb-3">Réponse 3</p>
+
+                <h3 th:text="#{faq.q4}">Question 4 ?</h3>
+                <p th:text="#{faq.a4}" class="pb-3">Réponse 4</p>
+
+                <h3 th:text="#{faq.q5}">Question 5 ?</h3>
+                <p th:text="#{faq.a5}" class="pb-3">Réponse 5</p>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

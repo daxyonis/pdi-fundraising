@@ -1,8 +1,7 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import static com.poivredesiles.fundraising.imports.ImportsUtils.convertToLocalDate;
-
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.resource.ContactMessage;
 import org.slf4j.Logger;
@@ -97,7 +97,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	private OrderItemCsvMapper orderItemCsvMapper;
 	
 	@Override
-	public void importCampaigns(List<Campaign> campaigns) {
+	public void importCampaigns(List<Campaign> campaigns) throws PdiImportDataException {
 		if (campaigns != null) {
 			log.info("Importing {} campaigns", campaigns.size());
 			for (Campaign campaign : campaigns) {
@@ -120,23 +120,29 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	 * @param pdiCampaign PDI campaign to be updated/created
 	 * @param campaign
 	 */
-	private void updateCampaign(PdiCampaign pdiCampaign, Campaign campaign) {
+	private void updateCampaign(PdiCampaign pdiCampaign, Campaign campaign) throws PdiImportDataException {
 		// First validate the input data is valid
 		if (campaign.valid()) {
 			pdiCampaign.setNumber(campaign.getNumber());
 			pdiCampaign.setProject(campaign.getProject());
 			pdiCampaign.setBlocked(campaign.isBlocked());
-			pdiCampaign.setDueDate(convertToLocalDate(campaign.getDueDate()));
+			try {
+				pdiCampaign.setDueDate(ImportsUtils.parseDate(campaign.getDueDate()));
+			} catch (ParseException e) {
+				log.warn("Could not parse date: {}", campaign.getDueDate());
+			}
 			pdiCampaign.setLeaderNum(campaign.getLeaderNumber());
 			pdiCampaign.setLeaderEmail(campaign.getLeaderEmail());
 			pdiCampaign.setOrderTypeNum(campaign.getNumTypeBC());
 			pdiCampaign.setOrganizationNum(campaign.getOrganizationNumber());
 			pdiCampaign.setOrganizationName(campaign.getOrganizationName());
+			pdiCampaign.setPercentProfit(campaign.getPercentProfit());
 
 			updateOrderType(pdiCampaign);
 			pdiCampaignRepository.save(pdiCampaign);
 		} else {
-			log.warn("Did not save invalid campaign: {}", campaign.toString());
+			log.error("Did not save invalid campaign: {}", campaign.toString());
+			throw new PdiImportDataException("Invalid campaign data");
 		}
 	}
 
@@ -197,10 +203,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		if(pdiCampaign.getLeaderEmail() != null && !pdiCampaign.getLeaderEmail().isBlank()) {
 			PdiCampaignRecapDTO campaignRecap = pdiCampaignRecapMapper.toDto(pdiCampaign);
 			// Set the leader name as it is not in the entity
-			Optional<PdiSeller> leader = pdiCampaign.getPdiGroups().stream()
-													.flatMap(g -> g.getPdiSellers().stream())
-													.filter(s -> s != null && s.getMe() != null && s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
-													.findFirst();
+			Optional<PdiSeller> leader = getLeader(pdiCampaign);
 			if(leader.isPresent()) {
 				campaignRecap.setLeaderName(leader.get().getName());				
 			} else {
@@ -211,6 +214,14 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		} else {
 			log.warn("No leader email specified for campaign {}", pdiCampaign.getId());
 		}
+	}
+
+	private Optional<PdiSeller> getLeader(PdiCampaign pdiCampaign) {
+		Optional<PdiSeller> leader = pdiCampaign.getPdiGroups().stream()
+												.flatMap(g -> g.getPdiSellers().stream())
+												.filter(s -> s != null && s.getMe() != null && s.getMe().hasRole(RoleEnum.ROLE_CAMPAIGN_LEADER))
+												.findFirst();
+		return leader;
 	}
 
 	@Override
@@ -355,6 +366,13 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		if (campaign.isPresent()) {
 			// Check message sender
 			if (campaign.get().getOrganizationName().equalsIgnoreCase(contactMessage.getOrganization())) {
+				if (contactMessage.getName().isBlank()) {
+					// get leader
+					Optional<PdiSeller> leader = getLeader(campaign.get());
+					if (leader.isPresent()) {
+						contactMessage.setName(leader.get().getName());
+					}
+				}
 				mailService.sendContactEmail(contactMessage, locale);
 			} else {
 				throw new ResourceNotFoundException("Nom d'organisation invalide.");

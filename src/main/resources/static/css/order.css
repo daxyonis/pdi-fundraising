@@ -1,0 +1,34 @@
+#invalid-alert{
+            font-size: 1em;
+        }
+
+.flex-item {
+  flex-basis: 112px;
+  max-width: 112px;
+ }
+
+ .flex-long {
+    flex-basis: 224px;
+ }
+
+.fullPage {
+    position: relative; /* Needed for the absolute positioning of the overlay */
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    display: flex;
+    justify-content: center; /* Center the spinner horizontally */
+    //align-items: center; /* Center the spinner vertically */
+    z-index: 10; /* Ensure it's above other content */
+}
+
+#payIframe {
+    position: absolute;
+    z-index: 100;
+    }

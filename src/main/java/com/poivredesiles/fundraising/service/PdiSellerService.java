@@ -21,9 +21,10 @@ public interface PdiSellerService {
 	/**
 	 * Get the list of products available to order for the current user
 	 * @param userDetails current user info
+	 * @param lang language code (fr or en)
 	 * @return a list of products available
 	 */
-	List<PdiProductDTO> getProductsForUser(MyUserDetails userDetails);
+	List<PdiProductDTO> getProductsForUser(MyUserDetails userDetails, String lang);
 
 	/**
 	 * Get the seller for the current user : the user himself can be a seller,

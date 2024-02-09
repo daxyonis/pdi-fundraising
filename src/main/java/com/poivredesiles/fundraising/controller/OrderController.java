@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,22 +40,36 @@ public class OrderController extends BaseController {
 			
 	@Value("${global.service.url}")	
 	private String globalServiceUrl;
+
+	@Autowired
+	private Environment env;
 	
 	
 	@GetMapping("/commande")
-	public String order(@RequestParam(required = false)boolean failure, @AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
+	public String order(@RequestParam(required = false) String lang, @RequestParam(required = false)boolean failure, @AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
 		log.info("Requested Order Page");		
 		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
 		model.addAttribute("seller", seller);
 		if(seller.isPdiCampaignClosed()) {
 			return "views/closed";
 		} else {
-			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails);
+			if (lang == null) {
+				lang = localeResolver.resolveLocale(request).getLanguage();
+			}
+			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails, lang);
 			model.addAttribute("products", products);						
 			model.addAttribute("globalServiceUrl", globalServiceUrl);
 			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
 			model.addAttribute("failure", failure);
+
+			// Set the response URL based on the environment
+			if (Arrays.asList(env.getActiveProfiles()).contains("prod")) {
+				model.addAttribute("responseUrl","https://financement.poivredesiles.com/api/global/response");
+			} else if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+				model.addAttribute("responseUrl","https://test.poivredesiles.com/api/global/response");
+			}
+
 			return "views/order";
 		}
 	}		

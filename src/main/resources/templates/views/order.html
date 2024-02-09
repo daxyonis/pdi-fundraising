@@ -2,19 +2,18 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main-layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title th:text="#{pdi.order}">pdi commande</title>       
-  <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod')} ? '/js/rxp-js.min.js' : '/js/rxp-js.js'"></script>
-    <style>
-        #invalid-alert{
-            font-size: 1em;
-        }
-    </style>
+  <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod') or #arrays.contains(@environment.getActiveProfiles(), 'dev')} ? '/js/rxp-js.min.js' : '/js/rxp-js.js'"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/order.css}"/>
 </head>
 <body>
   <section class="p-lg-3" layout:fragment="content">
   	<div class="container-fluid">
+
         <div class="row">
             <div class="col-md-12">
-                <h3 th:text="#{order.new}">nouvelle commande</h3>
+                <h3 id="newOrderTitle" th:text="#{order.new}">nouvelle commande</h3>
+                <h3 id="orderTitle" class="d-none" th:text="#{order.payment}">paiement de la commande #2845...</h3>
+                <h5 id="orderTitleHelp" class="d-none" th:text="#{order.payment.help}">Veuillez entrer vos informations de facturation dans le formulaire ci-dessoous.</h5>
             </div>
         </div>
         <!--/* Messages */-->

@@ -76,7 +76,8 @@
 				<tr class="font-weight-bold text-center">
 					<td style="width:33%" th:if="${campaignRecap.totalNumGroups > 1}" 
 						th:text="#{summary.groups(${campaignRecap.totalNumGroups})}">30 groupes</td>
-					<td style="width:33%" th:if="${campaignRecap.totalNumGroups <= 1}" >60 vendeurs</td>
+					<td style="width:33%" th:if="${campaignRecap.totalNumGroups <= 1}"
+						th:text="#{summary.sellers(${campaignRecap.pdiGroupRecaps[0].numSellers})}" >60 vendeurs</td>
 					<td style="width:33%" th:text="${campaignRecap.totalNumPaidOrders}">562</td>
 					<td style="width:33%" class="text-right" th:text="${campaignRecap.formattedTotalSales}">4500$</td>
 				</tr>			

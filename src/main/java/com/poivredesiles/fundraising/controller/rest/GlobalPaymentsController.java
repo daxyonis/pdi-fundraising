@@ -1,18 +1,19 @@
 package com.poivredesiles.fundraising.controller.rest;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
@@ -23,6 +24,8 @@ import com.poivredesiles.fundraising.service.GlobalPaymentsService;
 @RestController
 @RequestMapping("/api/global")
 public class GlobalPaymentsController {
+
+	private final Logger log = LoggerFactory.getLogger(GlobalPaymentsController.class);
 
 	@Autowired
 	private LocaleResolver localeResolver;
@@ -37,14 +40,22 @@ public class GlobalPaymentsController {
 	    return hppJson;
 	}
 	
-	
+	// Note: expected content type from Global is 'application/x-www-form-urlencoded;charset=UTF-8'
+	// This method must not be secured because called by Global Payments
 	@PostMapping(value="/response")
-	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {		
+	public void processResponse(@RequestBody MultiValueMap<String, String> responseData, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			Long orderNumber = globalPaymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
+			//return "/commande/succes?orderNum=" + orderNumber;
 			response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
 		} catch (OrderProcessingException e) {
 			response.sendRedirect("/commande?failure=true");
-		}		
+			//return "/commande?failure=true";
+		}
+	}
+
+	@PostMapping("/logs")
+	public void logRequest(@RequestBody Map<String, String> request) {
+		log.info("Global Payments Request: {}", request);
 	}
 }

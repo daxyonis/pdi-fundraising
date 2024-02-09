@@ -3,8 +3,9 @@
 	<head>
 	</head>
 	<body>
-		<th:block th:fragment="items">	
-			<div class="sticky-top">
+		<th:block th:fragment="items">
+			<iframe id="payIframe" style="display:none; width: 100%; min-height: 800px; border:none;"></iframe>
+			<div id="pay-sticky" class="sticky-top">
 	  			<div class="row">
 	  				<div class="col-md-3">
 	  					<a th:href="@{/produits}" class="btn btn-info" target="_blank" th:text="#{order.formats}">
@@ -25,40 +26,45 @@
 						</div>
 					</div>
 	  			</div>
-	  		</div>	  		 	
-	  		<div class="row">
-	  			<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
 	  		</div>
-	  		<th:block th:each="product, iterStatus : ${products}">	  			
-	  			<th:block th:with="previousCategory=${iterStatus.index < 1 ? -1 : products[iterStatus.index-1].categoryId}">
-	  				<th:block th:if="${previousCategory != product.categoryId}">
-	  					<!-- /* Print the category info */ -->
-	  					<div class="row bg-primary text-white p-3" th:switch="${#locale.language}">
-	  						<div th:case="'en'" class="col-md-12 text-center" th:text="${product.categoryDescEn}">category</div>
-	  						<div th:case="*" class="col-md-12 text-center" th:text="${product.categoryDescFr}">categorie</div>
-	  					</div>
-	  				</th:block>
-	  				<!-- /* Print the product info */ -->
-	  				<div class="row my-1 border-bottom">
-	  					<div class="col-sm-1" th:text="${product.labelNumber}">#12</div>
-	  					<div class="col-sm-2">
-	  						<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
-							<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
-	  					</div>
-	  					<div class="col-sm-1" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
-	  					<div class="col-sm-3" th:switch="${#locale.language}">
-	  						<span th:case="'en'" th:text="${product.nameEn}">Black Pepper</span>
-	  						<span th:case="*" th:text="${product.nameFr}">Poivre blanc</span>
-	  					</div>
-	  					<div class="col-sm-3" th:switch="${#locale.language}">
-	  						<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
-	  						<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
-	  					</div>
-	  					<div class="col-sm-1" th:text="${product.weight}">28 g</div>
-						<div class="col-sm-1" th:text="${product.formatFr}">28 g</div>
-	  				</div>
+			<div id="orderItems">
+				<div class="row">
+					<div class="col-sm-12" th:text="#{order.detail.help}">veuillez entre la qte desiree...</div>
+				</div>
+				<th:block th:each="product, iterStatus : ${products}">
+					<th:block th:with="previousCategory=${iterStatus.index < 1 ? -1 : products[iterStatus.index-1].categoryId}">
+						<th:block th:if="${previousCategory != product.categoryId}">
+							<!-- /* Print the category info */ -->
+							<div class="row bg-primary text-white p-3" th:switch="${#locale.language}">
+								<div th:case="'en'" class="col-md-12 text-center" th:text="${product.categoryDescEn}">category</div>
+								<div th:case="*" class="col-md-12 text-center" th:text="${product.categoryDescFr}">categorie</div>
+							</div>
+						</th:block>
+						<!-- /* Print the product info */ -->
+						<div class="d-lg-flex flex-lg-row justify-content-around my-1 border-bottom">
+							<div class="flex-item" th:text="${product.labelNumber}">#12</div>
+							<div class="flex-item">
+								<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
+								<div class="invalid-feedback" th:text="#{field.qty.minmax}"></div>
+							</div>
+							<div class="flex-item" th:text="|${#numbers.formatDecimal(product.unitPrice, 1, 2,'COMMA')}$|">5.00$</div>
+							<div class="flex-long" th:switch="${#locale.language}">
+								<span th:case="'en'" th:text="${product.nameEn}">Black Pepper</span>
+								<span th:case="*" th:text="${product.nameFr}">Poivre blanc</span>
+							</div>
+							<div class="flex-long" th:switch="${#locale.language}">
+								<span th:case="'en'" th:text="${product.descriptionEn}">Lorem ipsum...</span>
+								<span th:case="*" th:text="${product.descriptionFr}">Lorem ipsum...</span>
+							</div>
+							<div class="flex-item" th:text="${product.weight}">28 g</div>
+							<div class="flex-item" th:switch="${#locale.language}">
+								<span th:case="'en'" th:text="${product.formatEn}">bag</span>
+								<span th:case="*" th:text="${product.formatFr}">sachet</span>
+							</div>
+						</div>
+					</th:block>
 	  			</th:block>
-	  		</th:block>	  	
+			</div>
 	  		
 	  		<script th:inline="javascript">
 	  			var total = 0.0;
@@ -153,15 +159,16 @@
 	  			
 		  			// GLOBAL stuff		  			
 		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
-		  			
+		  			let responseUrl = /*[[${responseUrl}]]*/;
+		  			responseUrl = responseUrl || (location.origin + '/api/global/response');
+
                     $('#checkout-button').on('click', function(){
                         $('#buyerForm').submit();
                     })
                         
                     $('#buyerForm').on('submit', function(event){
                         event.preventDefault();
-                        event.stopPropagation();	  						  			
-		  		      	sessionStorage.clear();
+                        event.stopPropagation();
 
 		  		      	clearErrorMsg();
 		  				
@@ -185,38 +192,60 @@
 	  						if (!msg) {
 	  							// Then it's a qty that's invalid
 	  							msg = /*[[#{field.qty.invalid}]]*/'';
+	  						} else {
+	  							window.scrollTo(0,0);
 	  						}
 	  						$('#invalid-alert').text(msg);
 	  						$('#invalid-alert').removeClass('d-none');
-		  					this.classList.add('was-validated');		  				
+		  					this.classList.add('was-validated');
 		  		          	return false;
 		  		        }
 		  				this.classList.add('was-validated');
+
+		  				// Disable button to prevent double-click
+		  				$('#checkout-button').attr('disabled', true);
 		  				
-	  					// Validated, go !	  					
+	  					// Validated, go !
+	  					$('.overlay').removeClass('d-none');
 		  				$.post({
-		  					url: location.origin + '/api/global/checkout/',
+		  					url: '/api/global/checkout/',
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				
 		  				.then(function(hppJson){
+		  					//$('.overlay').addClass('d-none');
 		  					let hppData = JSON.parse(hppJson);
-		  					let responseUrl = location.origin + '/api/global/response';		  					  					
-		  					RealexHpp.lightbox.init("autoload", responseUrl, hppData);
-		  					$('body').addClass('loaded');
+
+							// Embedded with callback
+							RealexHpp.embedded.init(
+								"autoload",
+								"payIframe",
+								responseUrl,
+								hppData
+							);
+
+							$('body').addClass('loaded');
+
+							// Hide
+							$('#orderHeader').addClass('d-none');
+							$('#newOrderTitle').addClass('d-none');
+							$('#orderTitle').removeClass('d-none');
+							$('#orderTitle').text($('#orderTitle').text() + hppData['ORDER_ID'] + '...');
+							$('#orderTitleHelp').removeClass('d-none');
+							window.scrollTo(0,0);
 		  				})	  				
-		  				.fail(function(err){ 						
+		  				.fail(function(err){
 							console.log(err.responseJSON);
 							if(err.responseJSON && err.responseJSON.message){
 								displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);	
 							} else {
 								displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
 							}
-						});		  				
+							return true;
+						});
 		  			});
 		  			
 	  			});
-	  			//***********************************************
 	  		</script>
 	  			  		
 		</th:block>

@@ -3,3 +3,23 @@
 	height: auto;	
 	margin-bottom: 5px;
 }
+
+.badge-PENDING {
+  color: #fff;
+  background-color: #6c757d;
+}
+
+.badge-PAID {
+  color: #fff;
+  background-color: #28a745;
+}
+
+.badge-ERROR {
+    color: #212529;
+    background-color: #ffc107;
+}
+
+.badge-CANCELLED {
+    color: #fff;
+    background-color: #dc3545;
+}

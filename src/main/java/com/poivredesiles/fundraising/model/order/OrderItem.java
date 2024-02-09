@@ -56,12 +56,12 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
     public String getDetail(String language) {
         String detail = quantity.toString();
         if (language.equals("fr")) {
-            detail += " " + product.getNameFr();
+            detail += " x " + product.getNameFr();
             if (product.getFormatFr() != null && !product.getFormatFr().isBlank()) {
                 detail += " (" + product.getFormatFr() + ")";
             }
         } else {
-            detail += " " + product.getNameEn();
+            detail += " x " + product.getNameEn();
             if (product.getFormatEn() != null && !product.getFormatEn().isBlank()) {
                 detail += " (" + product.getFormatEn() + ")";
             }

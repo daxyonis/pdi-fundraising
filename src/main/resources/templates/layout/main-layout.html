@@ -37,6 +37,15 @@
 	</style>
 </head>
 <body class="d-flex flex-column h-100">
+	<div class="fullPage">
+	<div class="overlay d-none">
+		<div class="text-center" style="padding-top: 10%">
+			<div class="spinner-grow text-info" style="width: 5rem; height: 5rem;" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<div class="alert alert-info mt-3" th:text="#{loading}">En traitement...</div>
+		</div>
+	</div>
 	<header class="flex-shrink-0">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<a class="navbar-brand" href="#">
@@ -61,9 +70,13 @@
 					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/produits')? 'active' : ''">
 						<a class="nav-link" th:href="@{/produits}" th:text="#{menu.products}">Nos Produits</a>
 					</li>
+					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/faq')? 'active' : ''">
+						<a class="nav-link" th:href="@{/faq}" th:text="#{menu.faq}">FAQ</a>
+					</li>
 				</ul>
 				<ul th:if="${seller}" class="navbar-nav mr-auto">
-					<li class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.formattedPdiCampaignDueDate}|">date de fin de campagne prevue: 15/09/2021</li>					
+					<li th:if="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.pdiCampaignDueDate} |">date de fin de campagne prevue: 15/09/2021</li>
+					<li th:unless="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.pdiCampaignDueDate} |">expected end of campaign: 09/15/2021</li>
 				</ul>
 				<form id="logoutForm" class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">					
 					<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:if="${showLangChange}"
@@ -87,5 +100,6 @@
 		<p>Page content goes here</p>
 	</section>
 	<div th:replace="fragments/footer :: footer"></div>
+	</div>
 </body>
 </html>

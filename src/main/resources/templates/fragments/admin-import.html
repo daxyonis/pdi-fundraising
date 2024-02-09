@@ -7,8 +7,30 @@
 			<!--/* Messages */-->
 			<div class="row mt-3">
 				<div class="col-md-12">
-					<div class="alert alert-info d-none" id="import-msg-success">L'importation des nouveaux groupes a reussi</div>
-					<div class="alert alert-warning d-none" id="import-msg-error">L'importation des nouveaux groupes a echoue</div>
+					<div id = "toast-import-msg-success" class="toast d-none" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="toast-header bg-info text-white">
+							<strong class="mr-auto">Bootstrap</strong>
+							<small>11 mins ago</small>
+							<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div id="import-msg-success" class="toast-body bg-light text-dark">
+							L'importation des nouveaux groupes a reussi
+						</div>
+					</div>
+					<div id="toast-import-msg-error" class="toast d-none" role="alert" aria-live="assertive" aria-atomic="true">
+						<div class="toast-header bg-warning text-white">
+							<strong class="mr-auto">Bootstrap</strong>
+							<small>11 mins ago</small>
+							<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div id="import-msg-error" class="toast-body bg-light text-dark">
+							L'importation des nouveaux groupes a echoue
+						</div>
+					</div>
 				</div>
 			</div>
 			<div th:replace="fragments/spinner :: spinner"></div>
@@ -61,6 +83,13 @@
 			</div>						
 			
 			<script th:inline="javascript">
+
+			function showToastMessage(msgId, msg){
+				$('#'+msgId).text(msg);
+				$('#toast-'+msgId).removeClass('d-none');
+				$('#toast-'+msgId).toast('show');
+			}
+
 			$(function(){		   	    	
 				const FILETYPES = ["SECTION","PRODUIT","TYPEBC","CAMPAGNE","GROUPE","VENDEUR","LIENGROUPE"];					
 				
@@ -112,15 +141,15 @@
 									$('#spinning').addClass('d-none');
 									console.log(err.responseJSON);
 									if(err.responseJSON && err.responseJSON.message){
-										displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+										showToastMessage('import-msg-error', `ERREUR : ${err.responseJSON.message}`);
 									} else {
-										displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/ 'Erreur');
+										showToastMessage('import-msg-error', /*[[#{admin.import.error}]]*/ 'Erreur');
 									}
 								}
 							}	
 						}		
 						$('#spinning').addClass('d-none');
-						displaySuccess('#import-msg-success', messages.map((m)=>m.message).join("  "));	
+						showToastMessage('import-msg-success', messages.map((m)=>m.message).join("  "));
 					}					
 				}
 				
@@ -137,7 +166,7 @@
 						processData: false,
 						success: function(result) {
 							//$('#spinning').addClass('d-none');
-							//displaySuccess('#import-msg-success', result.message);									
+							//showToastMessage('import-msg-success', result.message);
 							const selector = 'span#prodLastImport';									
 							$(selector).text(result.lastImportDate);
 						}
@@ -160,7 +189,7 @@
 						processData: false,
 						success: function(result) {
 							$('#spinning').addClass('d-none');
-							displaySuccess('#import-msg-success', result.message);	
+							showToastMessage('import-msg-success', result.message);
 							// Refresh image
 							$(`#image_${lang}`).attr('src', $(`#image_${lang}`).attr('src') + '&t=' + new Date().getTime());
 						}
@@ -169,9 +198,9 @@
 						$('#spinning').addClass('d-none');
 						console.log(err.responseJSON);
 						if(err.responseJSON && err.responseJSON.message){
-							displayError(err, '#import-msg-error', `ERREUR : ${err.responseJSON.message}`);	
+							showToastMessage('import-msg-error', `ERREUR : ${err.responseJSON.message}`);
 						} else {
-							displayError(err, '#import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
+							showToastMessage('import-msg-error', /*[[#{admin.import.error}]]*/'Erreur');
 						}
 					});;
 				});

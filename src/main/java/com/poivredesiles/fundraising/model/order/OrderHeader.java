@@ -70,6 +70,9 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
     @Column(name = "confirmation_date")
     private Instant confirmationDate;
 
+    @Column(name = "cancel_date")
+    private Instant cancelDate;
+
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})    
     private Set<OrderItem> orderItems = new HashSet<>();
 
@@ -105,6 +108,10 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
     public String getCampaignName() {
         return this.getPdiSeller().getPdiGroup().getPdiCampaign().getProject();
     }
+
+    public Long getCampaignNumber()  { return this.getPdiSeller().getPdiGroup().getPdiCampaign().getNumber(); }
+
+    public String getOrganizationName() { return this.getPdiSeller().getPdiGroup().getPdiCampaign().getOrganizationName(); }
 
     public String getSellerName() {
         return this.getPdiSeller().getName();
