@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,10 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 public class OrderController extends BaseController {
 
 	private final Logger log = LoggerFactory.getLogger(OrderController.class);
-	
+
 	@Autowired
 	private PdiSellerService pdiSellerService;
-	
+
 	@Autowired
 	private OrderService orderService;
 	
@@ -43,6 +44,9 @@ public class OrderController extends BaseController {
 
 	@Autowired
 	private Environment env;
+
+	@Autowired
+	private ApplicationProperties applicationProperties;
 	
 	
 	@GetMapping("/commande")
@@ -64,10 +68,10 @@ public class OrderController extends BaseController {
 			model.addAttribute("failure", failure);
 
 			// Set the response URL based on the environment
-			if (Arrays.asList(env.getActiveProfiles()).contains("prod")) {
-				model.addAttribute("responseUrl","https://financement.poivredesiles.com/api/global/response");
-			} else if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
-				model.addAttribute("responseUrl","https://test.poivredesiles.com/api/global/response");
+			boolean isDeployed = Arrays.asList(env.getActiveProfiles()).contains("prod") ||
+					          Arrays.asList(env.getActiveProfiles()).contains("dev");
+			if (isDeployed) {
+				model.addAttribute("responseUrl","https://" + applicationProperties.getBaseUrl() + "/api/global/response");
 			}
 
 			return "views/order";

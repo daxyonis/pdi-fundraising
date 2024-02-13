@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = true)
 public class ApplicationProperties {
 
+	private String baseUrl;
+
 	private Mail mail;	
 
 	public static class Mail {
@@ -71,5 +73,12 @@ public class ApplicationProperties {
 	public void setMail(Mail mail) {
 		this.mail = mail;
 	}		
-	
+
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
 }
