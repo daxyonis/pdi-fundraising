@@ -32,6 +32,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false, exclude = {"pdiGroups", "orderType"})
 public class PdiCampaign extends AbstractAuditingEntity implements Serializable {
 
+    public static final double DEFAULT_PERCENT_PROFIT = 50;
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -78,7 +79,7 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     private LocalDate exportDate;
 
     @Column(name = "percent_profit")
-    private Double percentProfit = Double.valueOf(50);
+    private Double percentProfit = Double.valueOf(DEFAULT_PERCENT_PROFIT);
     
     @OneToMany(mappedBy = "pdiCampaign", fetch = FetchType.LAZY)    
     private Set<PdiGroup> pdiGroups = new HashSet<>();  

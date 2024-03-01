@@ -136,7 +136,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			pdiCampaign.setOrderTypeNum(campaign.getNumTypeBC());
 			pdiCampaign.setOrganizationNum(campaign.getOrganizationNumber());
 			pdiCampaign.setOrganizationName(campaign.getOrganizationName());
-			pdiCampaign.setPercentProfit(campaign.getPercentProfit());
+			pdiCampaign.setPercentProfit(campaign.getPercentProfit() != null ? campaign.getPercentProfit() : PdiCampaign.DEFAULT_PERCENT_PROFIT);
 
 			updateOrderType(pdiCampaign);
 			pdiCampaignRepository.save(pdiCampaign);
