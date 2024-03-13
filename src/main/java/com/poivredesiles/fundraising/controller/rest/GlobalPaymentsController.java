@@ -6,11 +6,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -29,14 +33,21 @@ public class GlobalPaymentsController {
 
 	@Autowired
 	private LocaleResolver localeResolver;
-	
+
 	@Autowired
 	private GlobalPaymentsService globalPaymentsService;
 
+	@Autowired
+	private PdiSellerService pdiSellerService;
+
+
 	@PostMapping("/checkout")
 	@Secured({"ROLE_BUYER"})
-	public String createHppJson(@RequestBody OrderResource orderResource, HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {		
-		String hppJson = globalPaymentsService.getHppJson(orderResource, localeResolver.resolveLocale(request));            		
+	public String createHppJson(@RequestBody OrderResource orderResource,
+								@AuthenticationPrincipal MyUserDetails userDetails,
+								HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {
+		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
+		String hppJson = globalPaymentsService.getHppJson(orderResource, seller.getId(), localeResolver.resolveLocale(request));
 	    return hppJson;
 	}
 	

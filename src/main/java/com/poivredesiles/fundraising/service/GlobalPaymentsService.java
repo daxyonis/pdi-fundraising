@@ -77,10 +77,10 @@ public class GlobalPaymentsService {
 	 * @throws InvalidOrderException	if order has invalid fields
 	 * @throws OrderProcessingException	if HPP json could not be formed
 	 */
-	public String getHppJson(OrderResource orderResource, Locale locale) throws InvalidOrderException, OrderProcessingException {
+	public String getHppJson(OrderResource orderResource, Long sellerId, Locale locale) throws InvalidOrderException, OrderProcessingException {
 		
 		// Create new order
-		OrderHeader pendingOrder = orderService.createNewOrder(orderResource, locale);
+		OrderHeader pendingOrder = orderService.createNewOrder(orderResource, sellerId, locale);
 		log.info("Charging payment for order #{}", pendingOrder.getOrderNumber());
 		
 		// configure client, request and HPP settings

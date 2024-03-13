@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
 	private final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Override
-	public OrderHeader createNewOrder(OrderResource orderResource, Locale locale) throws InvalidOrderException {
+	public OrderHeader createNewOrder(OrderResource orderResource, Long sellerId, Locale locale) throws InvalidOrderException {
 		OrderHeader orderHeader = null;
 		if (validate(orderResource, locale)) {
 			orderHeader = new OrderHeader();
@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
 			orderHeader.setBuyerNote(orderResource.getNote());
 			orderHeader.setBuyerLanguage(locale.getLanguage());
 			orderHeader.setCreatedBy("system");
-			orderHeader.setPdiSeller(pdiSellerRepository.findById(orderResource.getSellerId()).orElseThrow());
+			orderHeader.setPdiSeller(pdiSellerRepository.findById(sellerId).orElseThrow());
 			setOrderItems(orderHeader, orderResource.getItems());
 			orderHeaderRepository.save(orderHeader);
 		} 

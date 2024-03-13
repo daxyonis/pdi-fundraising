@@ -17,7 +17,7 @@ public interface OrderService {
 	 * @return the newly created order (with pending state)
 	 * @throws InvalidOrderException
 	 */
-	OrderHeader createNewOrder(OrderResource orderResource, Locale locale) throws InvalidOrderException;
+	OrderHeader createNewOrder(OrderResource orderResource, Long sellerId, Locale locale) throws InvalidOrderException;
 
 	/**
 	 * Save the modified order

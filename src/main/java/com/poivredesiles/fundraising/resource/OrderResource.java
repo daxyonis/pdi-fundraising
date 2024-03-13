@@ -16,8 +16,6 @@ public class OrderResource {
 	private String phone;		
 	private String note;
 	
-	private Long sellerId;
-	
 	private String email;
 	
 	private List<OrderItemResource> items;

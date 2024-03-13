@@ -50,10 +50,13 @@ public class OrderController extends BaseController {
 	
 	
 	@GetMapping("/commande")
-	public String order(@RequestParam(required = false) String lang, @RequestParam(required = false)boolean failure, @AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
-		log.info("Requested Order Page");		
-		PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
-		model.addAttribute("seller", seller);
+	public String order(@RequestParam(required = false) String lang,
+						@RequestParam(required = false)boolean failure,
+						@AuthenticationPrincipal MyUserDetails userDetails,
+						Model model,
+						HttpServletRequest request) {
+		log.info("Requested Order Page");
+		PdiSellerDTO seller = (PdiSellerDTO) model.getAttribute("seller");
 		if(seller.isPdiCampaignClosed()) {
 			return "views/closed";
 		} else {

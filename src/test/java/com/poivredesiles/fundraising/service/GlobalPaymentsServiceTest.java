@@ -42,7 +42,7 @@ public class GlobalPaymentsServiceTest {
 	
 	@Autowired
 	@InjectMocks
-	private GlobalPaymentsService globalPaymentsService;	
+	private GlobalPaymentsService globalPaymentsService;
 	
 	private OrderResource orderResource;
 	private OrderHeader orderHeader;
@@ -57,7 +57,6 @@ public class GlobalPaymentsServiceTest {
 		ReflectionTestUtils.setField(globalPaymentsService, "currency", "USD");
 		
 		orderResource = new OrderResource();
-		orderResource.setSellerId(1L);
 		orderResource.setPhone("514-909-5505");
 		orderResource.setEmail("abc@example.com");
 		orderResource.setName("Bertrand Jujube");
@@ -104,10 +103,10 @@ public class GlobalPaymentsServiceTest {
 	@Test
 	void getHppJsonTest() throws InvalidOrderException, OrderProcessingException {
 		log.info("--------------------------- GlobalPaymentService.getHppJson TEST ----------------------");
+
+		when(orderService.createNewOrder(orderResource, 1L, Locale.FRENCH)).thenReturn(orderHeader);
 		
-		when(orderService.createNewOrder(orderResource, Locale.FRENCH)).thenReturn(orderHeader);
-		
-		String hppJson = globalPaymentsService.getHppJson(orderResource, Locale.FRENCH);
+		String hppJson = globalPaymentsService.getHppJson(orderResource, 1L, Locale.FRENCH);
 		
 		log.info("Returned JSON : {}", hppJson);
 		assertTrue(hppJson.contains("\"ORDER_ID\":\"123456789\""));

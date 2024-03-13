@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.controller;
 import com.poivredesiles.fundraising.config.SecurityConfig;
 import com.poivredesiles.fundraising.controller.rest.GlobalPaymentsController;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.GlobalPaymentsService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @WebMvcTest(GlobalPaymentsController.class)
 @Import(SecurityConfig.class)
-public class GlobalPaymentsControllerTest {
+public class GlobalPaymentsControllerTest extends BaseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,7 +47,6 @@ public class GlobalPaymentsControllerTest {
         orderResource.setName("Bob");
         orderResource.setEmail("bob@example.com");
         orderResource.setPhone("0123456789");
-        orderResource.setSellerId(1L);
     }
 
     @Test
@@ -71,13 +71,15 @@ public class GlobalPaymentsControllerTest {
     @Test
     public void canAccessCheckoutIfAuthenticated() throws Exception {
         log.info("=====> Try to access campaigns when authenticated...");
-        when(globalPaymentsService.getHppJson(orderResource, Locale.FRENCH)).thenReturn("ok");
+        MyUserDetails userDetails = new MyUserDetails(buyer);
+        when(pdiSellerService.getSellerForUser(userDetails)).thenReturn(seller);
+        when(globalPaymentsService.getHppJson(orderResource, 1L, Locale.FRENCH)).thenReturn("ok");
         this.mockMvc.perform(
                         post("/api/global/checkout")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"name\": \"Bob\", \"email\":\"bob@example.com\", \"phone\": \"0123456789\", \"sellerId\": \"1\"}")
-                            .with(user("bidon").roles("BUYER")))
+                            .with(user(userDetails)))
                 .andExpect(status().isOk());
     }
 
