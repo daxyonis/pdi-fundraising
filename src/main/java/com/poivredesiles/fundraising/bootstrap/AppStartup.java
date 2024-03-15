@@ -2,8 +2,12 @@ package com.poivredesiles.fundraising.bootstrap;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
+import com.poivredesiles.fundraising.converter.AbstractCryptoConverter;
+import com.poivredesiles.fundraising.service.EncryptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,10 +40,17 @@ public class AppStartup implements CommandLineRunner {
 	
 	private BusinessNumberRepository businessNumberRepository;
 
-	public AppStartup(UserRepository userRepository, RoleRepository roleRepository, BusinessNumberRepository businessNumberRepository) {
+	private EncryptionService encryptionService;
+
+	public AppStartup(UserRepository userRepository,
+					  RoleRepository roleRepository,
+					  BusinessNumberRepository businessNumberRepository,
+					  ApplicationProperties applicationProperties,
+					  EncryptionService encryptionService) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.businessNumberRepository = businessNumberRepository;
+		this.encryptionService = encryptionService;
 	}
 
 	@Override
@@ -51,7 +62,18 @@ public class AppStartup implements CommandLineRunner {
 		
 		createBusinessNumbers();
 
+		runActions();
+
 	}
+
+	private void runActions() {
+
+		encryptionService.batchEncrypt();
+
+	}
+
+
+
 
 	private void createAdminUsers() {
 		// Create ADMIN users

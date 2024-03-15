@@ -6,21 +6,11 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
 
@@ -46,12 +36,15 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
     private Long orderNumber;
 
     @Column(name = "buyer_name")
+    @Convert(converter = StringCryptoConverter.class)
     private String buyerName;
 
     @Column(name = "buyer_phone")
+    @Convert(converter = StringCryptoConverter.class)
     private String buyerPhone;
 
     @Column(name = "buyer_email")
+    @Convert(converter = StringCryptoConverter.class)
     private String buyerEmail;
 
     @Column(name = "buyer_note")

@@ -1,8 +1,10 @@
 package com.poivredesiles.fundraising.controller;
 
 import com.poivredesiles.fundraising.config.SecurityConfig;
+import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.controller.rest.GlobalPaymentsController;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
+import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.GlobalPaymentsService;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.LinkedMultiValueMap;
@@ -31,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Slf4j
 @WebMvcTest(GlobalPaymentsController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, MaintenanceModeFilter.class, ApplicationProperties.class})
+@ActiveProfiles("test")
 public class GlobalPaymentsControllerTest extends BaseControllerTest {
 
     @Autowired

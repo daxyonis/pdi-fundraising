@@ -7,16 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.order.OrderType;
 
@@ -55,6 +48,7 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     private String leaderNum;
 
     @Column(name = "leader_email")
+    @Convert(converter = StringCryptoConverter.class)
     private String leaderEmail;
 
     @Column(name = "due_date")

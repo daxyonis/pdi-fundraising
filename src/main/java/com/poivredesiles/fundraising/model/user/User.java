@@ -4,14 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 
 import lombok.Data;
@@ -28,13 +23,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	
+
 	private String username;
 	
 	private String password;
-	
+
+	@Convert(converter = StringCryptoConverter.class)
 	private String firstname;
-	
+	@Convert(converter = StringCryptoConverter.class)
 	private String lastname;
 	
 	private String language;

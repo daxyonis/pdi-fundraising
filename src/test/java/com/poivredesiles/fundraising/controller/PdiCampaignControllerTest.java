@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import com.poivredesiles.fundraising.config.SecurityConfig;
+import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
+import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.poivredesiles.fundraising.controller.rest.PdiCampaignController;
@@ -39,7 +42,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @WebMvcTest(PdiCampaignController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, MaintenanceModeFilter.class, ApplicationProperties.class})
+@ActiveProfiles("test")
 public class PdiCampaignControllerTest {
 	
 	@Autowired
