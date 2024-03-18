@@ -35,3 +35,6 @@ src/main/resources/static/DataTables.zip
 pdi.log.*.gz
 *.tmp
 scripts/
+
+### keystores ###
+*.p12

@@ -5,14 +5,16 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.Converter;
 
+import java.security.Key;
+
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Converter
 @Component
 public class StringCryptoConverter extends AbstractCryptoConverter<String> {
 
-    public StringCryptoConverter(CipherInitializer cipherInitializer, ApplicationProperties applicationProperties) {
-        super(cipherInitializer, applicationProperties);
+    public StringCryptoConverter(ApplicationProperties applicationProperties, KeyProperty keyProperty) {
+        super(applicationProperties, keyProperty);
     }
 
     @Override

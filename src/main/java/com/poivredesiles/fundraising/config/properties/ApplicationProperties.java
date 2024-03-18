@@ -19,8 +19,6 @@ public class ApplicationProperties {
 
 	private boolean encrypted;
 
-	private String secret;
-
 	private Mode mode;
 
 	private Action action;
@@ -139,11 +137,4 @@ public class ApplicationProperties {
 		this.encrypted = encrypted;
 	}
 
-	public String getSecret() {
-		return secret;
-	}
-
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
 }

@@ -5,6 +5,9 @@ import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.model.business.BusinessNumber;
 import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
+import com.poivredesiles.fundraising.model.group.PdiSeller;
+import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.business.BusinessNumberRepository;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
@@ -80,7 +83,6 @@ public class EncryptionService {
         if (encryptionState.isPresent()) {
             encryptionState.get().setNumber(state ? 1L : 0L);
             businessNumberRepository.save(encryptionState.get());
-            applicationProperties.setEncrypted(state);
         }
     }
 
@@ -89,36 +91,45 @@ public class EncryptionService {
      */
     public void encryptAll() {
         log.info("------------------- Encrypting all sensitive data -------------------");
-        encryptPdiCampaigns();
-        encryptPdiSellers();
-        encryptOrderHeaders();
-        encryptUsers();
+        List<PdiCampaign> campaigns = encryptPdiCampaigns();
+        List<PdiSeller> sellers = encryptPdiSellers();
+        List<OrderHeader> orders = encryptOrderHeaders();
+        List<User> users = encryptUsers();
+        log.info("-----------> Saving encrypted data");
+        // We set encrypt to false because data was manually encrypted and we just want to save it
+        applicationProperties.getAction().setEncrypt(false);
+        pdiCampaignRepository.saveAll(campaigns);
+        pdiSellerRepository.saveAll(sellers);
+        orderHeaderRepository.saveAll(orders);
+        userRepository.saveAll(users);
     }
 
-    private void encryptPdiCampaigns() {
+    private List<PdiCampaign> encryptPdiCampaigns() {
         log.info("-----------> Encrypting campaigns");
         List<PdiCampaign> campaigns = pdiCampaignRepository.findAll();
         for( PdiCampaign campaign : campaigns) {
             // Encrypt sensitive data
             String leaderEmail = campaign.getLeaderEmail();
             campaign.setLeaderEmail(stringCryptoConverter.convertToDatabaseColumn(leaderEmail));
-            pdiCampaignRepository.save(campaign);
         }
+        return campaigns;
     }
 
-    private void encryptPdiSellers() {
+    private List<PdiSeller> encryptPdiSellers() {
         log.info("-----------> Encrypting sellers");
-        pdiSellerRepository.findAll().forEach(seller -> {
+        List<PdiSeller> sellers = pdiSellerRepository.findAll();
+        sellers.forEach(seller -> {
             // Encrypt sensitive data
             String name = seller.getName();
             seller.setName(stringCryptoConverter.convertToDatabaseColumn(name));
-            pdiSellerRepository.save(seller);
         });
+        return sellers;
     }
 
-    private void encryptOrderHeaders() {
+    private List<OrderHeader> encryptOrderHeaders() {
         log.info("-----------> Encrypting order headers");
-        orderHeaderRepository.findAll().forEach(orderHeader -> {
+        List<OrderHeader> orders = orderHeaderRepository.findAll();
+        orders.forEach(orderHeader -> {
             // Encrypt sensitive data
             String name = orderHeader.getBuyerName();
             String email = orderHeader.getBuyerEmail();
@@ -126,20 +137,21 @@ public class EncryptionService {
             orderHeader.setBuyerName(stringCryptoConverter.convertToDatabaseColumn(name));
             orderHeader.setBuyerEmail(stringCryptoConverter.convertToDatabaseColumn(email));
             orderHeader.setBuyerPhone(stringCryptoConverter.convertToDatabaseColumn(phone));
-            orderHeaderRepository.save(orderHeader);
         });
+        return orders;
     }
 
-    private void encryptUsers() {
+    private List<User> encryptUsers() {
         log.info("-----------> Encrypting users");
-        userRepository.findAll().forEach(user -> {
+        List<User> users = userRepository.findAll();
+        users.forEach(user -> {
             // Encrypt sensitive data
             String firstName = user.getFirstname();
             String lastName = user.getLastname();
             user.setFirstname(stringCryptoConverter.convertToDatabaseColumn(firstName));
             user.setLastname(stringCryptoConverter.convertToDatabaseColumn(lastName));
-            userRepository.save(user);
         });
+        return users;
     }
 
 

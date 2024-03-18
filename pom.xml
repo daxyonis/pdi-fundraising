@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.poivredesiles</groupId>
 	<artifactId>fundraising</artifactId>
-	<version>3.1.2</version>
+	<version>4.0.0</version>
 	<name>fundraising</name>
 	<description>Fundraising Application For Poivre des Iles</description>
 	<properties>
@@ -162,6 +162,12 @@
 		  <groupId>org.mockito</groupId>
 		  <artifactId>mockito-core</artifactId>		  
 		</dependency>
+		<!-- Salty Coffee for NaCl crypto library -->
+		<dependency>
+			<groupId>software.pando.crypto</groupId>
+			<artifactId>salty-coffee</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -259,7 +265,7 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.34.1</version>
+				<version>0.44.0</version>
 
 				<configuration>
 					<dockerHost>http://127.0.0.1:2375</dockerHost>
@@ -268,11 +274,33 @@
 						<image>
 							<name>${docker.image.prefix}/${docker.image.name}</name>
 							<build>
-								<dockerFileDir>${project.basedir}/src/main/docker/</dockerFileDir>
+								<contextDir>${project.basedir}/src/main/docker</contextDir>
 								<!--copies artficact to docker build dir in target-->
-								<assembly>
-									<descriptorRef>artifact</descriptorRef>
-								</assembly>
+								<assemblies>
+									<assembly>
+										<!-- This copies the artifact (i.e. the jar) -->
+										<descriptorRef>artifact</descriptorRef>
+									</assembly>
+									<assembly>
+										<name>keys</name>
+										<!-- This copies some files (the keystore) -->
+										<inline xmlns="http://maven.apache.org/ASSEMBLY/2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+												xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
+											<id>app-files</id>
+											<files>
+												<file>
+													<source>keystore.p12</source>
+												</file>
+												<file>
+													<source>src/main/docker/keystore-staging.p12</source>
+												</file>
+												<file>
+													<source>src/main/docker/keystore-prod.p12</source>
+												</file>
+											</files>
+										</inline>
+									</assembly>
+								</assemblies>
 								<tags>
 									<tag>latest</tag>
 									<tag>${project.version}</tag>
