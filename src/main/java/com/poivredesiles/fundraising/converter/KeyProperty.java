@@ -1,21 +1,21 @@
 package com.poivredesiles.fundraising.converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.pando.crypto.nacl.SecretBox;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 
 @Component
 public class KeyProperty {
 
+    private final Logger log = LoggerFactory.getLogger(KeyProperty.class);
     @Value("${keystore.password}")
     private String keystorePassword;
 
@@ -33,6 +33,7 @@ public class KeyProperty {
 
     public void loadEncryptionKey() {
         try {
+            log.info("Loading from store: {}", keystoreFilename);
             var keyStore = KeyStore.getInstance("PKCS12");
             var pass = keystorePassword.toCharArray();
             keyStore.load(new FileInputStream(keystoreFilename), pass);
