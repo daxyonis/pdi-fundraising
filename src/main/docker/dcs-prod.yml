@@ -34,7 +34,7 @@ services:
             APPLICATION_ACTION_ENCRYPT: "false"
     
     PROD-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:3.1.2     
+        image: daxyonis/pdi-fundraising:latest
         ports:
             - 8083:8083
         volumes:
@@ -55,11 +55,16 @@ services:
             - PROD_DB_URL
             - EMAIL_PASSWORD
             - PROD_GLOBAL_MERCHANT_ID
-            - PROD_GLOBAL_SHARED_SECRET   
+            - PROD_GLOBAL_SHARED_SECRET
+            - PROD_KEYSTORE_PASSWORD
+            - PROD_KEYSTORE_FILENAME
                      
         environment:
             SPRING_PROFILES_ACTIVE: prod            
             JAVA_OPTS: "-Xms1024m -Xmx1024m"
+            APPLICATION_ENCRYPTED: "true"
+            APPLICATION_MODE_MAINTENANCE: "false"
+            APPLICATION_ACTION_ENCRYPT: "false"
 
 volumes: 
     dev-logs:
