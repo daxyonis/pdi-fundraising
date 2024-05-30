@@ -6,7 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.poivredesiles.fundraising.model.group.PdiCampaignBatchActionEnum;
 import com.poivredesiles.fundraising.resource.ContactMessage;
+import com.poivredesiles.fundraising.resource.EntitySelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,5 +111,20 @@ public class PdiCampaignController {
 		response.setContentType("text/csv");
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
 		pdiCampaignService.exportDetails(id, response.getWriter(), localeResolver.resolveLocale(request));
+	}
+
+	/**
+	 * Perform a batch action on campaigns
+	 *
+	 */
+	@PostMapping("/batch")
+	@Secured("ROLE_ADMIN")
+	public List<PdiCampaignDTO> batchAction(@RequestParam PdiCampaignBatchActionEnum batchAction, @RequestBody EntitySelector entitySelector){
+		switch (batchAction) {
+			case RESEND_RECAP:
+				return pdiCampaignService.resendRecapClosedCampaignsWithin(entitySelector);
+			default:
+				throw new UnsupportedOperationException("Unknown batch action: " + batchAction);
+		}
 	}
 }

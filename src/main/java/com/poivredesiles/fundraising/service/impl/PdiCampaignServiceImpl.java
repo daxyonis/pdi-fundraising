@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.resource.ContactMessage;
+import com.poivredesiles.fundraising.resource.EntitySelector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,10 +206,13 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			// Set the leader name as it is not in the entity
 			Optional<PdiSeller> leader = getLeader(pdiCampaign);
 			if(leader.isPresent()) {
-				campaignRecap.setLeaderName(leader.get().getName());				
+				campaignRecap.setLeaderName(leader.get().getName());
 			} else {
 				log.warn("No leader found for campaign {}", pdiCampaign.getId());
-			}			
+			}
+			if (locale == null) {
+				locale =leader.isPresent() ? Locale.forLanguageTag(leader.get().getMe().getLanguage()) :  Locale.forLanguageTag("fr");
+			}
 			campaignRecap.setEmailTo(pdiCampaign.getLeaderEmail());
 			mailService.sendCampaignRecapEmail(campaignRecap, locale);
 		} else {
@@ -380,6 +384,17 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 		} else {
 			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
 		}
+	}
+
+	@Override
+	public List<PdiCampaignDTO> resendRecapClosedCampaignsWithin(EntitySelector entitySelector) {
+		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByClosedTrueAndClosedDateBetween(
+																entitySelector.getDateFrom().toLocalDate(),
+																entitySelector.getDateTo().toLocalDate());
+		for(PdiCampaign pdiCampaign : pdiCampaigns) {
+			sendEmailToLeader(pdiCampaign, null);
+		}
+		return pdiCampaignMapper.toDto(pdiCampaigns);
 	}
 
 

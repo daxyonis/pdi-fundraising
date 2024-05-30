@@ -1,9 +1,11 @@
 package com.poivredesiles.fundraising.service.impl;
 
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
 import org.slf4j.Logger;
@@ -242,6 +244,21 @@ public class OrderServiceImpl implements OrderService {
 		} else {
 			throw new ResourceNotFoundException("Invalid argument");
 		}
+	}
+
+	@Override
+	public List<OrderHeaderDTO> reconfirmOrdersWithin(EntitySelector entitySelector) {
+		// Get all orders confimed within the time range
+		List<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatusAndConfirmationDateBetween(OrderStatusEnum.PAID,
+										 entitySelector.getDateFrom().toInstant(ZoneOffset.UTC), entitySelector.getDateTo().toInstant(ZoneOffset.UTC));
+		List<OrderHeaderDTO> orderHeaderDtos = new ArrayList<>();
+		for (OrderHeader orderHeader : orderHeaders) {
+			OrderHeaderDTO orderHeaderDto = orderHeaderMapper.toDto(orderHeader);
+			sortOrderItems(orderHeaderDto);
+			mailService.sendOrderConfirmationEmail(orderHeaderDto, Locale.forLanguageTag(orderHeader.getBuyerLanguage()));
+			orderHeaderDtos.add(orderHeaderDto);
+		}
+		return orderHeaderDtos;
 	}
 
 }

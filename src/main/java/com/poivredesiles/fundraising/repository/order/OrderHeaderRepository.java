@@ -1,5 +1,6 @@
 package com.poivredesiles.fundraising.repository.order;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,4 +19,6 @@ public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Long> 
 	Optional<OrderHeader> findOneByOrderNumber(Long number);
 
     List<OrderHeader> findAllByOrderByIdDesc();
+
+    List<OrderHeader> findByOrderStatusAndConfirmationDateBetween(OrderStatusEnum orderStatusEnum, Instant instant, Instant instant1);
 }

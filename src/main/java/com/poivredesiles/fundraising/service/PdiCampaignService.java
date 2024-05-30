@@ -8,6 +8,7 @@ import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.resource.ContactMessage;
+import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 
@@ -95,4 +96,11 @@ public interface PdiCampaignService {
 	 * @param resolveLocale
 	 */
     void contactPdi(Long id, ContactMessage contactMessage, Locale resolveLocale);
+
+	/**
+	 * Resend the campaign recap for the closed campaigns that match the filters
+	 * @param entitySelector	the entity filters
+	 * @return the list of campaign DTOs the recap of which have been resent
+	 */
+	List<PdiCampaignDTO> resendRecapClosedCampaignsWithin(EntitySelector entitySelector);
 }

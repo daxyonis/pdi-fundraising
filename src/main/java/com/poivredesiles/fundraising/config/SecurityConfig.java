@@ -39,7 +39,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 				.addFilterBefore(maintenanceModeFilter, UsernamePasswordAuthenticationFilter.class)
-				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/response"))
+				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/response", "/login", "/api/order/batch", "/api/campaign/batch"))
 				.formLogin(login -> login.loginPage("/login"))
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz

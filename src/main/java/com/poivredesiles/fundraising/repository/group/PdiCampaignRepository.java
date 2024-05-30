@@ -21,4 +21,6 @@ public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> 
 	Optional<PdiCampaign> findByLeaderNum(String number);
 	
 	List<PdiCampaign> findByClosedTrueAndBlockedTrueAndExportDateNotNullAndBlockedDateLessThan(LocalDate date);
+
+    List<PdiCampaign> findByClosedTrueAndClosedDateBetween(LocalDate localDate, LocalDate localDate1);
 }

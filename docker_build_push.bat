@@ -1,1 +1,1 @@
-mvn clean package docker:build docker:push
+.\mvnw clean package docker:build docker:push

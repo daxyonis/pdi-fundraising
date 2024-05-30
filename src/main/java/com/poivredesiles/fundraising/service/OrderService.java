@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
@@ -82,4 +83,11 @@ public interface OrderService {
 	 * @param orderNumber
 	 */
 	void cancelOrder(Long orderNumber);
+
+	/**
+	 * Reconfirm a batch of orders that match some filters
+	 * @param entitySelector	the filters
+	 * @return the list of reconfirmed orders
+	 */
+	List<OrderHeaderDTO> reconfirmOrdersWithin(EntitySelector entitySelector);
 }
