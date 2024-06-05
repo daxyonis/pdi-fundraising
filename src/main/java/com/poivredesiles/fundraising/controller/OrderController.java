@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.LocaleResolver;
 
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.service.OrderService;
@@ -35,9 +34,6 @@ public class OrderController extends BaseController {
 
 	@Autowired
 	private OrderService orderService;
-	
-	@Autowired
-	private LocaleResolver localeResolver;
 			
 	@Value("${global.service.url}")	
 	private String globalServiceUrl;
@@ -61,7 +57,7 @@ public class OrderController extends BaseController {
 			return "views/closed";
 		} else {
 			if (lang == null) {
-				lang = localeResolver.resolveLocale(request).getLanguage();
+				lang = this.language;
 			}
 			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails, lang);
 			model.addAttribute("products", products);						

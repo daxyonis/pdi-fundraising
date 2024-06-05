@@ -1,11 +1,11 @@
 package com.poivredesiles.fundraising.service.impl;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.poivredesiles.fundraising.resource.EntitySelector;
+import com.poivredesiles.fundraising.service.DateUtils;
 import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
 import org.slf4j.Logger;
@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +68,10 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Value("${application.order.confirmation}")
 	private String orderConfirmationFormat;
+
+	@Autowired
+	private DateUtils dateUtils;
+
 	
 	private final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -247,10 +254,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderHeaderDTO> reconfirmOrdersWithin(EntitySelector entitySelector) {
-		// Get all orders confimed within the time range
-		List<OrderHeader> orderHeaders = orderHeaderRepository.findByOrderStatusAndConfirmationDateBetween(OrderStatusEnum.PAID,
-										 entitySelector.getDateFrom().toInstant(ZoneOffset.UTC), entitySelector.getDateTo().toInstant(ZoneOffset.UTC));
+	public List<OrderHeaderDTO> resendConfirmations(List<Long> orderIds) {
+		List<OrderHeader> orderHeaders = orderHeaderRepository.findAllByOrderStatusAndIdIn(OrderStatusEnum.PAID, orderIds);
 		List<OrderHeaderDTO> orderHeaderDtos = new ArrayList<>();
 		for (OrderHeader orderHeader : orderHeaders) {
 			OrderHeaderDTO orderHeaderDto = orderHeaderMapper.toDto(orderHeader);
@@ -259,6 +264,46 @@ public class OrderServiceImpl implements OrderService {
 			orderHeaderDtos.add(orderHeaderDto);
 		}
 		return orderHeaderDtos;
+	}
+
+	@Override
+	public List<OrderHeaderDTO> resendCancellations(List<Long> orderIds) {
+		List<OrderHeader> orderHeaders = orderHeaderRepository.findAllByOrderStatusAndIdIn(OrderStatusEnum.CANCELLED, orderIds);
+		List<OrderHeaderDTO> orderHeaderDtos = new ArrayList<>();
+		for (OrderHeader orderHeader : orderHeaders) {
+			OrderHeaderDTO orderHeaderDto = orderHeaderMapper.toDto(orderHeader);
+			sortOrderItems(orderHeaderDto);
+			mailService.sendOrderCancelEmail(orderHeaderDto, Locale.forLanguageTag(orderHeader.getBuyerLanguage()));
+			orderHeaderDtos.add(orderHeaderDto);
+		}
+		return orderHeaderDtos;
+	}
+
+	@Override
+	public Page<OrderHeaderDTO> getOrders(EntitySelector entitySelector, Pageable pageable) {
+
+		// Build the specification given the filters in entitySelector
+		Specification<OrderHeader> spec = Specification.where(null);
+		if (entitySelector.getStartDate() != null && entitySelector.getEndDate() != null) {
+			spec = spec.and((root, query, cb) -> cb.between(root.get("createdDate"), dateUtils.convertToInstant(entitySelector.getStartDate()), dateUtils.convertToInstant(entitySelector.getEndDate())));
+		}
+
+		if (entitySelector.getStatus() != null) {
+			try{
+				OrderStatusEnum orderStatus = OrderStatusEnum.valueOf(entitySelector.getStatus());
+				spec = spec.and((root, query, cb) -> cb.equal(root.get("orderStatus"), orderStatus));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Invalid order status");
+			}
+		}
+
+		if (entitySelector.getSearch() != null && !entitySelector.getSearch().isEmpty()) {
+			spec = spec.and((root, query, cb) -> cb.like(root.get("orderNumber"), "%" + entitySelector.getSearch().toLowerCase() + "%"));
+		}
+
+		Page<OrderHeader> orders = orderHeaderRepository.findAll(spec, pageable);
+
+		return orders.map(orderHeaderMapper::toDto);
 	}
 
 }

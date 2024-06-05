@@ -11,7 +11,9 @@ import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import org.springframework.web.servlet.LocaleResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 
 @PropertySource("classpath:git.properties")
@@ -24,14 +26,21 @@ public class BaseController {
 	protected String buildVersion;
 	
 	@Autowired
-	protected PdiSellerService pdiSellerService;		
+	protected PdiSellerService pdiSellerService;
+
+	@Autowired
+	protected LocaleResolver localeResolver;
+
+	protected String language;
 	
 	@ModelAttribute
-	public void populateModel(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+	public void populateModel(@AuthenticationPrincipal MyUserDetails userDetails, Model model, HttpServletRequest request) {
 		model.addAttribute("gitCommitId", gitCommitId);
 		model.addAttribute("buildVersion", buildVersion);
 		model.addAttribute("showLangChange", true);
 		model.addAttribute("year", LocalDate.now().getYear());
+		language = localeResolver.resolveLocale(request).getLanguage();
+		model.addAttribute("language", language);
 		if(userDetails != null) {
 			model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 			model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));

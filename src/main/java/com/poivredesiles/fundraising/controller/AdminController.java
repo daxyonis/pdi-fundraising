@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.controller;
 
 import com.poivredesiles.fundraising.imports.CsvImportService;
+import com.poivredesiles.fundraising.service.DateUtils;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.time.LocalDate;
 
 @Controller
 public class AdminController extends BaseController {
@@ -22,6 +25,9 @@ public class AdminController extends BaseController {
     @Autowired
     private PdiCampaignService pdiCampaignService;
 
+    @Autowired
+    private DateUtils dateUtils;
+
     @GetMapping("/admin")
     @Secured("ROLE_ADMIN")
     public String admin(Model model) {
@@ -29,6 +35,8 @@ public class AdminController extends BaseController {
         model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
         model.addAttribute("groupsAndSellersLastImport", csvImportService.getGroupsAndSellersLastImportDate());
         model.addAttribute("showWarning", pdiCampaignService.thereAreActiveCampaigns());
+        model.addAttribute("today", dateUtils.today());
+        model.addAttribute("dateFormat", dateUtils.getDateFormat().toLowerCase());
         return "views/admin";
     }
 }

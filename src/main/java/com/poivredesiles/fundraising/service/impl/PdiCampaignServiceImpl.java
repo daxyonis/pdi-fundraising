@@ -387,10 +387,8 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 	}
 
 	@Override
-	public List<PdiCampaignDTO> resendRecapClosedCampaignsWithin(EntitySelector entitySelector) {
-		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByClosedTrueAndClosedDateBetween(
-																entitySelector.getDateFrom().toLocalDate(),
-																entitySelector.getDateTo().toLocalDate());
+	public List<PdiCampaignDTO> resendRecapClosedCampaignsWithin(List<Long> campaignIds) {
+		List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByClosedTrueAndIdIn(campaignIds);
 		for(PdiCampaign pdiCampaign : pdiCampaigns) {
 			sendEmailToLeader(pdiCampaign, null);
 		}

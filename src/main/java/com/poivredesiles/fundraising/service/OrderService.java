@@ -9,6 +9,8 @@ import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
@@ -79,15 +81,25 @@ public interface OrderService {
 	List<OrderHeaderDTO> getOrders();
 
 	/**
+	 * Get a  list of orders, filtered, paginated and sorted
+	 * @param entitySelector	the filters
+	 * @param pageable			the pagination
+	 * @return a page of orders DTO
+	 */
+	Page<OrderHeaderDTO> getOrders(EntitySelector entitySelector, Pageable pageable);
+
+	/**
 	 * Cancel an order
 	 * @param orderNumber
 	 */
 	void cancelOrder(Long orderNumber);
 
 	/**
-	 * Reconfirm a batch of orders that match some filters
-	 * @param entitySelector	the filters
-	 * @return the list of reconfirmed orders
+	 * Resend the confirmations for a list of paid orders
+	 * @param orderIds	the list of order ids
+	 * @return
 	 */
-	List<OrderHeaderDTO> reconfirmOrdersWithin(EntitySelector entitySelector);
+	List<OrderHeaderDTO> resendConfirmations(List<Long> orderIds);
+
+	List<OrderHeaderDTO> resendCancellations(List<Long> orderIds);
 }

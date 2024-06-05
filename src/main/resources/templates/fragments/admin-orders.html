@@ -11,10 +11,34 @@
 					<div class="alert alert-warning d-none" id="orders-msg-error">La commande n'a pu être confirmée</div>
 				</div>
 			</div>
-			<!-- /* Export */ -->
+			<!-- /* Title */ -->
 			<div class="row mt-3">
 				<div class="col-md-12">
 					<h4 th:text="#{admin.orders.subtitle}">commandes en attente</h4>
+				</div>
+			</div>
+			<div class="row" id="filters">
+				<div class="col-md-3">
+				</div>
+				<div class="col-md-3">
+					<label for="dateRange" th:text="#{admin.orders.daterange}">Date de création</label>
+					<div class="input-group input-daterange" id="dateRange">
+						<input type="text" class="form-control" name="orderStartDate" id="orderStartDate">
+						<div class="input-group-addon" th:text="| #{admin.orders.daterange.to} |">to</div>
+						<input type="text" class="form-control" name="orderEndDate" id="orderEndDate">
+					</div>
+				</div>
+				<div class="col-md-2">
+					<label for="orderStatus" th:text="#{admin.orders.status}">Statut</label>
+					<select class="form-control" id="orderStatus" >
+						<option value="" th:text="#{admin.orders.status.ALL}">Tous</option>
+						<option value="PENDING" th:text="#{admin.orders.status.PENDING}">En attente</option>
+						<option value="PAID" th:text="#{admin.orders.status.PAID}">Payé</option>
+						<option value="CANCELLED" th:text="#{admin.orders.status.CANCELLED}">Annulé</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-secondary mt-4" id="filterOrders" th:text="#{admin.orders.filter}">Filtrer</button>
 				</div>
 			</div>
 			<div class="row mb-4">
@@ -41,6 +65,8 @@
 			</div>
 			
 			<script th:inline="javascript">
+
+				/* Define methods and constants */
 				function confirmOrder(orderNumber) {
 					$('#confirmOrder').modal('show');
 					$('#confirmOrderConfirmed').off();
@@ -93,59 +119,104 @@
 				const confirmButtonLabel = /*[[#{admin.orders.confirm}]]*/'confirmer';
 				const cancelButtonLabel = /*[[#{admin.orders.cancel}]]*/'annuler';
 
-				var ordersDatatablesOptions = {
+				const ordersDatatablesOptions = {
 									paging: true,
+									sorting: true,
+									serverSide: true,
 									searching : true,
+									ordering: true,
 									responsive: true,
 									info: true,
 									language: {
-										url: 'https://cdn.datatables.net/plug-ins/1.10.22/i18n/French.json'
+										url: /*[[@{/json/datatables_1.10.22_i18n_french.json}]]*/'json/datatables_1.10.22_i18n_french.json'
 									}
 							};
 
-				const ordersTable = $('#ordersTable')
-					//.on('draw.dt', initOrdersButtonHandlers)
-					.DataTable(
-						Object.assign({
-						    ajax: {
-						        url: /*[[@{/api/admin/orders/pending}]]*/'/api/admin/orders/pending',
-						        dataSrc: ''
-						    },
-						    columns: [
-						    	{data: 'orderNumber'},
-						    	{data: 'formattedCreatedDate'},
-						    	{data: 'buyerName'},
-						    	{data: 'buyerEmail'},
-						    	{data: 'buyerPhone'},
-						    	{data: 'sellerName'},
-						    	{data: 'campaignNumber'},
-						    	{data: 'organizationName'},
-						    	{data: 'orderStatus', render: function(data, type, row){
-						    		return `<span class='badge badge-pill badge-${row.orderStatus}'>${row.orderStatus}</span>`;
-						    	}},
-						    	{data: 'id', orderable: false, width: "100px", render: function(data, type, row){
-						    	  if (row.orderStatus === 'PENDING' || row.orderStatus == 'CANCELLED') {
-						    		return `<button type='button'
+				$(function() {
+
+					// Init datepicker
+					$('.input-daterange input').each(function() {
+						$(this).datepicker({
+							format: /*[[${dateFormat}]]*/'dd/mm/yyyy',
+							language:/*[[${language}]]*/'fr',
+						});
+					});
+
+
+					const ordersTable = $('#ordersTable')
+							//.on('draw.dt', initOrdersButtonHandlers)
+							.DataTable(
+									Object.assign({
+										ajax: {
+											url: /*[[@{/api/admin/orders}]]*/'/api/admin/orders',
+											method: 'POST',
+											contentType: 'application/json',
+											beforeSend: function (request, settings) {
+												// const token = $("meta[name='_csrf']").attr("content");
+												// const header = $("meta[name='_csrf_header']").attr("content");
+												// request.setRequestHeader(header, token);
+												const urlEncodedStr = settings.data;
+												// Parse the URL-encoded string
+												const params = new URLSearchParams(urlEncodedStr);
+												const paramsObject = {};
+												for (const [key, value] of params.entries()) {
+													paramsObject[key] = value;
+												}
+												paramsObject.startDate = $('#orderStartDate').val();
+												paramsObject.endDate = $('#orderEndDate').val();
+												paramsObject.status = $('#orderStatus').val();
+												const jsonString = JSON.stringify({ordersRequest: paramsObject});
+												settings.data = jsonString;
+												console.log(jsonString);
+											},
+										},
+										columns: [
+											{data: 'orderNumber'},
+											{data: 'formattedCreatedDate'},
+											{data: 'buyerName'},
+											{data: 'buyerEmail'},
+											{data: 'buyerPhone'},
+											{data: 'sellerName'},
+											{data: 'campaignNumber'},
+											{data: 'organizationName'},
+											{
+												data: 'orderStatus', render: function (data, type, row) {
+													return `<span class='badge badge-pill badge-${row.orderStatus}'>${row.orderStatus}</span>`;
+												}
+											},
+											{
+												data: 'id',
+												orderable: false,
+												width: "100px",
+												render: function (data, type, row) {
+													if (row.orderStatus === 'PENDING' || row.orderStatus == 'CANCELLED') {
+														return `<button type='button'
 						    						class='btn btn-success btn-sm action-confirm'
 						    						onclick='confirmOrder(${row.orderNumber})'
 						    				><i class='fa fa-check-circle'></i></button>`;
-						    				} else {
-						    				return '';
-						    				}
-						    	}},
-						    	{data: 'id', orderable: false, width: "100px", render: function(data, type, row){
-						    	    if (row.orderStatus === 'PENDING' || row.orderStatus == 'PAID') {
-											return `<button type='button'
+													} else {
+														return '';
+													}
+												}
+											},
+											{
+												data: 'id',
+												orderable: false,
+												width: "100px",
+												render: function (data, type, row) {
+													if (row.orderStatus === 'PENDING' || row.orderStatus == 'PAID') {
+														return `<button type='button'
 															class='btn btn-danger btn-sm action-cancel'
 															onclick='cancelOrder(${row.orderNumber})'
 													><i class='fa fa-times-circle'></i></button>`;
-						    				} else {
-						    				return '';
-						    				}
-						    	}}
-						    ]
-						},  ordersDatatablesOptions));
-				
+													} else {
+														return '';
+													}
+												}
+											}
+										]
+									}, ordersDatatablesOptions));
+				});
 			</script>
 			
 		</div>

@@ -99,8 +99,8 @@ public interface PdiCampaignService {
 
 	/**
 	 * Resend the campaign recap for the closed campaigns that match the filters
-	 * @param entitySelector	the entity filters
+	 * @param campaignIds	the campaign IDs to resend the recap for
 	 * @return the list of campaign DTOs the recap of which have been resent
 	 */
-	List<PdiCampaignDTO> resendRecapClosedCampaignsWithin(EntitySelector entitySelector);
+	List<PdiCampaignDTO> resendRecapClosedCampaignsWithin(List<Long> campaignIds);
 }

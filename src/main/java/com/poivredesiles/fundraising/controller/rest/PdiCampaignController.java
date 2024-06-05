@@ -119,12 +119,13 @@ public class PdiCampaignController {
 	 */
 	@PostMapping("/batch")
 	@Secured("ROLE_ADMIN")
-	public List<PdiCampaignDTO> batchAction(@RequestParam PdiCampaignBatchActionEnum batchAction, @RequestBody EntitySelector entitySelector){
-		switch (batchAction) {
-			case RESEND_RECAP:
-				return pdiCampaignService.resendRecapClosedCampaignsWithin(entitySelector);
+	public void batchAction(@RequestParam String action, @RequestBody List<Long> campaignIds) {
+		switch(action) {
+			case "resend_recaps":
+				pdiCampaignService.resendRecapClosedCampaignsWithin(campaignIds);
+				break;
 			default:
-				throw new UnsupportedOperationException("Unknown batch action: " + batchAction);
+				throw new UnsupportedOperationException("Unknown batch action: " + action);
 		}
 	}
 }
