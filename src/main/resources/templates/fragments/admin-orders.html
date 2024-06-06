@@ -14,17 +14,31 @@
 			<!-- /* Title */ -->
 			<div class="row mt-3">
 				<div class="col-md-12">
-					<h4 th:text="#{admin.orders.subtitle}">commandes en attente</h4>
+					<h4 th:text="#{admin.orders.subtitle}">commandes</h4>
 				</div>
 			</div>
 			<div class="row" id="filters">
-				<div class="col-md-3">
+				<div class="col-md-3 p-4">
+					<button type='button'
+							disabled
+							class='btn btn-success btn-lg action-confirm'
+							onclick='confirmSelectedOrders()'>
+							<i class="bi bi-envelope-check"></i>
+					</button>
+					&nbsp;
+					&nbsp;
+					<button type='button'
+							disabled
+							class='btn btn-danger btn-lg action-cancel'
+							onclick='cancelSelectedOrders()'>
+							<i class="bi bi-envelope-exclamation"></i>
+					</button>
 				</div>
 				<div class="col-md-3">
 					<label for="dateRange" th:text="#{admin.orders.daterange}">Date de création</label>
 					<div class="input-group input-daterange" id="dateRange">
 						<input type="text" class="form-control" name="orderStartDate" id="orderStartDate">
-						<div class="input-group-addon" th:text="| #{admin.orders.daterange.to} |">to</div>
+						<div class="input-group-addon" th:text="|&nbsp;#{admin.orders.daterange.to}&nbsp;|">to</div>
 						<input type="text" class="form-control" name="orderEndDate" id="orderEndDate">
 					</div>
 				</div>
@@ -37,8 +51,8 @@
 						<option value="CANCELLED" th:text="#{admin.orders.status.CANCELLED}">Annulé</option>
 					</select>
 				</div>
-				<div class="col-md-1">
-					<button type="button" class="btn btn-secondary mt-4" id="filterOrders" th:text="#{admin.orders.filter}">Filtrer</button>
+				<div class="col-md-1 pt-4">
+					<button type="button" class="btn btn-secondary" id="filterOrders" th:text="#{admin.orders.filter}">Filtrer</button>
 				</div>
 			</div>
 			<div class="row mb-4">
@@ -47,6 +61,9 @@
 					<table style="width: 100%; font-size:10pt" id="ordersTable" class="table table-bordered table-striped">
 						<thead class="thead-light">
 							<tr>
+								<th>
+									<input aria-label="Select all rows" class="dt-select-checkbox" type="checkbox" id="checkAll">
+								</th>
 								<th th:text="#{order.number}">no commande</th>
 								<th th:text="#{order.date}">date création</th>
 								<th th:text="#{order.buyer.name}">nom</th>
@@ -67,6 +84,68 @@
 			<script th:inline="javascript">
 
 				/* Define methods and constants */
+				const batchUrl = /*[[@{/api/admin/orders/batch}]]*/'/api/admin/orders/batch';
+				let ordersTable;
+
+				function uncheckAll() {
+					ordersTable.rows().deselect();
+					$('#checkAll').prop('checked', false);
+				}
+
+				function confirmSelectedOrders() {
+					$('#reconfirmOrdersModal').modal('show');
+					$('#reconfirmOrders').off();
+					$('#reconfirmOrders').on('click', function() {
+						$('#reconfirmOrdersModal').modal('hide');
+						const data = ordersTable.rows({selected: true}).data().toArray()
+								.filter(r => r.orderStatus === 'PAID')
+								.map(r => r.id);
+						$.post({
+							url: batchUrl + '?action=resend_confirm',
+							data: JSON.stringify(data),
+							contentType: 'application/json',
+							success: function (data) {
+								const msg = /*[[#{admin.orders.resendConfirm.success}]]*/'succes!';
+								const results = `. Nb sent messages/ Nb messages envoyés : ${data}`;
+								displaySuccess('#orders-msg-success', msg + results);
+							},
+							error: function (err) {
+								console.log(err.responseJSON);
+								displayError(err, '#orders-msg-error', /*[[#{admin.orders.resendConfirm.error}]]*/'Erreur');
+							}
+						}).done(function(){
+							uncheckAll();
+						});
+					});
+				}
+
+				function cancelSelectedOrders() {
+					$('#recancelOrdersModal').modal('show');
+					$('#recancelOrders').off();
+					$('#recancelOrders').on('click', function() {
+						$('#recancelOrdersModal').modal('hide');
+						const data = ordersTable.rows({selected: true}).data().toArray()
+								.filter(r => r.orderStatus === 'CANCELLED')
+								.map(r => r.id);
+						$.post({
+							url: batchUrl + '?action=resend_cancel',
+							data: JSON.stringify(data),
+							contentType: 'application/json',
+							success: function (data) {
+								const msg = /*[[#{admin.orders.resendCancel.success}]]*/'succes!';
+								const results = `. Nb sent messages/ Nb messages envoyés : ${data}`;
+								displaySuccess('#orders-msg-success', msg + results);
+							},
+							error: function (err) {
+								console.log(err.responseJSON);
+								displayError(err, '#orders-msg-error', /*[[#{admin.orders.resendCancel.error}]]*/'Erreur');
+							}
+						}).done(function(){
+							uncheckAll();
+						});
+					});
+				}
+
 				function confirmOrder(orderNumber) {
 					$('#confirmOrder').modal('show');
 					$('#confirmOrderConfirmed').off();
@@ -123,12 +202,20 @@
 									paging: true,
 									sorting: true,
 									serverSide: true,
+									processing: true,
 									searching : true,
 									ordering: true,
 									responsive: true,
+									lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+									pageLength: 10,
 									info: true,
 									language: {
 										url: /*[[@{/json/datatables_1.10.22_i18n_french.json}]]*/'json/datatables_1.10.22_i18n_french.json'
+									},
+									select: {
+										style: 'multi',
+										selector: 'td:first-child',
+										headerCheckbox: true,
 									}
 							};
 
@@ -143,7 +230,7 @@
 					});
 
 
-					const ordersTable = $('#ordersTable')
+					ordersTable = $('#ordersTable')
 							//.on('draw.dt', initOrdersButtonHandlers)
 							.DataTable(
 									Object.assign({
@@ -151,34 +238,24 @@
 											url: /*[[@{/api/admin/orders}]]*/'/api/admin/orders',
 											method: 'POST',
 											contentType: 'application/json',
-											beforeSend: function (request, settings) {
-												// const token = $("meta[name='_csrf']").attr("content");
-												// const header = $("meta[name='_csrf_header']").attr("content");
-												// request.setRequestHeader(header, token);
-												const urlEncodedStr = settings.data;
-												// Parse the URL-encoded string
-												const params = new URLSearchParams(urlEncodedStr);
-												const paramsObject = {};
-												for (const [key, value] of params.entries()) {
-													paramsObject[key] = value;
-												}
-												paramsObject.startDate = $('#orderStartDate').val();
-												paramsObject.endDate = $('#orderEndDate').val();
-												paramsObject.status = $('#orderStatus').val();
-												const jsonString = JSON.stringify({ordersRequest: paramsObject});
-												settings.data = jsonString;
-												console.log(jsonString);
-											},
+											dataType : 'json',
+											data: function(d) {
+												d.startDate = $('#orderStartDate').val();
+												d.endDate = $('#orderEndDate').val();
+												d.status = $('#orderStatus').val();
+												return JSON.stringify(d);
+											}
 										},
 										columns: [
+											{data: null, render: DataTable.render.select(), sortable: false},
 											{data: 'orderNumber'},
-											{data: 'formattedCreatedDate'},
-											{data: 'buyerName'},
-											{data: 'buyerEmail'},
-											{data: 'buyerPhone'},
-											{data: 'sellerName'},
-											{data: 'campaignNumber'},
-											{data: 'organizationName'},
+											{data: 'formattedCreatedDate', sortable: false},
+											{data: 'buyerName', sortable: false},
+											{data: 'buyerEmail', sortable: false},
+											{data: 'buyerPhone', sortable: false},
+											{data: 'sellerName', sortable: false},
+											{data: 'campaignNumber', sortable: false},
+											{data: 'organizationName', sortable: false},
 											{
 												data: 'orderStatus', render: function (data, type, row) {
 													return `<span class='badge badge-pill badge-${row.orderStatus}'>${row.orderStatus}</span>`;
@@ -216,6 +293,29 @@
 											}
 										]
 									}, ordersDatatablesOptions));
+
+					ordersTable.on('select', function(e, dt, type, indexes){
+									$('.action-confirm').attr('disabled', false);
+									$('.action-cancel').attr('disabled', false);
+								})
+								.on('deselect', function(e, dt, type, indexes){
+									if(ordersTable.rows({selected: true}).count() === 0){
+										$('.action-confirm').attr('disabled', true);
+										$('.action-cancel').attr('disabled', true);
+									}});
+
+					$('#filterOrders').on('click', function(){
+						ordersTable.ajax.reload();
+					});
+
+					$('#checkAll').on('click', function(){
+						let isChecked = $(this).prop('checked');
+						if (isChecked) {
+							ordersTable.rows().select();
+						} else {
+							ordersTable.rows().deselect();
+						}
+					});
 				});
 			</script>
 			

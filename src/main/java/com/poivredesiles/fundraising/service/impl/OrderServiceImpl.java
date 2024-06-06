@@ -261,7 +261,7 @@ public class OrderServiceImpl implements OrderService {
 			OrderHeaderDTO orderHeaderDto = orderHeaderMapper.toDto(orderHeader);
 			sortOrderItems(orderHeaderDto);
 			mailService.sendOrderConfirmationEmail(orderHeaderDto, Locale.forLanguageTag(orderHeader.getBuyerLanguage()));
-			orderHeaderDtos.add(orderHeaderDto);
+            orderHeaderDtos.add(orderHeaderDto);
 		}
 		return orderHeaderDtos;
 	}
@@ -288,7 +288,7 @@ public class OrderServiceImpl implements OrderService {
 			spec = spec.and((root, query, cb) -> cb.between(root.get("createdDate"), dateUtils.convertToInstant(entitySelector.getStartDate()), dateUtils.convertToInstant(entitySelector.getEndDate())));
 		}
 
-		if (entitySelector.getStatus() != null) {
+		if (entitySelector.getStatus() != null && !entitySelector.getStatus().isEmpty()) {
 			try{
 				OrderStatusEnum orderStatus = OrderStatusEnum.valueOf(entitySelector.getStatus());
 				spec = spec.and((root, query, cb) -> cb.equal(root.get("orderStatus"), orderStatus));
@@ -298,7 +298,12 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		if (entitySelector.getSearch() != null && !entitySelector.getSearch().isEmpty()) {
-			spec = spec.and((root, query, cb) -> cb.like(root.get("orderNumber"), "%" + entitySelector.getSearch().toLowerCase() + "%"));
+			try {
+				Long orderNumber = Long.parseLong(entitySelector.getSearch());
+				spec = spec.and((root, query, cb) -> cb.equal(root.get("orderNumber"), orderNumber));
+			} catch (NumberFormatException e) {
+				log.warn("Search string is not a number");
+			}
 		}
 
 		Page<OrderHeader> orders = orderHeaderRepository.findAll(spec, pageable);

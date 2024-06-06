@@ -1,43 +1,73 @@
 package com.poivredesiles.fundraising.resource.datatables;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class DataTablesRequest {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DataTablesRequest implements Serializable {
 
-    @Data
-    public static class Column {
+    @Getter
+    @Setter
+    public static class Column implements Serializable {
         private String data;
         private String name;
         private boolean searchable;
         private boolean orderable;
         private Search search;
+        public Column() {
+            search = new Search();
+        }
     }
 
-    @Data
-    public static class Search {
+    @Getter
+    @Setter
+    public static class Search implements Serializable{
         private String value;
         private boolean regex;
+        public Search() {
+            value = "";
+            regex = false;
+        }
     }
 
-    @Data
-    public static class Order {
+    @Getter
+    @Setter
+    public static class Order implements Serializable{
         private int column;
         private String dir;
         private String name;
+        public Order() {
+            name = "";
+            column = 0;
+        }
     }
 
-    private int draw = 0;
+    @JsonProperty("columns")
     private List<Column> columns = new ArrayList<>();
+
+    @JsonProperty("draw")
+    private int draw;
+
+    @JsonProperty("length")
+    private int length;
+
+    @JsonProperty("order")
     private List<Order> order = new ArrayList<>();
+
+    @JsonProperty("search")
     private Search search = new Search();
-    private int start = 0;
-    private int length = 10;
+
+    @JsonProperty("start")
+    private int start;
+
+    public DataTablesRequest() {
+    }
 
     public Sort getSort() {
         if (order == null || order.isEmpty()) {

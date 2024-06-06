@@ -29,7 +29,11 @@ public class AdminRestController {
     public DataTablesResponse<OrderHeaderDTO> getOrders(@RequestBody OrdersRequest ordersRequest) {
 
         EntitySelector entitySelector = new EntitySelector(ordersRequest.getStartDate(), ordersRequest.getEndDate(), ordersRequest.getStatus(), ordersRequest.getSearch().getValue());
-        Pageable pageable = PageRequest.of(ordersRequest.getStart(), ordersRequest.getLength(), ordersRequest.getSort());
+        Pageable pageable = Pageable.unpaged();
+        if (ordersRequest.getLength() > 0) {
+            int page = ordersRequest.getStart() / ordersRequest.getLength();
+            pageable = PageRequest.of(page, ordersRequest.getLength(), ordersRequest.getSort());
+        }
         return new DataTablesResponse<>(orderService.getOrders(entitySelector, pageable), ordersRequest.getDraw());
     }
 
@@ -50,14 +54,14 @@ public class AdminRestController {
     // action on a batch of orders
     @PostMapping("/orders/batch")
     @Secured("ROLE_ADMIN")
-    public void batchAction(@RequestParam String action, @RequestBody List<Long> orderIds) {
+    public int batchAction(@RequestParam String action, @RequestBody List<Long> orderIds) {
         switch(action) {
             case "resend_confirm":
-                orderService.resendConfirmations(orderIds);
-                break;
+                List<OrderHeaderDTO> reconfirmedOrders = orderService.resendConfirmations(orderIds);
+                return reconfirmedOrders.size();
             case "resend_cancel":
-                orderService.resendCancellations(orderIds);
-                break;
+                List<OrderHeaderDTO> recancelledOrders = orderService.resendCancellations(orderIds);
+                return recancelledOrders.size();
             default:
                 throw new UnsupportedOperationException("Unknown batch action: " + action);
         }
