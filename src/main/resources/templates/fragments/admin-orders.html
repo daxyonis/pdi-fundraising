@@ -21,7 +21,7 @@
 				<div class="col-md-3 p-4">
 					<button type='button'
 							disabled
-							class='btn btn-success btn-lg action-confirm'
+							class='btn btn-success btn-lg batch-action-confirm'
 							onclick='confirmSelectedOrders()'>
 							<i class="bi bi-envelope-check"></i>
 					</button>
@@ -29,7 +29,7 @@
 					&nbsp;
 					<button type='button'
 							disabled
-							class='btn btn-danger btn-lg action-cancel'
+							class='btn btn-danger btn-lg batch-action-cancel'
 							onclick='cancelSelectedOrders()'>
 							<i class="bi bi-envelope-exclamation"></i>
 					</button>
@@ -295,13 +295,13 @@
 									}, ordersDatatablesOptions));
 
 					ordersTable.on('select', function(e, dt, type, indexes){
-									$('.action-confirm').attr('disabled', false);
-									$('.action-cancel').attr('disabled', false);
+									$('.batch-action-confirm').attr('disabled', false);
+									$('.batch-action-cancel').attr('disabled', false);
 								})
 								.on('deselect', function(e, dt, type, indexes){
 									if(ordersTable.rows({selected: true}).count() === 0){
-										$('.action-confirm').attr('disabled', true);
-										$('.action-cancel').attr('disabled', true);
+										$('.batch-action-confirm').attr('disabled', true);
+										$('.batch-action-cancel').attr('disabled', true);
 									}});
 
 					$('#filterOrders').on('click', function(){
