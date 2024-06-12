@@ -10,7 +10,16 @@ import org.hibernate.annotations.Subselect;
 
 @Entity
 @Immutable
-@Subselect("SELECT 'max' as id, GREATEST(MAX(c.last_modified_date), MAX(g.last_modified_date), MAX(s.last_modified_date)) AS instant FROM pdicampaign c, pdigroup g, pdiseller s")
+@Subselect("SELECT id, last_modified_date as instant " +
+		"FROM (" +
+		"    SELECT id, last_modified_date FROM pdicampaign" +
+		"    UNION" +
+		"    SELECT id, last_modified_date FROM pdigroup" +
+		"    UNION" +
+		"    SELECT id, last_modified_date FROM pdiseller" +
+		") as combined " +
+		"ORDER BY last_modified_date DESC " +
+		"LIMIT 1")
 public class GroupLastImport {
 
 	@Id 

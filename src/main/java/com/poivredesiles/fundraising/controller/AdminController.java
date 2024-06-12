@@ -33,7 +33,6 @@ public class AdminController extends BaseController {
     public String admin(Model model) {
         log.info("Requested Admin Page");
         model.addAttribute("sectionsAndProductsLastImport", csvImportService.getSectionsAndProductsLastImportDate());
-        model.addAttribute("groupsAndSellersLastImport", csvImportService.getGroupsAndSellersLastImportDate());
         model.addAttribute("showWarning", pdiCampaignService.thereAreActiveCampaigns());
         model.addAttribute("today", dateUtils.today());
         model.addAttribute("dateFormat", dateUtils.getDateFormat().toLowerCase());
