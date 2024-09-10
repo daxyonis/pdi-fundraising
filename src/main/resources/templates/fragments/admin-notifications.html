@@ -1,0 +1,106 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:fragment="notifications">
+    <!--/* Messages */-->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="alert alert-info d-none" id="notifications-msg-success">Les notifications ont été enregistrées</div>
+            <div class="alert alert-warning d-none" id="notifications-msg-error">Une erreur s'est produite</div>
+        </div>
+    </div>
+    <!-- /* Title */ -->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <h4>Notifications</h4>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="col-md-3 offset-md-1">
+            <h5 th:text="#{notification.campaign}">Campagne</h5>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="notifyDeadlinePassed" th:checked="${notificationSettings[0].notifyDeadlinePassed}">
+                        <label class="form-check-label" for="notifyDeadlinePassed" th:text="#{notification.campaign.notifyDeadlinePassed}">Check me out</label>
+                        <input style="width: 70px" type="number" min="0" id="deadlinePassedNumDays" th:value="${notificationSettings[0].notifyDeadlinePassedDays}">
+                            <span th:text="#{notification.campaign.notifyDeadlinePassed.days}">jours</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <label for="notifyMsgFr" th:text="#{notification.campaign.msgFr}">Message en FR</label>
+                        <textarea class="form-control" id="notifyMsgFr" rows="3" th:text="${notificationSettings[0].notifyDeadlinePassedMsgFr}"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <label for="notifyMsgEn" th:text="#{notification.campaign.msgEn}">Message en EN</label>
+                        <textarea class="form-control" id="notifyMsgEn" rows="3" th:text="${notificationSettings[0].notifyDeadlinePassedMsgEn}"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="float-md-right">
+                        <button id="cancelNotificationSettings" class="btn btn-light" th:text="#{admin.cancel}">Cancel</button>
+                        <button id="saveNotificationSettings" class="btn btn-success" th:text="#{admin.save}">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+
+        /* Define methods and constants */
+        const notificationSettingsUrl = /*[[@{/api/admin/notificationsettings}]]*/'/api/admin/notificationsettings';
+
+        $('#cancelNotificationSettings').click(function () {
+            // Clear all forms
+            $('#notifyDeadlinePassed').prop('checked', false);
+            $('#deadlinePassedNumDays').val(10);
+            $('#notifyMsgFr').val('');
+            $('#notifyMsgEn').val('');
+        });
+
+        $('#saveNotificationSettings').click(function () {
+            // Get values
+            let notifyDeadlinePassed = $('#notifyDeadlinePassed').prop('checked');
+            let deadlinePassedNumDays = $('#deadlinePassedNumDays').val();
+            let notifyMsgFr = $('#notifyMsgFr').val();
+            let notifyMsgEn = $('#notifyMsgEn').val();
+            // Prepare data
+            let data = {
+                notifyDeadlinePassed: notifyDeadlinePassed,
+                notifyDeadlinePassedDays: deadlinePassedNumDays,
+                notifyDeadlinePassedMsgFr: notifyMsgFr,
+                notifyDeadlinePassedMsgEn: notifyMsgEn
+            };
+            // Send data
+            $.ajax({
+                type: 'POST',
+                url: notificationSettingsUrl,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    displaySuccess('#notifications-msg-success', /*[[#{admin.notifications.update.success}]]*/'succes!');
+                },
+                error: function (error) {
+                    displayError(error, '#notifications-msg-error', /*[[#{admin.notifications.update.error}]]*/'Une erreur s\'est produite');
+                }
+            });
+        });
+
+    </script>
+</div>
+
+</body>
+</html>

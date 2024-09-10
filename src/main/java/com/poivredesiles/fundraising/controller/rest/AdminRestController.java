@@ -1,5 +1,7 @@
 package com.poivredesiles.fundraising.controller.rest;
 
+import com.poivredesiles.fundraising.service.NotificationService;
+import com.poivredesiles.fundraising.service.dto.NotificationSettingsDTO;
 import com.poivredesiles.fundraising.resource.OrdersRequest;
 import com.poivredesiles.fundraising.resource.datatables.DataTablesResponse;
 import com.poivredesiles.fundraising.resource.EntitySelector;
@@ -23,6 +25,9 @@ public class AdminRestController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @PostMapping("/orders")
     @Secured("ROLE_ADMIN")
@@ -65,5 +70,12 @@ public class AdminRestController {
             default:
                 throw new UnsupportedOperationException("Unknown batch action: " + action);
         }
+    }
+
+    @PostMapping("/notificationsettings")
+    @Secured("ROLE_ADMIN")
+    public String updateNotifications(@RequestBody NotificationSettingsDTO notificationSettings) {
+        notificationService.updateNotificationSettings(notificationSettings);
+        return "OK";
     }
 }

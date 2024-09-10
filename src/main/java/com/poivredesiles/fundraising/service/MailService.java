@@ -7,11 +7,13 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import com.poivredesiles.fundraising.model.notification.PdiNotification;
 import com.poivredesiles.fundraising.resource.ContactMessage;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -76,7 +78,12 @@ public class MailService {
 		Context context = new Context(locale);
 		context.setVariable(contentObjectName, contentObject);
 		String content = templateEngine.process(templateName, context);
-		String subject = messageSource.getMessage(titleKey, null, locale);
+		String subject ="";
+		try {
+			subject = messageSource.getMessage(titleKey, null, locale);
+		} catch (NoSuchMessageException e) {
+			subject = titleKey;
+		}
 		sendEmail(to, subject, content, false, true);
 	}
 
@@ -122,12 +129,12 @@ public class MailService {
 	public void sendOrderConfirmationEmail(OrderHeaderDTO orderHeader, Locale locale) {
 		String to = applicationProperties.getMail().getTo();
 
-		/******************************************************/
-		/** In production, send confirmation to real buyer **/
+		//*****************************************************
+		// In production, send confirmation to real buyer **/
 		if(Arrays.asList(env.getActiveProfiles()).contains("prod")) {
 			to = orderHeader.getBuyerEmail();
 		}
-		/******************************************************/
+		//*****************************************************
 
 		String subject = "email.order.confirmation";
 		if (orderHeader.getFormattedCancelDate() != null && !orderHeader.getFormattedCancelDate().isBlank())
@@ -142,13 +149,26 @@ public class MailService {
     public void sendOrderCancelEmail(OrderHeaderDTO orderHeader, Locale locale) {
 		String to = applicationProperties.getMail().getTo();
 
-		/******************************************************/
-		/** In production, send confirmation to real buyer **/
+		//------------------------------------------------
+		// In production, send confirmation to real buyer **/
 		if(Arrays.asList(env.getActiveProfiles()).contains("prod")) {
 			to = orderHeader.getBuyerEmail();
 		}
-		/******************************************************/
+		//------------------------------------------------
 
 		sendEmailFromTemplate(orderHeader, "order", "mail/orderCancelEmail", to, "email.order.cancel", locale);
     }
+
+	public void sendNotification(PdiNotification notification) {
+		String to = applicationProperties.getMail().getTo();
+
+		//******************************************
+		// Send to leader only if in production
+		if(to.equals("leader") && Arrays.asList(env.getActiveProfiles()).contains("prod")) {
+			to = notification.getRecipient();
+		}
+		//******************************************
+
+		sendEmailFromTemplate(notification, "notification", "mail/notificationEmail", to, notification.getSubject(), Locale.FRENCH);
+	}
 }

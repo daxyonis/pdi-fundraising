@@ -41,12 +41,16 @@
 		  <li class="nav-item" role="presentation">
 			<a class="nav-link" id="orders-tab" data-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false" th:text="#{admin.orders}">Orders</a>
 		  </li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="notifications-tab" data-toggle="tab" href="#notifications" role="tab" aria-controls="notifications" aria-selected="false">Notifications</a>
+			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
-		  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" th:insert="fragments/admin-import :: import"></div>
-		  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" th:insert="fragments/admin-terminate :: terminate"></div>
-		  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" th:insert="fragments/admin-export :: export"></div>
+		  	<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" th:insert="fragments/admin-import :: import"></div>
+		  	<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" th:insert="fragments/admin-terminate :: terminate"></div>
+		  	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" th:insert="fragments/admin-export :: export"></div>
 			<div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" th:insert="fragments/admin-orders :: orders"></div>
+			<div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab" th:insert="fragments/admin-notifications :: notifications"></div>
 		</div> 
 	</div> 	
 	

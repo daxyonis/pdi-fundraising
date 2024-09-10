@@ -2,11 +2,10 @@ package com.poivredesiles.fundraising.bootstrap;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
-import com.poivredesiles.fundraising.converter.AbstractCryptoConverter;
+import com.poivredesiles.fundraising.model.notification.NotificationSettings;
+import com.poivredesiles.fundraising.repository.notification.NotificationSettingsRepository;
 import com.poivredesiles.fundraising.service.EncryptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,23 +33,26 @@ public class AppStartup implements CommandLineRunner {
 	@Value("#{${application.admin.passwords}}")
 	private List<String> adminPasswords;
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	private RoleRepository roleRepository;
+	private final RoleRepository roleRepository;
 	
-	private BusinessNumberRepository businessNumberRepository;
+	private final BusinessNumberRepository businessNumberRepository;
 
-	private EncryptionService encryptionService;
+	private final EncryptionService encryptionService;
+
+	private final NotificationSettingsRepository notificationSettingsRepository;
 
 	public AppStartup(UserRepository userRepository,
 					  RoleRepository roleRepository,
 					  BusinessNumberRepository businessNumberRepository,
-					  ApplicationProperties applicationProperties,
-					  EncryptionService encryptionService) {
+					  EncryptionService encryptionService,
+					  NotificationSettingsRepository notificationSettingsRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.businessNumberRepository = businessNumberRepository;
 		this.encryptionService = encryptionService;
+		this.notificationSettingsRepository = notificationSettingsRepository;
 	}
 
 	@Override
@@ -61,6 +63,8 @@ public class AppStartup implements CommandLineRunner {
 		createAdminUsers();
 		
 		createBusinessNumbers();
+
+		createNotificationSettings();
 
 		runActions();
 
@@ -116,5 +120,11 @@ public class AppStartup implements CommandLineRunner {
 		}
 		long numBusinessNums = businessNumberRepository.count();
 		assert(numBusinessNums == (long) BusinessNumberTypeEnum.values().length);
+	}
+
+	private void createNotificationSettings() {
+		if(notificationSettingsRepository.count() == 0) {
+			notificationSettingsRepository.save(new NotificationSettings());
+		}
 	}
 }
