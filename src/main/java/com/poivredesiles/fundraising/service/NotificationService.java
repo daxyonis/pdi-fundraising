@@ -96,9 +96,7 @@ public class NotificationService {
             return;
         for (PdiCampaign campaign : pdiCampaigns) {
             String language = getLeaderLanguage(campaign);
-            String subject = messageSource.getMessage("notification.campaign.ended.subject",
-                                                        new Object[]{campaign.getProject()},
-                                                        Locale.forLanguageTag(language));
+            String subject = messageSource.getMessage("email.notification", null, Locale.forLanguageTag(language));
             PdiNotification notification = new PdiNotification();
             notification.setDateToSend(LocalDate.now().plusDays(notificationSettings.getNotifyDeadlinePassedDays()));
             notification.setRecipient(campaign.getLeaderEmail());

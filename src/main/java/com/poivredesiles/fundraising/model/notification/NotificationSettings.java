@@ -28,7 +28,7 @@ public class NotificationSettings extends AbstractAuditingEntity implements Seri
     public boolean readyToNotify() {
         return notifyDeadlinePassed &&
                 notifyDeadlinePassedDays != null &&
-                notifyDeadlinePassedDays > 0 &&
+                notifyDeadlinePassedDays >= 0 &&
                 notifyDeadlinePassedMsgFr != null &&
                 notifyDeadlinePassedMsgEn != null &&
                 !notifyDeadlinePassedMsgFr.isEmpty() &&
