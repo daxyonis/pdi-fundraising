@@ -65,8 +65,8 @@ public class NotificationService {
         this.notificationSettingsMapper = notificationSettingsMapper;
     }
 
-    // Run everyday at 6:00
-    @Scheduled(cron = "0 0 6 * * *")
+    // Run everyday at 10:00 UTC = 06:00 EST
+    @Scheduled(cron = "0 0 10 * * *")
     public void sendNotifications() {
         log.info("***** >> Sending notifications for ended campaigns << *****");
         List<PdiNotification> notifications = pdiNotificationRepository.findByDateToSendAndDateSentIsNull(LocalDate.now());
@@ -82,8 +82,8 @@ public class NotificationService {
         }
     }
 
-    // Run everyday at 00:00
-    @Scheduled(cron = "0 0 0 * * *")
+    // Run everyday at 05:00 UTC = 01:00 EST
+    @Scheduled(cron = "0 0 5 * * *")
     public void createNotificationForEndedCampaigns() {
         log.info("***** >> Creating notifications for ended campaigns << *****");
         List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByDueDate(LocalDate.now());
