@@ -8,7 +8,6 @@ import com.poivredesiles.fundraising.model.order.OrderItem;
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.product.PdiProduct;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
-import com.poivredesiles.fundraising.repository.order.OrderHeaderProjection;
 import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
 import com.poivredesiles.fundraising.repository.order.OrderItemRepository;
 import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -307,11 +305,14 @@ public class OrderServiceImpl implements OrderService {
 			}
 			else {
 				log.debug("Search string is not a number");
-				// We need to do it this way because textual search fields are encrypted
+				/* Textual strings are encrypted in the database, so we need to retrieve all orders and filter them in memory
+				 * but it's not performant in production because there are over 4000 records
+
 				ArrayList<Long> ids = getIdsOfMatchingStringFields(entitySelector.getSearch().toLowerCase());
 				log.info("Found {} orders matching search string", ids.size());
 				Specification<OrderHeader> searchSpec = Specification.where((root, query, cb) -> root.get("id").in(ids));
 				spec = spec.and(searchSpec);
+				*/
 			}
 		}
 
@@ -320,6 +321,7 @@ public class OrderServiceImpl implements OrderService {
 		return orders.map(orderHeaderMapper::toDto);
 	}
 
+	/* This method works in development when the nb of order headers is small (100) but can't be used in production because it's not performant
 	private ArrayList<Long> getIdsOfMatchingStringFields(String lowerCaseSearch) {
 		ArrayList<Long> ids = new ArrayList<>();
 		long numOrders = orderHeaderRepository.count();
@@ -337,6 +339,6 @@ public class OrderServiceImpl implements OrderService {
 			log.info("Found {} orders matching search string out of {}", ids.size(), i);
 		} while (i < numOrders);
 		return ids;
-	}
+	}*/
 
 }
