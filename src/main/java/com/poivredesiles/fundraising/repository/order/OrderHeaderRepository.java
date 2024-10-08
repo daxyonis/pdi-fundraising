@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.poivredesiles.fundraising.model.order.OrderHeader;
@@ -21,4 +23,7 @@ public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Long>,
     List<OrderHeader> findAllByOrderByIdDesc();
 
 	List<OrderHeader> findAllByOrderStatusAndIdIn(OrderStatusEnum orderStatusEnum, List<Long> orderIds);
+
+	// Method to retrieve only the order id, buyerName, and buyerEmail
+	Page<OrderHeaderProjection> findAllProjectedBy(Pageable pageable);
 }

@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.poivredesiles.fundraising.repository.order.OrderHeaderProjection;
 import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.service.DateUtils;
 import com.poivredesiles.fundraising.service.MailService;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -298,17 +300,44 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		if (entitySelector.getSearch() != null && !entitySelector.getSearch().isEmpty()) {
-			try {
+			// Test that the search string is a number
+			if (entitySelector.getSearch().matches("\\d+")) {
 				Long orderNumber = Long.parseLong(entitySelector.getSearch());
-				spec = spec.and((root, query, cb) -> cb.equal(root.get("orderNumber"), orderNumber));
-			} catch (NumberFormatException e) {
-				log.warn("Search string is not a number");
+				Specification<OrderHeader> searchSpec = Specification.where((root, query, cb) -> cb.equal(root.get("orderNumber"), orderNumber));
+				spec = spec.and(searchSpec);
+			}
+			else {
+				log.debug("Search string is not a number");
+				// We need to do it this way because textual search fields are encrypted
+				ArrayList<Long> ids = getIdsOfMatchingStringFields(entitySelector.getSearch().toLowerCase());
+				log.debug("Found {} orders matching search string", ids.size());
+				Specification<OrderHeader> searchSpec = Specification.where((root, query, cb) -> root.get("id").in(ids));
+				spec = spec.and(searchSpec);
 			}
 		}
 
 		Page<OrderHeader> orders = orderHeaderRepository.findAll(spec, pageable);
 
 		return orders.map(orderHeaderMapper::toDto);
+	}
+
+	private ArrayList<Long> getIdsOfMatchingStringFields(String lowerCaseSearch) {
+		ArrayList<Long> ids = new ArrayList<>();
+		long numOrders = orderHeaderRepository.count();
+		int i=0;
+		do {
+			Page<OrderHeaderProjection> fields = orderHeaderRepository.findAllProjectedBy(PageRequest.of(i, 1000));
+			fields.forEach(field -> {
+				String buyerName = field.getBuyerName() == null ? "" : field.getBuyerName().toLowerCase();
+				String buyerEmail = field.getBuyerEmail() == null ? "" : field.getBuyerEmail().toLowerCase();
+				if (buyerName.contains(lowerCaseSearch) || buyerEmail.contains(lowerCaseSearch)) {
+					ids.add(field.getId());
+				}
+			});
+			i += fields.getNumberOfElements();
+			log.debug("Found {} orders matching search string out of {}", ids.size(), i);
+		} while (i < numOrders);
+		return ids;
 	}
 
 }
