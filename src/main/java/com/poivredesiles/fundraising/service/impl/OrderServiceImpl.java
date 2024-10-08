@@ -1,14 +1,28 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
+import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
+import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.model.order.OrderItem;
+import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
+import com.poivredesiles.fundraising.model.product.PdiProduct;
+import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderHeaderProjection;
+import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
+import com.poivredesiles.fundraising.repository.order.OrderItemRepository;
+import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
 import com.poivredesiles.fundraising.resource.EntitySelector;
+import com.poivredesiles.fundraising.resource.OrderItemResource;
+import com.poivredesiles.fundraising.resource.OrderResource;
+import com.poivredesiles.fundraising.service.BusinessNumberService;
 import com.poivredesiles.fundraising.service.DateUtils;
 import com.poivredesiles.fundraising.service.MailService;
+import com.poivredesiles.fundraising.service.OrderService;
+import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import com.poivredesiles.fundraising.service.mapper.OrderHeaderMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +35,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.poivredesiles.fundraising.exception.InvalidOrderException;
-import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
-import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
-import com.poivredesiles.fundraising.model.order.OrderHeader;
-import com.poivredesiles.fundraising.model.order.OrderItem;
-import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
-import com.poivredesiles.fundraising.model.product.PdiProduct;
-import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
-import com.poivredesiles.fundraising.repository.order.OrderHeaderRepository;
-import com.poivredesiles.fundraising.repository.order.OrderItemRepository;
-import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
-import com.poivredesiles.fundraising.resource.OrderItemResource;
-import com.poivredesiles.fundraising.resource.OrderResource;
-import com.poivredesiles.fundraising.service.BusinessNumberService;
-import com.poivredesiles.fundraising.service.OrderService;
-import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
-import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
-import com.poivredesiles.fundraising.service.mapper.OrderHeaderMapper;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -310,7 +309,7 @@ public class OrderServiceImpl implements OrderService {
 				log.debug("Search string is not a number");
 				// We need to do it this way because textual search fields are encrypted
 				ArrayList<Long> ids = getIdsOfMatchingStringFields(entitySelector.getSearch().toLowerCase());
-				log.debug("Found {} orders matching search string", ids.size());
+				log.info("Found {} orders matching search string", ids.size());
 				Specification<OrderHeader> searchSpec = Specification.where((root, query, cb) -> root.get("id").in(ids));
 				spec = spec.and(searchSpec);
 			}
@@ -326,7 +325,7 @@ public class OrderServiceImpl implements OrderService {
 		long numOrders = orderHeaderRepository.count();
 		int i=0;
 		do {
-			Page<OrderHeaderProjection> fields = orderHeaderRepository.findAllProjectedBy(PageRequest.of(i, 1000));
+			Page<OrderHeaderProjection> fields = orderHeaderRepository.findAllProjectedBy(PageRequest.of(i, 100));
 			fields.forEach(field -> {
 				String buyerName = field.getBuyerName() == null ? "" : field.getBuyerName().toLowerCase();
 				String buyerEmail = field.getBuyerEmail() == null ? "" : field.getBuyerEmail().toLowerCase();
@@ -335,7 +334,7 @@ public class OrderServiceImpl implements OrderService {
 				}
 			});
 			i += fields.getNumberOfElements();
-			log.debug("Found {} orders matching search string out of {}", ids.size(), i);
+			log.info("Found {} orders matching search string out of {}", ids.size(), i);
 		} while (i < numOrders);
 		return ids;
 	}
