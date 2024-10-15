@@ -1,14 +1,18 @@
 package com.poivredesiles.fundraising.repository.group;
 
+import com.poivredesiles.fundraising.model.group.PdiCampaign;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> {
 
-import com.poivredesiles.fundraising.model.group.PdiCampaign;
-
-public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> {		
+	// Custom query to return campaigns that match the conditions
+	@Query("SELECT c FROM PdiCampaign c JOIN c.notifications n WHERE c.dueDate <= :now AND c.closed = true and n.dateSent is null")
+	List<PdiCampaign> findClosedWithNotificationsByDueDate(LocalDate now);
 
 	Optional<PdiCampaign> findOneByNumber(Long number);
 
@@ -24,5 +28,7 @@ public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> 
 
     List<PdiCampaign> findByClosedTrueAndIdIn(List<Long> campaignIds);
 
-    List<PdiCampaign> findByDueDate(LocalDate now);
+    List<PdiCampaign> findByDueDateAndClosedFalse(LocalDate now);
+
+
 }
