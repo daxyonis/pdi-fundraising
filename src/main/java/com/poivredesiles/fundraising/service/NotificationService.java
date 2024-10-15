@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -86,7 +87,8 @@ public class NotificationService {
     @Scheduled(cron = "0 0 5 * * *")
     public void createNotificationForEndedCampaigns() {
         log.info("***** >> Creating notifications for ended campaigns << *****");
-        List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByDueDate(LocalDate.now());
+        removeNotificationsForClosedCampaigns();
+        List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByDueDateAndClosedFalse(LocalDate.now());
         if (pdiCampaigns.isEmpty()) {
             log.info("No campaigns ended today");
             return;
@@ -105,7 +107,21 @@ public class NotificationService {
                 notification.setMessage(notificationSettings.getNotifyDeadlinePassedMsgFr());
             else
                 notification.setMessage(notificationSettings.getNotifyDeadlinePassedMsgEn());
-            pdiNotificationRepository.save(notification);
+            notification = pdiNotificationRepository.save(notification);
+            campaign.getNotifications().add(notification);
+        }
+    }
+
+    private void removeNotificationsForClosedCampaigns() {
+        // Remove notifications for campaigns that are already closed
+        List<PdiCampaign> closedCampaignsWithNotifications = pdiCampaignRepository.findClosedWithNotificationsByDueDate(LocalDate.now());
+        if (!closedCampaignsWithNotifications.isEmpty()) {
+            log.info("Removing notifications for {} closed campaigns", closedCampaignsWithNotifications.size());
+            for (PdiCampaign campaign : closedCampaignsWithNotifications) {
+                List<Long> notificationIds = campaign.getNotifications().stream().map(PdiNotification::getId).collect(Collectors.toList());
+                campaign.getNotifications().clear();
+                pdiNotificationRepository.deleteAllById(notificationIds);
+            }
         }
     }
 

@@ -1,20 +1,21 @@
 package com.poivredesiles.fundraising.model.group;
 
+import com.poivredesiles.fundraising.converter.StringCryptoConverter;
+import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
+import com.poivredesiles.fundraising.model.notification.PdiNotification;
+import com.poivredesiles.fundraising.model.order.OrderType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.persistence.*;
-
-import com.poivredesiles.fundraising.converter.StringCryptoConverter;
-import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
-import com.poivredesiles.fundraising.model.order.OrderType;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * Campaign entity\n@author Eva Maciejko
@@ -80,6 +81,14 @@ public class PdiCampaign extends AbstractAuditingEntity implements Serializable 
     
     @ManyToOne    
     private OrderType orderType;
+
+    @OneToMany
+    @JoinTable(
+            name = "pdicampaign_notifications", // Name of the join table
+            joinColumns = @JoinColumn(name = "campaign_id"), // Foreign key for PdiCampaign
+            inverseJoinColumns = @JoinColumn(name = "notification_id") // Foreign key for PdiNotification
+    )
+    private List<PdiNotification> notifications = new ArrayList<>();
     
     public BigDecimal getTotalSales() {
     	return pdiGroups.stream().map(PdiGroup::getTotalSales).reduce(BigDecimal.ZERO, (a,b) -> a.add(b));
