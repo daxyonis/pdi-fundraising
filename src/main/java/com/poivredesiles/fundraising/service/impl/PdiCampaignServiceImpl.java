@@ -1,32 +1,14 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import com.poivredesiles.fundraising.exception.PdiImportDataException;
-import com.poivredesiles.fundraising.imports.ImportsUtils;
-import com.poivredesiles.fundraising.resource.ContactMessage;
-import com.poivredesiles.fundraising.resource.EntitySelector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.poivredesiles.fundraising.exception.PdiExportDataException;
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
+import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
 import com.poivredesiles.fundraising.model.group.PdiGroup;
@@ -41,11 +23,8 @@ import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.group.PdiSellerRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
-import com.poivredesiles.fundraising.service.MailService;
-import com.poivredesiles.fundraising.service.OrderService;
-import com.poivredesiles.fundraising.service.PdiCampaignService;
-import com.poivredesiles.fundraising.service.PdiGroupService;
-import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.resource.ContactMessage;
+import com.poivredesiles.fundraising.service.*;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderCsvDTO;
 import com.poivredesiles.fundraising.service.dto.OrderItemCsvDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
@@ -54,6 +33,21 @@ import com.poivredesiles.fundraising.service.mapper.OrderHeaderCsvMapper;
 import com.poivredesiles.fundraising.service.mapper.OrderItemCsvMapper;
 import com.poivredesiles.fundraising.service.mapper.PdiCampaignMapper;
 import com.poivredesiles.fundraising.service.mapper.PdiCampaignRecapMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.PrintWriter;
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -173,7 +167,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			pdiCampaign = pdiCampaignRepository.save(pdiCampaign);
 			return pdiCampaignMapper.toDto(pdiCampaign); 
 		} else {			
-			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+			throw new ResourceNotFoundException("Campagne avec id %d introuvable.".formatted(id));
 		}
 	}
 
@@ -255,7 +249,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 			pdiCampaign = pdiCampaignRepository.save(pdiCampaign);
 			return pdiCampaignMapper.toDto(pdiCampaign); 
 		} else {
-			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+			throw new ResourceNotFoundException("Campagne avec id %d introuvable.".formatted(id));
 		}
 	}
 	
@@ -306,7 +300,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 				throw new PdiExportDataException(messageSource.getMessage("admin.export.error", null, locale));
 			}		        
 		} else {
-			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+			throw new ResourceNotFoundException("Campagne avec id %d introuvable.".formatted(id));
 		}
 	}
 
@@ -338,7 +332,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 				throw new PdiExportDataException(messageSource.getMessage("admin.export.error", null, locale));
 			}		        
 		} else {
-			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+			throw new ResourceNotFoundException("Campagne avec id %d introuvable.".formatted(id));
 		}		
 	}
 
@@ -382,7 +376,7 @@ public class PdiCampaignServiceImpl implements PdiCampaignService {
 				throw new ResourceNotFoundException("Nom d'organisation invalide.");
 			}
 		} else {
-			throw new ResourceNotFoundException(String.format("Campagne avec id %d introuvable.", id));
+			throw new ResourceNotFoundException("Campagne avec id %d introuvable.".formatted(id));
 		}
 	}
 

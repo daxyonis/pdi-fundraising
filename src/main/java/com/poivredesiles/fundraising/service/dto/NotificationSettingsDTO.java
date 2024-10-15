@@ -2,12 +2,14 @@ package com.poivredesiles.fundraising.service.dto;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 public class NotificationSettingsDTO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
     private Long id;
 

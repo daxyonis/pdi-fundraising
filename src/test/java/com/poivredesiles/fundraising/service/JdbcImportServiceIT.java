@@ -1,18 +1,15 @@
 package com.poivredesiles.fundraising.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.poivredesiles.fundraising.imports.JdbcImportService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.poivredesiles.fundraising.imports.JdbcImportService;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -31,7 +28,6 @@ public class JdbcImportServiceIT{
 	
 	private JdbcImportService jdbcImportService;
 	
-	@Autowired
 	public JdbcImportServiceIT(DataSource datasource, JdbcImportService jdbcImportService) {
 		this.jdbcImportService = jdbcImportService;
 		this.jdbcTemplate = new JdbcTemplate(datasource);

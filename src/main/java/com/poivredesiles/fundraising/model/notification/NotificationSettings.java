@@ -1,10 +1,10 @@
 package com.poivredesiles.fundraising.model.notification;
 
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity

@@ -2,9 +2,11 @@ package com.poivredesiles.fundraising.imports;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.stereotype.Component;
 
 @Component
+@DependsOnDatabaseInitialization
 public class FileMakerDatasource {
 	
 	@Value("${application.filemaker.url}")

@@ -1,12 +1,11 @@
 package com.poivredesiles.fundraising.model.group;
 
-import java.time.Instant;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
+
+import java.time.Instant;
 
 @Entity
 @Immutable

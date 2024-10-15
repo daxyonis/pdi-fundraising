@@ -1,15 +1,13 @@
 package com.poivredesiles.fundraising.service;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
+import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.OrderProcessingException;
+import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.model.order.OrderItem;
+import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
+import com.poivredesiles.fundraising.model.product.PdiProduct;
+import com.poivredesiles.fundraising.resource.OrderItemResource;
+import com.poivredesiles.fundraising.resource.OrderResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,14 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.poivredesiles.fundraising.exception.InvalidOrderException;
-import com.poivredesiles.fundraising.exception.OrderProcessingException;
-import com.poivredesiles.fundraising.model.order.OrderHeader;
-import com.poivredesiles.fundraising.model.order.OrderItem;
-import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
-import com.poivredesiles.fundraising.model.product.PdiProduct;
-import com.poivredesiles.fundraising.resource.OrderItemResource;
-import com.poivredesiles.fundraising.resource.OrderResource;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GlobalPaymentsServiceTest {

@@ -1,17 +1,18 @@
 package com.poivredesiles.fundraising.service.dto;
 
+import com.opencsv.bean.CsvBindByPosition;
+import lombok.Data;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import com.opencsv.bean.CsvBindByPosition;
-
-import lombok.Data;
 
 @Data
 public class OrderHeaderCsvDTO implements Serializable {
 	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@CsvBindByPosition(position = 0)

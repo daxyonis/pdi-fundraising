@@ -1,11 +1,13 @@
 package com.poivredesiles.fundraising.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
+import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.service.OrderService;
+import com.poivredesiles.fundraising.service.PdiSellerService;
+import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
+import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
+import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.poivredesiles.fundraising.model.user.MyUserDetails;
-import com.poivredesiles.fundraising.service.OrderService;
-import com.poivredesiles.fundraising.service.PdiSellerService;
-import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
-import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
-import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class OrderController extends BaseController {
@@ -62,7 +60,7 @@ public class OrderController extends BaseController {
 			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails, lang);
 			model.addAttribute("products", products);						
 			model.addAttribute("globalServiceUrl", globalServiceUrl);
-			String applicationUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort());
+			String applicationUrl = "%s://%s:%d".formatted(request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
 			model.addAttribute("failure", failure);
 

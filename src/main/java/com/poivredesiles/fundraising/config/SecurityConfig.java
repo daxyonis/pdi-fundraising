@@ -1,13 +1,10 @@
 package com.poivredesiles.fundraising.config;
 
-import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,20 +36,20 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 				.addFilterBefore(maintenanceModeFilter, UsernamePasswordAuthenticationFilter.class)
-				.csrf(csrf -> csrf.ignoringAntMatchers("/api/global/response"))
+				.csrf(csrf -> csrf.ignoringRequestMatchers("/api/global/response"))
 				.formLogin(login -> login.loginPage("/login"))
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz
-					.antMatchers(PUBLIC).permitAll()
-					.antMatchers("/api/global/response").permitAll()
-					.antMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
-					.antMatchers("/commande/**", "/api/global/checkout").hasRole("BUYER")
-					.antMatchers("/ventes").hasRole("SELLER")
-					.antMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
-					.antMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
-					.antMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
-						.antMatchers("/api/admin/**").hasRole("ADMIN")
-					.antMatchers(HttpMethod.GET,"/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
+					.requestMatchers(PUBLIC).permitAll()
+					.requestMatchers("/api/global/response").permitAll()
+					.requestMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
+					.requestMatchers("/commande/**", "/api/global/checkout").hasRole("BUYER")
+					.requestMatchers("/ventes").hasRole("SELLER")
+					.requestMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
+					.requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.POST, "/admin", "/api/file/**").hasRole("ADMIN")
+						.requestMatchers("/api/admin/**").hasRole("ADMIN")
+					.requestMatchers(HttpMethod.GET, "/api/file/**").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
 					.anyRequest().authenticated()
 				);
 
@@ -61,7 +58,7 @@ public class SecurityConfig {
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring().antMatchers("/static/**", "/js/**", "/css/**","/image/**", "/favicon.ico","/webjars/**");
+		return (web) -> web.ignoring().requestMatchers("/static/**", "/js/**", "/css/**", "/image/**", "/favicon.ico", "/webjars/**");
 	}
 
 }

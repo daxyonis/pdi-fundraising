@@ -1,15 +1,16 @@
 package com.poivredesiles.fundraising.service.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * A DTO for the {@link com.poivredesiles.fundraising.domain.PdiGroup} entity.
  */
 public class PdiGroupDTO implements Serializable {
-    
-    /**
+	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private Long id;

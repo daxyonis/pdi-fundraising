@@ -1,11 +1,8 @@
 package com.poivredesiles.fundraising.converter;
 
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
+import jakarta.persistence.AttributeConverter;
 import software.pando.crypto.nacl.SecretBox;
-
-import javax.persistence.AttributeConverter;
-import java.security.Key;
-
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 

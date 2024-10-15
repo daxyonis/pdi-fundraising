@@ -1,27 +1,28 @@
 package com.poivredesiles.fundraising.controller.rest;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
+import com.poivredesiles.fundraising.resource.OrderResource;
+import com.poivredesiles.fundraising.service.GlobalPaymentsService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.poivredesiles.fundraising.exception.InvalidOrderException;
-import com.poivredesiles.fundraising.exception.OrderProcessingException;
-import com.poivredesiles.fundraising.resource.OrderResource;
-import com.poivredesiles.fundraising.service.GlobalPaymentsService;
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/global")

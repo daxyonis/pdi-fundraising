@@ -1,16 +1,15 @@
 package com.poivredesiles.fundraising.model.user;
 
+import com.poivredesiles.fundraising.converter.StringCryptoConverter;
+import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.*;
-
-import com.poivredesiles.fundraising.converter.StringCryptoConverter;
-import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name="user")
@@ -18,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class User extends AbstractAuditingEntity implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -4,10 +4,11 @@ import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.notification.PdiNotification;
 import com.poivredesiles.fundraising.model.order.OrderType;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 public class PdiCampaign extends AbstractAuditingEntity implements Serializable {
 
     public static final double DEFAULT_PERCENT_PROFIT = 50;
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
