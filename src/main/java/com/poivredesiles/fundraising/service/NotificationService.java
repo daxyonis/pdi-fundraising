@@ -88,17 +88,18 @@ public class NotificationService {
     public void createNotificationForEndedCampaigns() {
         log.info("***** >> Creating notifications for ended campaigns << *****");
         removeNotificationsForClosedCampaigns();
-        List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findByDueDateAndClosedFalse(LocalDate.now());
+        List<PdiCampaign> pdiCampaigns = pdiCampaignRepository.findOpenWithoutNotificationsByDueDate(LocalDate.now());
         if (pdiCampaigns.isEmpty()) {
-            log.info("No campaigns ended today");
+            log.info("No campaigns need notifications today");
             return;
         }
         NotificationSettings notificationSettings = notificationSettingsRepository.findAll().get(0);
         if(!notificationSettings.readyToNotify())
             return;
+        log.info("Creating notifications for {} campaigns", pdiCampaigns.size());
         for (PdiCampaign campaign : pdiCampaigns) {
             String language = getLeaderLanguage(campaign);
-            String subject = messageSource.getMessage("email.notification", null, Locale.forLanguageTag(language));
+            String subject = messageSource.getMessage("email.notification", new Object[]{campaign.getOrganizationName()}, Locale.forLanguageTag(language));
             PdiNotification notification = new PdiNotification();
             notification.setDateToSend(LocalDate.now().plusDays(notificationSettings.getNotifyDeadlinePassedDays()));
             notification.setRecipient(campaign.getLeaderEmail());

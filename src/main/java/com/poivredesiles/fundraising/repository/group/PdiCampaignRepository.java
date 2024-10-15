@@ -28,7 +28,8 @@ public interface PdiCampaignRepository extends JpaRepository<PdiCampaign, Long> 
 
     List<PdiCampaign> findByClosedTrueAndIdIn(List<Long> campaignIds);
 
-    List<PdiCampaign> findByDueDateAndClosedFalse(LocalDate now);
+	@Query("SELECT c FROM PdiCampaign c LEFT JOIN c.notifications n WHERE c.dueDate = :now AND c.closed = false and n is null")
+    List<PdiCampaign> findOpenWithoutNotificationsByDueDate(LocalDate now);
 
 
 }
