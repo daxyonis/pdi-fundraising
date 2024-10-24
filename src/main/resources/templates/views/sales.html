@@ -6,8 +6,8 @@
 <body>
   <section class="p-lg-3" layout:fragment="content">
   	<div class="container"> 
-  		<div th:replace="fragments/sales-header :: header"></div>
-  		<div th:replace="fragments/sales-orders :: orders"></div>
+  		<div th:replace="~{fragments/sales-header :: header}"></div>
+  		<div th:replace="~{fragments/sales-orders :: orders}"></div>
   	</div>  	
   </section>
  </body>

@@ -41,6 +41,7 @@ public class BaseController {
 		language = localeResolver.resolveLocale(request).getLanguage();
 		model.addAttribute("language", language);
 		model.addAttribute("baseUrl", request.getContextPath());
+		model.addAttribute("currentPath",request.getServletPath());
 		if(userDetails != null) {
 			model.addAttribute("menuShowHome", userDetails.hasAnyAuthority(RoleEnum.ROLE_SELLER, RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 			model.addAttribute("menuShowSales", userDetails.hasAnyAuthority(RoleEnum.ROLE_GROUP_LEADER, RoleEnum.ROLE_CAMPAIGN_LEADER));

@@ -24,8 +24,8 @@
             </div>
         </div>
         <form id="buyerForm" novalidate>
-            <div th:replace="fragments/order-header :: header"></div>
-            <div th:replace="fragments/order-items :: items"></div>
+            <div th:replace="~{fragments/order-header :: header}"></div>
+            <div th:replace="~{fragments/order-items :: items}"></div>
         </form>
   	</div>
   	<script th:inline="javascript">

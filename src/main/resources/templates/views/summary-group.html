@@ -40,12 +40,12 @@
   					<div class="col-md-3 text-md-right font-weight-bold" th:text="#{summary.details}">details</div>
   					<div class="col-lg-9" th:unless="${pdiGroupRecaps}">
   						<th:block th:with="groupRecap = ${groupRecap}">		  						
-  							<div th:replace="fragments/summary-onegroup :: summary-table"></div>
+  							<div th:replace="~{fragments/summary-onegroup :: summary-table}"></div>
   						</th:block>
   					</div>  						
 					<div class="col-lg-9" th:if="${pdiGroupRecaps}">
 						<th:block th:with="pdiGroupRecaps = ${pdiGroupRecaps}">
-							<div th:replace="fragments/summary-multigroup :: summary-table"></div>
+							<div th:replace="~{fragments/summary-multigroup :: summary-table}"></div>
 						</th:block>						  							  					
   					</div>
   				</div>

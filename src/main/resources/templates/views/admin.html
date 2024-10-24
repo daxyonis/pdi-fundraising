@@ -46,18 +46,18 @@
 			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
-		  	<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" th:insert="fragments/admin-import :: import"></div>
-		  	<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" th:insert="fragments/admin-terminate :: terminate"></div>
-		  	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" th:insert="fragments/admin-export :: export"></div>
-			<div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" th:insert="fragments/admin-orders :: orders"></div>
-			<div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab" th:insert="fragments/admin-notifications :: notifications"></div>
+		  	<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" th:insert="~{fragments/admin-import :: import}"></div>
+		  	<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" th:insert="~{fragments/admin-terminate :: terminate}"></div>
+		  	<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" th:insert="~{fragments/admin-export :: export}"></div>
+			<div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" th:insert="~{fragments/admin-orders :: orders}"></div>
+			<div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab" th:insert="~{fragments/admin-notifications :: notifications}"></div>
 		</div> 
 	</div> 	
 	
 	<!-- /* Close Campaign Confirmation Modal */ -->
-	<div th:replace="fragments/modal-terminate :: modal"></div>
+	<div th:replace="~{fragments/modal-terminate :: modal}"></div>
 
-	  <div th:replace="fragments/modal-orders :: modal"></div>
+	  <div th:replace="~{fragments/modal-orders :: modal}"></div>
 	
 	<!-- /* Block Campaign Confirmation Modal */ -->
 	<div class="modal fade" id="blockConfirm" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="blockConfirmLabel" aria-hidden="true">
