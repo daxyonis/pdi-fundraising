@@ -159,8 +159,9 @@
 	  			
 		  			// GLOBAL stuff		  			
 		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
-		  			let responseUrl = /*[[${responseUrl}]]*/;
+		  			let responseUrl = /*[[${responseUrl}]]*/ '';
 		  			responseUrl = responseUrl || (location.origin + '/api/global/response');
+					let checkoutUrl = /*[[@{/api/global/checkout}]]*/ '/api/global/checkout';
 
                     $('#checkout-button').on('click', function(){
                         $('#buyerForm').submit();
@@ -207,7 +208,7 @@
 	  					// Validated, go !
 	  					$('.overlay').removeClass('d-none');
 		  				$.post({
-		  					url: '/api/global/checkout/',
+		  					url: checkoutUrl,
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				

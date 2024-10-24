@@ -50,6 +50,7 @@ public class BaseController {
 			if(!userDetails.hasAnyAuthority(RoleEnum.ROLE_ADMIN)) {
 				model.addAttribute("seller", getSeller(userDetails));
 			}
+			model.addAttribute("canContact", userDetails.hasAnyAuthority(RoleEnum.ROLE_CAMPAIGN_LEADER, RoleEnum.ROLE_ADMIN));
 		}
 	}
 	
