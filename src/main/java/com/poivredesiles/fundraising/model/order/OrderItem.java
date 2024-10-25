@@ -39,7 +39,7 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
     @Column(name = "unit_price", precision = 21, scale = 2)
     private BigDecimal unitPrice;
 
-    @OneToOne    
+    @ManyToOne
     private PdiProduct product;
 
     @ManyToOne
