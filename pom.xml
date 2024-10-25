@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.12</version>
+		<version>3.2.11</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.poivredesiles</groupId>
 	<artifactId>fundraising</artifactId>
-	<version>5.1.0</version>
+	<version>5.2.0</version>
 	<name>fundraising</name>
 	<description>Fundraising Application For Poivre des Iles</description>
 	<properties>
@@ -72,7 +72,6 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>${org.projectlombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -192,7 +191,7 @@
 				<configuration>
 					<exportDatatables>true</exportDatatables>
 					<activeRecipes>
-						<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1</recipe>
+						<recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2</recipe>
 					</activeRecipes>
 				</configuration>
 				<dependencies>
