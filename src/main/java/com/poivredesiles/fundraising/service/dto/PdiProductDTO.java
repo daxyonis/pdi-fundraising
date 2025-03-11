@@ -1,16 +1,17 @@
 package com.poivredesiles.fundraising.service.dto;
 
+import lombok.Data;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
-import lombok.Data;
 
 /**
  * A DTO for the {@link com.poivredesiles.fundraising.model.product.domain.PdiProduct} entity.
  */
 @Data
 public class PdiProductDTO implements Serializable {
-    
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private Long id;

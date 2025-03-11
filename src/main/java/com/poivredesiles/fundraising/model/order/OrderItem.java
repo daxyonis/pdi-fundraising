@@ -1,23 +1,15 @@
 package com.poivredesiles.fundraising.model.order;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.product.PdiProduct;
-
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * A OrderItem.
@@ -28,7 +20,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false, exclude = {"product", "header"})
 public class OrderItem extends AbstractAuditingEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +39,7 @@ public class OrderItem extends AbstractAuditingEntity implements Serializable {
     @Column(name = "unit_price", precision = 21, scale = 2)
     private BigDecimal unitPrice;
 
-    @OneToOne    
+    @ManyToOne
     private PdiProduct product;
 
     @ManyToOne

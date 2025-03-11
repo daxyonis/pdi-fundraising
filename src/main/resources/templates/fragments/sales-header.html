@@ -11,9 +11,9 @@
   			let campaignNumber = /*[[${seller.pdiCampaignNumber}]]*/0;
 		</script>
 		<h2 th:text="#{sales.title}">Mes Ventes</h2>
-		<div class="row">
+		<div th:if="${canContact}" class="row">
 			<div class="col-md-6 offset-md-1">
-				<div th:replace="fragments/contact-pdi :: contact-pdi"></div>
+				<div th:replace="~{fragments/contact-pdi :: contact-pdi}"></div>
 			</div>
 		</div>
 		<h4 class="mt-3 font-weight-bold" th:text="#{sales.seller.info}">Informations du vendeur</h4>

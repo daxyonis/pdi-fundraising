@@ -1,15 +1,13 @@
 package com.poivredesiles.fundraising.service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Locale;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
+import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.model.notification.PdiNotification;
 import com.poivredesiles.fundraising.resource.ContactMessage;
+import com.poivredesiles.fundraising.resource.ErrorMessage;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -21,11 +19,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
-import com.poivredesiles.fundraising.resource.ErrorMessage;
-import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Locale;
 
 @Service
 public class MailService {

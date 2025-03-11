@@ -1,17 +1,16 @@
 package com.poivredesiles.fundraising.service.dto;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.Date;
-
 import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * A DTO for the {@link com.poivredesiles.fundraising.model.group.PdiSeller} entity.
  */
 @Data
 public class PdiSellerDTO implements Serializable {
-    
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private Long id;

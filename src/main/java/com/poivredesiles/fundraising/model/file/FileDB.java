@@ -1,18 +1,12 @@
 package com.poivredesiles.fundraising.model.file;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-
 import com.poivredesiles.fundraising.imports.ImportsUtils;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import lombok.Data;
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "files")

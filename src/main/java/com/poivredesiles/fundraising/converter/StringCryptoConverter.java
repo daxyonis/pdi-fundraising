@@ -1,11 +1,8 @@
 package com.poivredesiles.fundraising.converter;
 
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
+import jakarta.persistence.Converter;
 import org.springframework.stereotype.Component;
-
-import javax.persistence.Converter;
-
-import java.security.Key;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 

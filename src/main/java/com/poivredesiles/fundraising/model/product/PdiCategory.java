@@ -1,24 +1,16 @@
 package com.poivredesiles.fundraising.model.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * A PdiCategory.
@@ -29,7 +21,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false, exclude = {"pdiProducts"})
 public class PdiCategory extends AbstractAuditingEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

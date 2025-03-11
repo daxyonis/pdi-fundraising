@@ -62,16 +62,16 @@
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item" th:if="${menuShowHome}" th:classappend="${homeRequest} == true ? 'active' : ''">
 						<a class="nav-link" th:href="@{/}" th:text="#{menu.home}">Home <span class="sr-only">(current)</span></a></li>
-					<li class="nav-item" th:if="${menuShowSales}" th:classappend="(${#request.getServletPath()} == '/ventes')? 'active' : ''">
+					<li class="nav-item" th:if="${menuShowSales}" th:classappend="(${currentPath} == '/ventes')? 'active' : ''">
 						<a class="nav-link" th:href="@{/ventes}" th:text="#{menu.sales}">Sales</a>
 					</li>
-					<li class="nav-item" th:if="${menuShowOrder}" th:classappend="(${#request.getServletPath()} == '/commande')? 'active' : ''">						
+					<li class="nav-item" th:if="${menuShowOrder}" th:classappend="(${currentPath} == '/commande')? 'active' : ''">
 						<a class="nav-link" th:href="@{/commande}" th:text="#{menu.order}">Order</a>
 					</li>
-					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/produits')? 'active' : ''">
+					<li class="nav-item" th:classappend="(${currentPath} == '/produits')? 'active' : ''">
 						<a class="nav-link" th:href="@{/produits}" th:text="#{menu.products}">Nos Produits</a>
 					</li>
-					<li class="nav-item" th:classappend="(${#request.getServletPath()} == '/faq')? 'active' : ''">
+					<li class="nav-item" th:classappend="(${currentPath} == '/faq')? 'active' : ''">
 						<a class="nav-link" th:href="@{/faq}" th:text="#{menu.faq}">FAQ</a>
 					</li>
 				</ul>
@@ -80,7 +80,7 @@
 					<li th:unless="${#locale.language == 'fr'}" class="nav-item font-weight-bold" th:text="|#{campaign.expected.duedate} : ${seller.pdiCampaignDueDate} |">expected end of campaign: 09/15/2021</li>
 				</ul>
 				<form id="logoutForm" class="form-inline my-2 my-lg-0" th:action="@{/logout}" method="post">					
-					<a th:href="@{__${#httpServletRequest.requestURI}__?lang=__#{lang.other}__}" th:if="${showLangChange}"
+					<a th:href="@{__${baseUrl}__?lang=__#{lang.other}__}" th:if="${showLangChange}"
 						th:text="#{lang.change}">English</a>
 					<button class="btn btn-link my-2 my-sm-0" type="submit" th:text="#{logout}">Logout</button>
 				</form>
@@ -100,7 +100,7 @@
 	<section layout:fragment="content">
 		<p>Page content goes here</p>
 	</section>
-	<div th:replace="fragments/footer :: footer"></div>
+	<div th:replace="~{fragments/footer :: footer}"></div>
 	</div>
 </body>
 </html>

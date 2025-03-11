@@ -1,19 +1,17 @@
 package com.poivredesiles.fundraising.service.dto;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.List;
-
-import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
-
 import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * A DTO for the {@link com.poivredesiles.fundraising.model.OrderHeader} entity.
  */
 @Data
 public class OrderHeaderDTO implements Serializable {
-    
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private Long id;

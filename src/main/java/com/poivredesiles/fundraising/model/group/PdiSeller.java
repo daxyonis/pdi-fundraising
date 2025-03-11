@@ -1,14 +1,5 @@
 package com.poivredesiles.fundraising.model.group;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.imports.ImportsUtils;
@@ -16,9 +7,16 @@ import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.model.order.OrderStatusEnum;
 import com.poivredesiles.fundraising.model.user.User;
-
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Seller entity
@@ -30,7 +28,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false, exclude= {"me", "buyer", "orderHeaders", "pdiGroup"})
 public class PdiSeller extends AbstractAuditingEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,21 +1,20 @@
 package com.poivredesiles.fundraising.model.order;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.poivredesiles.fundraising.converter.StringCryptoConverter;
 import com.poivredesiles.fundraising.model.AbstractAuditingEntity;
 import com.poivredesiles.fundraising.model.group.PdiSeller;
-
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A OrderHeader.
@@ -26,7 +25,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false, exclude = {"orderItems", "pdiSeller"})
 public class OrderHeader extends AbstractAuditingEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

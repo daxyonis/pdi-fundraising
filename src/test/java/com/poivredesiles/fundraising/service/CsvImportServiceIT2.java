@@ -1,23 +1,20 @@
 package com.poivredesiles.fundraising.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-
-import javax.sql.DataSource;
-
+import com.poivredesiles.fundraising.exception.PdiImportDataException;
+import com.poivredesiles.fundraising.imports.CsvImportService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.poivredesiles.fundraising.exception.PdiImportDataException;
-import com.poivredesiles.fundraising.imports.CsvImportService;
+import javax.sql.DataSource;
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -46,7 +43,6 @@ public class CsvImportServiceIT2 {
 		FILEMAKER_CSV_FOLDER = absolutePath + file.separator;
 	}
 	
-	@Autowired
 	public CsvImportServiceIT2(DataSource datasource, CsvImportService csvImportService) {
 		this.csvImportService = csvImportService;
 		this.jdbcTemplate = new JdbcTemplate(datasource);

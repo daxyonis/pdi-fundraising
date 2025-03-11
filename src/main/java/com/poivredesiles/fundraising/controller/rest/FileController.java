@@ -1,31 +1,24 @@
 package com.poivredesiles.fundraising.controller.rest;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.LocaleResolver;
-
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
 import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.imports.ImportsUtils.DataTypeEnum;
 import com.poivredesiles.fundraising.model.file.FileDB;
 import com.poivredesiles.fundraising.resource.ResponseMessage;
 import com.poivredesiles.fundraising.service.file.FileDBService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.LocaleResolver;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/file")
@@ -45,8 +38,8 @@ public class FileController {
 	
 	@PostMapping("/data/upload")	
 	@Secured("ROLE_ADMIN")
-	public Map<String, String> handleFileUpload(@RequestParam("file") MultipartFile file, 
-												@RequestParam("fileType") String fileType, 
+	public Map<String, String> handleFileUpload(@RequestParam MultipartFile file, 
+												@RequestParam String fileType, 
 												HttpServletRequest request) 
 														throws IllegalStateException, IOException, PdiImportDataException {				
 		String lastImportDate = csvImportService.dispatchImport(file, DataTypeEnum.valueOf(fileType));	    
@@ -58,7 +51,7 @@ public class FileController {
 	
 	@PostMapping("/upload")
 	@Secured("ROLE_ADMIN")
-	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description) {
+	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam MultipartFile file, @RequestParam String description) {
 		String message = "";
 		try {
 			fileService.store(file, description);
@@ -72,7 +65,7 @@ public class FileController {
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<byte[]> getMostRecentFile(@RequestParam("description") String description) {
+	public ResponseEntity<byte[]> getMostRecentFile(@RequestParam String description) {
 		FileDB fileDB = fileService.getMostRecentFileWithDescription(description);
 		if(fileDB != null) {
 			return ResponseEntity.ok()
