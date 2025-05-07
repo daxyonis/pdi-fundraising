@@ -23,6 +23,41 @@ public class ApplicationProperties {
 
 	private Action action;
 
+	private Pay pay;
+
+	public static class Pay {
+		private String url;
+		private String merchantId;
+		private String hashKey;
+
+		public String url() {
+			return url;
+		}
+
+		public Pay setUrl(String url) {
+			this.url = url;
+			return this;
+		}
+
+		public String merchantId() {
+			return merchantId;
+		}
+
+		public Pay setMerchantId(String merchantId) {
+			this.merchantId = merchantId;
+			return this;
+		}
+
+		public String hashKey() {
+			return hashKey;
+		}
+
+		public Pay setHashKey(String hashKey) {
+			this.hashKey = hashKey;
+			return this;
+		}
+	}
+
 	public static class Action {
 
 		private boolean encrypt;
@@ -135,6 +170,13 @@ public class ApplicationProperties {
 
 	public void setEncrypted(boolean encrypted) {
 		this.encrypted = encrypted;
+	}
+
+	public Pay getPay() {
+		return pay;
+	}
+	public void setPay(Pay pay) {
+		this.pay = pay;
 	}
 
 }

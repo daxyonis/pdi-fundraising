@@ -35,14 +35,14 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 				.addFilterBefore(maintenanceModeFilter, UsernamePasswordAuthenticationFilter.class)
-				.csrf(csrf -> csrf.ignoringRequestMatchers("/api/global/response"))
+				.csrf(csrf -> csrf.ignoringRequestMatchers("/api/pay/callback"))
 				.formLogin(login -> login.loginPage("/login"))
 				.logout(logout -> logout.logoutUrl("/logout"))
 				.authorizeHttpRequests(authz -> authz
 					.requestMatchers(PUBLIC).permitAll()
-					.requestMatchers("/api/global/response").permitAll()
+					.requestMatchers("/api/pay/callback").permitAll()
 					.requestMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
-					.requestMatchers("/commande/**", "/api/global/checkout").hasRole("BUYER")
+					.requestMatchers("/commande/**", "/api/pay/checkout").hasRole("BUYER")
 					.requestMatchers("/ventes").hasRole("SELLER")
 					.requestMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
 					.requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")

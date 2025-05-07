@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service.impl;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
@@ -37,6 +38,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -93,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
 			orderHeader.setBuyerLanguage(locale.getLanguage());
 			orderHeader.setCreatedBy("system");
 			orderHeader.setPdiSeller(pdiSellerRepository.findById(sellerId).orElseThrow());
+			orderHeader.setPayTimestamp(Long.toString(System.currentTimeMillis()));
 			setOrderItems(orderHeader, orderResource.getItems());
 			orderHeaderRepository.save(orderHeader);
 		} 
@@ -282,6 +285,22 @@ public class OrderServiceImpl implements OrderService {
 			orderHeaderDtos.add(orderHeaderDto);
 		}
 		return orderHeaderDtos;
+	}
+
+	@Override
+	public void validatePostPayment(Long orderNum, BigDecimal amount, String timestamp, Locale locale) throws OrderProcessingException {
+		OrderHeader orderHeader = findByOrderNumber(orderNum);
+
+		BigDecimal difference = orderHeader.getTotal().subtract(amount).abs();
+		if (difference.doubleValue() > Double.MIN_VALUE) {
+			log.error("Error checking payment response : amounts don't match, order nb = {}, difference= {}", orderNum, difference.toEngineeringString());
+			throw new OrderProcessingException(messageSource.getMessage("order.error.postprocess", null, locale));
+		}
+
+		if ( timestamp.compareTo(orderHeader.getPayTimestamp()) != 0) {
+			log.error("Error checking payment response : timestamp doesn't match = expected: {} -  received: {}", orderHeader.getPayTimestamp(), timestamp);
+			throw new OrderProcessingException(messageSource.getMessage("order.error.postprocess", null, locale));
+		}
 	}
 
 	@Override

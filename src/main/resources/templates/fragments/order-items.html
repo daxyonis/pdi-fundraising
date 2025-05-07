@@ -156,12 +156,8 @@
 	  					}	  				  					
 	  					updateTotal();
 	  				});	  			
-	  			
-		  			// GLOBAL stuff		  			
-		  			RealexHpp.setHppUrl(/*[[${globalServiceUrl}]]*/ 'https://pay.sandbox.realexpayments.com/pay');
-		  			let responseUrl = /*[[${responseUrl}]]*/ '';
-		  			responseUrl = responseUrl || (location.origin + '/api/global/response');
-					let checkoutUrl = /*[[@{/api/global/checkout}]]*/ '/api/global/checkout';
+
+					let getCheckoutUrl = /*[[@{/api/pay/checkout}]]*/ '/api/pay/checkout';
 
                     $('#checkout-button').on('click', function(){
                         $('#buyerForm').submit();
@@ -208,32 +204,18 @@
 	  					// Validated, go !
 	  					$('.overlay').removeClass('d-none');
 		  				$.post({
-		  					url: checkoutUrl,
+		  					url: getCheckoutUrl,
 		  					data: JSON.stringify(orderData),
 		  					contentType: 'application/json'	  					
 		  				})	  				
-		  				.then(function(hppJson){
-		  					//$('.overlay').addClass('d-none');
-		  					let hppData = JSON.parse(hppJson);
-
-							// Embedded with callback
-							RealexHpp.embedded.init(
-								"autoload",
-								"payIframe",
-								responseUrl,
-								hppData
-							);
-
-							$('body').addClass('loaded');
-
-							// Hide
-							$('#orderHeader').addClass('d-none');
-							$('#newOrderTitle').addClass('d-none');
-							$('#orderTitle').removeClass('d-none');
-							$('#orderTitle').text($('#orderTitle').text() + hppData['ORDER_ID'] + '...');
-							$('#orderTitleHelp').removeClass('d-none');
-							window.scrollTo(0,0);
-		  				})	  				
+		  				.then(function(checkoutUrl){
+							if (checkoutUrl) {
+								//window.open(checkoutUrl, '_blank');
+								window.location.href = checkoutUrl;
+							} else {
+								console.error('Checkout URL not found in the response');
+							}
+						})
 		  				.fail(function(err){
 							console.log(err.responseJSON);
 							if(err.responseJSON && err.responseJSON.message){

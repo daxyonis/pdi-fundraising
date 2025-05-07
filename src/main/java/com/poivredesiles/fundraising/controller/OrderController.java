@@ -60,6 +60,7 @@ public class OrderController extends BaseController {
 			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails, lang);
 			model.addAttribute("products", products);						
 			model.addAttribute("globalServiceUrl", globalServiceUrl);
+			model.addAttribute("pay", applicationProperties.getPay());
 			String applicationUrl = "%s://%s:%d".formatted(request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
 			model.addAttribute("failure", failure);
