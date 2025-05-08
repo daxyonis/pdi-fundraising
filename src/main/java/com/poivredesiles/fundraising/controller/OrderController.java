@@ -11,15 +11,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -32,16 +29,9 @@ public class OrderController extends BaseController {
 
 	@Autowired
 	private OrderService orderService;
-			
-	@Value("${global.service.url}")	
-	private String globalServiceUrl;
-
-	@Autowired
-	private Environment env;
 
 	@Autowired
 	private ApplicationProperties applicationProperties;
-	
 	
 	@GetMapping("/commande")
 	public String order(@RequestParam(required = false) String lang,
@@ -58,19 +48,11 @@ public class OrderController extends BaseController {
 				lang = this.language;
 			}
 			List<PdiProductDTO> products = pdiSellerService.getProductsForUser(userDetails, lang);
-			model.addAttribute("products", products);						
-			model.addAttribute("globalServiceUrl", globalServiceUrl);
+			model.addAttribute("products", products);
 			model.addAttribute("pay", applicationProperties.getPay());
 			String applicationUrl = "%s://%s:%d".formatted(request.getScheme(), request.getServerName(), request.getServerPort());
 			model.addAttribute("applicationUrl", applicationUrl);
 			model.addAttribute("failure", failure);
-
-			// Set the response URL based on the environment
-			boolean isDeployed = Arrays.asList(env.getActiveProfiles()).contains("prod") ||
-					          Arrays.asList(env.getActiveProfiles()).contains("dev");
-			if (isDeployed) {
-				model.addAttribute("responseUrl","https://" + applicationProperties.getBaseUrl() + "/api/global/response");
-			}
 
 			return "views/order";
 		}

@@ -146,18 +146,6 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator-lite</artifactId>
-		</dependency>	    
-		<!-- Global Payments -->
-		<dependency>
-			<groupId>com.heartlandpaymentsystems</groupId>
-			<artifactId>globalpayments-sdk</artifactId>
-			<version>6.1.70</version>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<!-- Actuator -->
 		<dependency>

@@ -7,11 +7,11 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.sql.DataSource;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,9 +30,11 @@ public class CsvImportServiceIT2 {
 	private final int NUM_CAMPAIGN = 2;
 	private final int NUM_GROUPS = 6;
 	private final int NUM_SELLERS = 27;
-	
-	private JdbcTemplate jdbcTemplate;			
-	
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
 	private CsvImportService csvImportService;
 	
 	@BeforeAll
@@ -42,11 +44,6 @@ public class CsvImportServiceIT2 {
 		System.out.println(absolutePath);
 		FILEMAKER_CSV_FOLDER = absolutePath + file.separator;
 	}
-	
-	public CsvImportServiceIT2(DataSource datasource, CsvImportService csvImportService) {
-		this.csvImportService = csvImportService;
-		this.jdbcTemplate = new JdbcTemplate(datasource);
-	}			
 	
 	@Test
 	@Order(1)

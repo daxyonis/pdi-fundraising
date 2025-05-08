@@ -22,7 +22,8 @@ services:
             - DB_PWD
             - DB_URL
             - EMAIL_PASSWORD
-            - GLOBAL_SHARED_SECRET
+            - PAY_MERCHANT_ID
+            - PAY_HASH_KEY
             - KEYSTORE_PASSWORD
             - KEYSTORE_FILENAME
             
@@ -54,8 +55,8 @@ services:
             - PROD_DB_PWD
             - PROD_DB_URL
             - EMAIL_PASSWORD
-            - PROD_GLOBAL_MERCHANT_ID
-            - PROD_GLOBAL_SHARED_SECRET
+            - PROD_PAY_MERCHANT_ID
+            - PROD_PAY_HASH_KEY
             - PROD_KEYSTORE_PASSWORD
             - PROD_KEYSTORE_FILENAME
                      
@@ -79,7 +80,9 @@ secrets:
     external: true 
   EMAIL_PASSWORD:
     external: true 
-  GLOBAL_SHARED_SECRET:
+  PAY_MERCHANT_ID:
+    external: true
+  PAY_HASH_KEY:
     external: true
   PROD_DB_USER:
     external: true 
@@ -87,10 +90,10 @@ secrets:
     external: true 
   PROD_DB_URL:
     external: true 
-  PROD_GLOBAL_MERCHANT_ID :
-    external: true 
-  PROD_GLOBAL_SHARED_SECRET:
-    external: true 
+  PROD_PAY_MERCHANT_ID:
+    external: true
+  PROD_PAY_HASH_KEY:
+    external: true
   KEYSTORE_PASSWORD:
     external: true
   KEYSTORE_FILENAME:

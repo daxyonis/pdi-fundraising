@@ -8,7 +8,6 @@ import com.poivredesiles.fundraising.resource.OrderResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -29,24 +28,16 @@ public class BamboraPaymentsService {
 
     private final OrderService orderService;
 
-    private final MailService mailService;
-
     private final MessageSource messageSource;
-
-    private final Environment env;
 
     private final Logger log = LoggerFactory.getLogger(BamboraPaymentsService.class);
 
     public BamboraPaymentsService(ApplicationProperties applicationProperties,
                                   OrderService orderService,
-                                  MailService mailService,
-                                  MessageSource messageSource,
-                                  Environment env) {
+                                  MessageSource messageSource) {
         this.applicationProperties = applicationProperties;
         this.orderService = orderService;
-        this.mailService = mailService;
         this.messageSource = messageSource;
-        this.env = env;
     }
 
     /**
@@ -68,7 +59,7 @@ public class BamboraPaymentsService {
         log.info("Charging payment for order #{}", pendingOrder.getOrderNumber());
 
         // All the infos we want to include into the payment form
-        String amount = pendingOrder.getTotal().toString();
+        String amount = pendingOrder.getTotal().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         String name = URLEncoder.encode(pendingOrder.getBuyerName(), StandardCharsets.UTF_8);
         String email = URLEncoder.encode(pendingOrder.getBuyerEmail(), StandardCharsets.UTF_8);
         String phone = URLEncoder.encode(pendingOrder.getBuyerPhone(), StandardCharsets.UTF_8);
@@ -126,7 +117,7 @@ public class BamboraPaymentsService {
         try {
             String responseCode = responseValues.get("trnApproved");
             String responseMessage = responseValues.get("messageText");
-            log.info("Processing Global Response for order #{}", orderNum);
+            log.info("Processing paymenty response for order #{}", orderNum);
             if(responseCode != null && responseCode.compareTo("1") == 0) {
                 // Success !
                 validateOrderResponse(responseValues, locale);

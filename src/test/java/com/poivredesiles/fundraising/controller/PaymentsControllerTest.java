@@ -2,12 +2,12 @@ package com.poivredesiles.fundraising.controller;
 
 import com.poivredesiles.fundraising.config.SecurityConfig;
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
-import com.poivredesiles.fundraising.controller.rest.GlobalPaymentsController;
+import com.poivredesiles.fundraising.controller.rest.BamboraPaymentsController;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.resource.OrderResource;
-import com.poivredesiles.fundraising.service.GlobalPaymentsService;
+import com.poivredesiles.fundraising.service.BamboraPaymentsService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,29 +22,28 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
-@WebMvcTest(GlobalPaymentsController.class)
+@WebMvcTest(BamboraPaymentsController.class)
 @Import({SecurityConfig.class, MaintenanceModeFilter.class, ApplicationProperties.class})
 @ActiveProfiles("test")
-public class GlobalPaymentsControllerTest extends BaseControllerTest {
+public class PaymentsControllerTest extends BaseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private GlobalPaymentsService globalPaymentsService;
+    private BamboraPaymentsService paymentsService;
 
-    private static OrderResource orderResource = new OrderResource();
+    private final static OrderResource orderResource = new OrderResource();
 
     @BeforeAll
     public static void init() {
@@ -57,7 +56,7 @@ public class GlobalPaymentsControllerTest extends BaseControllerTest {
     public void shouldNotAccessCheckoutWhenAnonymous() throws Exception {
         log.info("=====> Try to access checkout when anonymous...");
         this.mockMvc.perform(
-                        post("/api/global/checkout")
+                        post("/api/pay/checkout")
                             .with(csrf()))
                  .andExpect(status().isFound())
                 .andExpect(redirectedUrlPattern("**/login"));
@@ -67,7 +66,7 @@ public class GlobalPaymentsControllerTest extends BaseControllerTest {
     public void shouldNotAccessCheckoutWithoutCsrf() throws Exception {
         log.info("=====> Try to access checkout with no CSRF...");
         this.mockMvc.perform(
-                        post("/api/global/checkout")
+                        post("/api/pay/checkout")
                             .with(user("bidon").roles("BUYER")))
                 .andExpect(status().isForbidden());
     }
@@ -77,9 +76,9 @@ public class GlobalPaymentsControllerTest extends BaseControllerTest {
         log.info("=====> Try to access campaigns when authenticated...");
         MyUserDetails userDetails = new MyUserDetails(buyer);
         when(pdiSellerService.getSellerForUser(userDetails)).thenReturn(seller);
-        when(globalPaymentsService.getHppJson(orderResource, 1L, Locale.FRENCH)).thenReturn("ok");
+        when(paymentsService.getCheckoutUrl(orderResource, 1L, Locale.FRENCH)).thenReturn("ok");
         this.mockMvc.perform(
-                        post("/api/global/checkout")
+                        post("/api/pay/checkout")
                             .with(csrf())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"name\": \"Bob\", \"email\":\"bob@example.com\", \"phone\": \"0123456789\", \"sellerId\": \"1\"}")
@@ -92,12 +91,10 @@ public class GlobalPaymentsControllerTest extends BaseControllerTest {
         log.info("=====> Try to access response with wrong response...");
         MultiValueMap<String, String> responseData = new LinkedMultiValueMap<>();
         responseData.add("asdf", "ghjk");
-        when(globalPaymentsService.processResponse(responseData, Locale.FRENCH)).thenThrow(new OrderProcessingException("Wrong response"));
+        when(paymentsService.processResponse(responseData, Locale.FRENCH)).thenThrow(new OrderProcessingException("Wrong response"));
 
-        MockHttpServletRequestBuilder request = post("/api/global/response");
-        request.content("asdf=ghjk");
+        MockHttpServletRequestBuilder request = get("/api/pay/callback?asdf=ghjk");
         request.locale(Locale.FRENCH);
-        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         this.mockMvc.perform(request)
                 .andExpect(status().isFound())
@@ -110,13 +107,11 @@ public class GlobalPaymentsControllerTest extends BaseControllerTest {
         log.info("=====> Try to access response when anonymous...");
 
         MultiValueMap<String, String> responseData = new LinkedMultiValueMap<>();
-        responseData.add("hppResponse", "adfkjaslfkja");
-        when(globalPaymentsService.processResponse(responseData, Locale.FRENCH)).thenReturn(2250L);
+        responseData.add("trnAmount", "12.00");
+        when(paymentsService.processResponse(responseData, Locale.FRENCH)).thenReturn(2250L);
 
-        MockHttpServletRequestBuilder request = post("/api/global/response");
-        request.content("hppResponse=adfkjaslfkja");
+        MockHttpServletRequestBuilder request = get("/api/pay/callback?trnAmount=12.00");
         request.locale(Locale.FRENCH);
-        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         this.mockMvc.perform(request)
                 .andExpect(status().isFound())
@@ -127,13 +122,11 @@ public class GlobalPaymentsControllerTest extends BaseControllerTest {
     public void canAccessResponseIfAuthenticated() throws Exception {
         log.info("=====> Try to access response when authenticated...");
         MultiValueMap<String, String> responseData = new LinkedMultiValueMap<>();
-        responseData.add("hppResponse", "adfkjaslfkja");
-        when(globalPaymentsService.processResponse(responseData, Locale.FRENCH)).thenReturn(2250L);
+        responseData.add("trnAmount", "12.00");
+        when(paymentsService.processResponse(responseData, Locale.FRENCH)).thenReturn(2250L);
 
-        MockHttpServletRequestBuilder request = post("/api/global/response");
-        request.content("hppResponse=adfkjaslfkja");
+        MockHttpServletRequestBuilder request = get("/api/pay/callback?trnAmount=12.00");
         request.locale(Locale.FRENCH);
-        request.contentType(MediaType.APPLICATION_FORM_URLENCODED);
         request.with(user("bidon").roles("BUYER"));
 
         this.mockMvc.perform(request)
