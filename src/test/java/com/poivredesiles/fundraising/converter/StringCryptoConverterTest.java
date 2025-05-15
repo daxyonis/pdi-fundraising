@@ -24,7 +24,7 @@ class StringCryptoConverterTest {
         applicationProperties.setAction(action);
 
         KeyProperty keyProperty = new KeyProperty();
-        keyProperty.setKeystoreFilename("keystore.p12");
+        keyProperty.setKeystoreFilename("keys/keystore.p12");
         keyProperty.setKeystorePassword("changeit");
 
         stringCryptoConverter = new StringCryptoConverter(applicationProperties, keyProperty);

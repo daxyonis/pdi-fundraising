@@ -3,6 +3,7 @@ package com.poivredesiles.fundraising.converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import software.pando.crypto.nacl.SecretBox;
 
@@ -36,12 +37,12 @@ public class KeyProperty {
             log.info("Loading from store: {}", keystoreFilename);
             var keyStore = KeyStore.getInstance("PKCS12");
             var pass = keystorePassword.toCharArray();
-            InputStream fis = getClass().getClassLoader().getResourceAsStream(keystoreFilename);
-            keyStore.load(fis, pass);
+            InputStream inputStream = new ClassPathResource(keystoreFilename).getInputStream();
+            keyStore.load(inputStream, pass);
             var encKey =  keyStore.getKey("aes-key", pass);
             this.encryptionKey = SecretBox.key(encKey.getEncoded());
         } catch (KeyStoreException | IOException | CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             throw new RuntimeException("Error loading encryption key");
         }
     }
