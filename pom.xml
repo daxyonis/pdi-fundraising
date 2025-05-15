@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.poivredesiles</groupId>
 	<artifactId>fundraising</artifactId>
-	<version>6.0.1</version>
+	<version>6.0.2</version>
 	<name>fundraising</name>
 	<description>Fundraising Application For Poivre des Iles</description>
 	<properties>
@@ -182,6 +182,9 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<image>
+						<name>daxyonis/pdi-${project.artifactId}:${project.version}</name>
+					</image>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

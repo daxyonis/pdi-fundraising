@@ -1,1 +1,1 @@
-.\mvnw clean package docker:build docker:push
+./mvnw spring-boot:build-image -Dspring-boot.build-image.publish=true
