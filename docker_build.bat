@@ -1,1 +1,1 @@
-.\mvnw clean package docker:build
+.\mvnw spring-boot:build-image

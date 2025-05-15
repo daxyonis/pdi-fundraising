@@ -32,3 +32,7 @@
     position: absolute;
     z-index: 100;
     }
+
+.product-selected {
+    background-color: lightblue;
+}

@@ -41,7 +41,7 @@
 							</div>
 						</th:block>
 						<!-- /* Print the product info */ -->
-						<div class="d-lg-flex flex-lg-row justify-content-around my-1 border-bottom">
+						<div th:id="|prod-${product.id}|" class="d-lg-flex flex-lg-row justify-content-around my-1 border-bottom">
 							<div class="flex-item" th:text="${product.labelNumber}">#12</div>
 							<div class="flex-item">
 								<input type="number" min="0" max="100000" th:placeholder="#{order.quantity}" class="form-control text-center qty" th:attr="data-id=${product.id}">
@@ -128,6 +128,7 @@
 	  					chosenProducts = orderData.items;
 	  					chosenProducts.forEach(function(item){
 	  						$('input.qty[data-id="' + item.id + '"]').val(item.qty);
+							$(`#prod-${item.id}`).addClass('product-selected');
 	  					});	
 	  					updateTotal();
 	  				}
@@ -149,9 +150,11 @@
 	  							unitPrice: product[0].unitPrice,
 	  							qty: qty
 	  					};
-	  					if(qty > 0){	  	  					
+	  					if(qty > 0){
+							$(`#prod-${productId}`).addClass('product-selected');
 	  						saveChosenProduct(chosenProduct);
 	  					} else {
+							$(`#prod-${productId}`).removeClass('product-selected');
 	  						removeChosenProduct(chosenProduct);
 	  					}	  				  					
 	  					updateTotal();
