@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.pando.crypto.nacl.SecretBox;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 
@@ -36,7 +36,8 @@ public class KeyProperty {
             log.info("Loading from store: {}", keystoreFilename);
             var keyStore = KeyStore.getInstance("PKCS12");
             var pass = keystorePassword.toCharArray();
-            keyStore.load(new FileInputStream(keystoreFilename), pass);
+            InputStream fis = getClass().getClassLoader().getResourceAsStream(keystoreFilename);
+            keyStore.load(fis, pass);
             var encKey =  keyStore.getKey("aes-key", pass);
             this.encryptionKey = SecretBox.key(encKey.getEncoded());
         } catch (KeyStoreException | IOException | CertificateException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
