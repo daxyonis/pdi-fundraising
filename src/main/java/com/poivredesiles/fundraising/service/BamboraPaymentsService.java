@@ -73,6 +73,7 @@ public class BamboraPaymentsService {
                           "&ordEmailAddress=" + email +
                           "&shipPhoneNumber=" + phone +
                           "&trnLanguage=" + language +
+                          "&trnCardOwner=" + name +
                           "&ref1=" + timestamp;
 
         String hashInput = hashData + hashKey;
