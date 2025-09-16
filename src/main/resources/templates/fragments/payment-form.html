@@ -1,0 +1,240 @@
+<!DOCTYPE html >
+    <html xmlns:th="http://www.thymeleaf.org">
+        <head>
+            <link rel="stylesheet" type="text/css" th:href="@{/css/order.css}"/>
+            <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod')} ?
+                    'https://checkout.clover.com/sdk.js' : 'https://checkout.sandbox.dev.clover.com/sdk.js'"></script>
+        </head>
+    <body>
+        <th:block th:fragment="payment">
+            <a th:href="@{/commande}" th:text="#{order.back}">Retour a la commande</a>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h4 class="pt-3 font-weight-bold" th:text="#{order.summary}">Votre panier</h4>
+                </div>
+                <div class="col-md-6">
+                    <div class="total-container">
+                        <h4 class="float-right">TOTAL <span id="payAmount" class="badge badge-pill badge-info p-3"></span></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <table id="cartTable" class="table table-bordered table-responsive-sm">
+                        <thead>
+                        <tr>
+                            <th th:text="#{item.name}">Product Name</th>
+                            <th th:text="#{item.unitPrice}">Unit Price ($)</th>
+                            <th th:text="#{item.qty}">Quantity</th>
+                            <th th:text="#{item.total}">Total Price ($)</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot class="font-weight-bold"></tfoot>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <form action="/charge" method="post" id="payment-form" novalidate>
+                        <!-- this form contains the card data fields -->
+
+                            <div id="card-number" class="field card-number"></div>
+                            <div class="input-errors" id="card-number-errors" role="alert"></div>
+
+                            <div id="card-name" class="field card-name"></div>
+                            <div class="input-errors" id="card-name-errors" role="alert"></div>
+
+                            <div id="card-date" class="field third-width"></div>
+                            <div class="input-errors" id="card-date-errors" role="alert"></div>
+
+                            <div id="card-cvv" class="field third-width"></div>
+                            <div class="input-errors" id="card-cvv-errors" role="alert"></div>
+
+                            <div id="card-postal-code" class="field third-width"></div>
+                            <div class="input-errors" id="card-postal-code-errors" role="alert"></div>
+
+                            <div id="card-response" role="alert"></div>
+
+                            <div class="button-container">
+                                <button id="submit_button" class="btn btn-large btn-success" th:text="#{order.pay}">Pay</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+
+            <script th:inline="javascript">
+                const token = /*[[${pay.token}]]*/ 0;
+                const merchantId = /*[[${pay.merchantId}]]*/ 0;
+                let locale = /*[[${language}]]*/ 'fr';
+                if (locale.toLowerCase().includes('fr')) {
+                    locale = 'fr-CA'
+                } else {
+                   locale = 'en-CA'
+                }
+                const clover = new Clover(token, {
+                    merchantId: merchantId,
+                    locale
+                });
+                const elements = clover.elements();
+                const styles = {
+                    input: {
+                        fontSize: '20px',
+                        display: 'block',
+                        width: '100%',
+                        height: 'calc(1.5em + .75rem + 2px)',
+                        padding: '.375rem .75rem',
+                        'font-size': '1rem',
+                        'font-weight': '400',
+                        'line-height': '1.5',
+                        color: '#495057',
+                        'background-color':' #fff',
+                        'background-clip': 'padding-box',
+                        'border': '1px solid #ced4da',
+                        'border-radius': '.25rem',
+                        'transition': 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
+                    }
+                };
+                const form = document.getElementById('payment-form');
+                const cardNumber = elements.create('CARD_NUMBER', styles);
+                const cardName = elements.create('CARD_NAME', styles);
+                const cardDate = elements.create('CARD_DATE', styles);
+                const cardCvv = elements.create('CARD_CVV', styles);
+                const cardPostalCode = elements.create('CARD_POSTAL_CODE', styles);
+
+                cardNumber.mount('#card-number');
+                cardName.mount('#card-name');
+                cardDate.mount('#card-date');
+                cardCvv.mount('#card-cvv');
+                cardPostalCode.mount('#card-postal-code');
+
+                const cardResponse = document.getElementById('card-response');
+                const displayCardNumberError = document.getElementById('card-number-errors');
+                const displayCardNameError = document.getElementById('card-name-errors');
+                const displayCardDateError = document.getElementById('card-date-errors');
+                const displayCardCvvError = document.getElementById('card-cvv-errors');
+                const displayCardPostalCodeError = document.getElementById('card-postal-code-errors');
+
+                // Handle real-time validation errors from the card element
+                cardNumber.addEventListener('change', function(event) {
+                    // console.log(`cardNumber changed ${JSON.stringify(event)}`); // testing
+                    displayCardNumberError.innerHTML = event.CARD_NUMBER.error || ''; // production
+                });
+
+                cardNumber.addEventListener('blur', function(event) {
+                    // console.log(`cardNumber blur ${JSON.stringify(event)}`);
+                    displayCardNumberError.innerHTML = event.CARD_NUMBER.error || ''; // production
+                });
+
+                cardDate.addEventListener('change', function(event) {
+                    // console.log(`cardDate changed ${JSON.stringify(event)}`);
+                    displayCardDateError.innerHTML = event.CARD_DATE.error || '';
+                });
+
+                cardDate.addEventListener('blur', function(event) {
+                    // console.log(`cardDate blur ${JSON.stringify(event)}`);
+                    displayCardDateError.innerHTML = event.CARD_DATE.error || '';
+                });
+
+                cardCvv.addEventListener('change', function(event) {
+                    // console.log(`cardCvv changed ${JSON.stringify(event)}`);
+                    displayCardCvvError.innerHTML = event.CARD_CVV.error || '';
+                });
+
+                cardCvv.addEventListener('blur', function(event) {
+                    // console.log(`cardCvv blur ${JSON.stringify(event)}`);
+                    displayCardCvvError.innerHTML = event.CARD_CVV.error || '';
+                });
+
+                cardPostalCode.addEventListener('change', function(event) {
+                    // console.log(`cardPostalCode changed ${JSON.stringify(event)}`);
+                    displayCardPostalCodeError.innerHTML = event.CARD_POSTAL_CODE.error || '';
+                });
+
+                cardPostalCode.addEventListener('blur', function(event) {
+                    // console.log(`cardPostalCode blur ${JSON.stringify(event)}`);
+                    displayCardPostalCodeError.innerHTML = event.CARD_POSTAL_CODE.error || '';
+                });
+
+                // Listen for form submission
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    // Use the iframe's tokenization method with the user-entered card details
+                    clover.createToken()
+                        .then(function(result) {
+                            if (result.errors) {
+                                Object.values(result.errors).forEach(function (value) {
+                                    displayError.textContent = value;
+                                });
+                            } else {
+                                cloverTokenHandler(result.token);
+                            }
+                        });
+                });
+
+                function cloverTokenHandler(token) {
+                    // Insert the token ID into the form so it gets submitted to the server
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.setAttribute('type', 'hidden');
+                    hiddenInput.setAttribute('name', 'cloverToken');
+                    hiddenInput.setAttribute('value', token);
+                    form.appendChild(hiddenInput);
+                    form.submit();
+                }
+
+                function buildCartTable(chosen, allProducts) {
+                    const tbody = document.querySelector("#cartTable tbody");
+                    const tfoot = document.querySelector("#cartTable tfoot");
+                    tbody.innerHTML = "";
+                    tfoot.innerHTML = "";
+
+                    let grandTotal = 0;
+
+                    chosen.forEach(item => {
+                        const product = allProducts.find(p => p.id === item.id);
+                        if (!product) return;
+
+                        const row = document.createElement("tr");
+
+                        // Product name
+                        const nameCell = document.createElement("td");
+                        nameCell.textContent = isFrench ? product.nameFr : product.nameEn;
+                        row.appendChild(nameCell);
+
+                        // Unit price
+                        const unitPriceCell = document.createElement("td");
+                        unitPriceCell.textContent = item.unitPrice.toFixed(2);
+                        row.appendChild(unitPriceCell);
+
+                        // Quantity
+                        const qtyCell = document.createElement("td");
+                        qtyCell.textContent = item.qty;
+                        row.appendChild(qtyCell);
+
+                        // Total price
+                        const totalCell = document.createElement("td");
+                        const total = item.unitPrice * item.qty;
+                        totalCell.textContent = total.toFixed(2);
+                        row.appendChild(totalCell);
+
+                        grandTotal += total;
+
+                        tbody.appendChild(row);
+                    });
+
+                    // Add grand total row
+                    const totalRow = document.createElement("tr");
+
+                    const emptyCell1 = document.createElement("td");
+                    emptyCell1.setAttribute("colspan", 3);
+                    emptyCell1.textContent = "Grand Total";
+                    totalRow.appendChild(emptyCell1);
+
+                    const grandTotalCell = document.createElement("td");
+                    grandTotalCell.textContent = grandTotal.toFixed(2);
+                    totalRow.appendChild(grandTotalCell);
+
+                    tfoot.appendChild(totalRow);
+                }
+            </script>
+        </th:block>
+    </body>
+</html>

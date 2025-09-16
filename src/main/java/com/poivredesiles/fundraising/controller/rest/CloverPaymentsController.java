@@ -4,7 +4,7 @@ import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.resource.OrderResource;
-import com.poivredesiles.fundraising.service.BamboraPaymentsService;
+import com.poivredesiles.fundraising.service.CloverPaymentsService;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,14 +22,14 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/pay")
-public class BamboraPaymentsController {
-    private final Logger log = LoggerFactory.getLogger(BamboraPaymentsController.class);
+public class CloverPaymentsController {
+    private final Logger log = LoggerFactory.getLogger(CloverPaymentsController.class);
 
     @Autowired
     private LocaleResolver localeResolver;
 
     @Autowired
-    private BamboraPaymentsService bamboraPaymentsService;
+    private CloverPaymentsService paymentsService;
 
     @Autowired
     private PdiSellerService pdiSellerService;
@@ -40,7 +40,7 @@ public class BamboraPaymentsController {
                                     @AuthenticationPrincipal MyUserDetails userDetails,
                                     HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {
         PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
-        return bamboraPaymentsService.getCheckoutUrl(orderResource, seller.getId(), localeResolver.resolveLocale(request));
+        return paymentsService.getCheckoutUrl(orderResource, seller.getId(), localeResolver.resolveLocale(request));
     }
 
     // This method must not be secured because called by Bambora
@@ -49,10 +49,16 @@ public class BamboraPaymentsController {
                                 HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
         try {
-            Long orderNumber = bamboraPaymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
+            Long orderNumber = paymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
             response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
         } catch (OrderProcessingException e) {
             response.sendRedirect("/commande?failure=true");
         }
     }
+
+    @PostMapping("/webhook")
+    public void processWebhook(){
+        // TODO
+    }
+
 }

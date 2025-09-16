@@ -1,28 +1,32 @@
 package com.poivredesiles.fundraising.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
+import com.poivredesiles.fundraising.resource.CheckoutRequest;
 import com.poivredesiles.fundraising.resource.OrderResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 
 @Service
-public class BamboraPaymentsService {
+public class CloverPaymentsService {
 
     private ApplicationProperties applicationProperties;
 
@@ -30,11 +34,11 @@ public class BamboraPaymentsService {
 
     private final MessageSource messageSource;
 
-    private final Logger log = LoggerFactory.getLogger(BamboraPaymentsService.class);
+    private final Logger log = LoggerFactory.getLogger(CloverPaymentsService.class);
 
-    public BamboraPaymentsService(ApplicationProperties applicationProperties,
-                                  OrderService orderService,
-                                  MessageSource messageSource) {
+    public CloverPaymentsService(ApplicationProperties applicationProperties,
+                                 OrderService orderService,
+                                 MessageSource messageSource) {
         this.applicationProperties = applicationProperties;
         this.orderService = orderService;
         this.messageSource = messageSource;
@@ -52,13 +56,33 @@ public class BamboraPaymentsService {
         // Payment platform parameters
         String payUrl = applicationProperties.getPay().url();
         String merchantId = applicationProperties.getPay().merchantId();
-        String hashKey = applicationProperties.getPay().hashKey();
+        String bearerToken = applicationProperties.getPay().token();
 
         // Create new order
         OrderHeader pendingOrder = orderService.createNewOrder(orderResource, sellerId, locale);
         log.info("Charging payment for order #{}", pendingOrder.getOrderNumber());
 
+        RestClient client = RestClient.builder()
+                .baseUrl(payUrl)
+                .build();
+
+        String[] names = pendingOrder.getBuyerName().split(" ");
+        String firstName = names[0];
+        String lastName = names.length > 1 ? names[1] : "";
+
+        CheckoutRequest request = new CheckoutRequest(
+                new CheckoutRequest.Customer(pendingOrder.getBuyerEmail(),
+                                    firstName,
+                                    lastName,
+                                    pendingOrder.getBuyerPhone()),
+                new CheckoutRequest.ShoppingCart(List.of(
+                        new CheckoutRequest.LineItem("No pulp", "Orange juice", 600, 2),
+                        new CheckoutRequest.LineItem("Non-dairy", "French toast", 1200, 1)
+                ))
+        );
+
         // All the infos we want to include into the payment form
+        /*
         String amount = pendingOrder.getTotal().setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         String name = URLEncoder.encode(pendingOrder.getBuyerName(), StandardCharsets.UTF_8);
         String email = URLEncoder.encode(pendingOrder.getBuyerEmail(), StandardCharsets.UTF_8);
@@ -66,22 +90,27 @@ public class BamboraPaymentsService {
         String orderNumber = pendingOrder.getOrderNumber().toString();
         String language = pendingOrder.getBuyerLanguage().equalsIgnoreCase("FR") ? "FRE" : "EN";
         String timestamp = pendingOrder.getPayTimestamp();
+         */
 
-        String hashData = "merchant_id=" + merchantId + "&trnAmount=" + amount +
-                          "&trnOrderNumber=" + orderNumber +
-                          "&ordName=" + name +
-                          "&ordEmailAddress=" + email +
-                          "&shipPhoneNumber=" + phone +
-                          "&trnLanguage=" + language +
-                          "&trnCardOwner=" + name +
-                          "&ref1=" + timestamp;
 
-        String hashInput = hashData + hashKey;
         try {
-            String hash = generateSHA1Hash(hashInput);
-            return String.format("%s?%s&hashValue=%s", payUrl, hashData, hash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            JsonNode response = client.post()
+                    .uri("/invoicingcheckoutservice/v1/checkouts")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("X-Clover-Merchant-Id", merchantId)
+                    .header("Authorization", "Bearer " + bearerToken) // uncomment if needed
+                    .body(request)
+                    .retrieve()
+                    .body(JsonNode.class);
+
+            if (response != null) {
+                return response.get("href").asText();
+            } else {
+                throw new InvalidOrderException("Checkout failed");
+            }
+        } catch (Exception e) {
+            throw new InvalidOrderException(e.getMessage());
         }
     }
 

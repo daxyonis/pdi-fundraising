@@ -28,7 +28,7 @@ public class ApplicationProperties {
 	public static class Pay {
 		private String url;
 		private String merchantId;
-		private String hashKey;
+		private String token;
 
 		public String url() {
 			return url;
@@ -48,12 +48,12 @@ public class ApplicationProperties {
 			return this;
 		}
 
-		public String hashKey() {
-			return hashKey;
+		public String token() {
+			return token;
 		}
 
-		public Pay setHashKey(String hashKey) {
-			this.hashKey = hashKey;
+		public Pay setToken(String token) {
+			this.token = token;
 			return this;
 		}
 	}

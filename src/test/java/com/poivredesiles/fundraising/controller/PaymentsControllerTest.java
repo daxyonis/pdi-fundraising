@@ -2,12 +2,12 @@ package com.poivredesiles.fundraising.controller;
 
 import com.poivredesiles.fundraising.config.SecurityConfig;
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
-import com.poivredesiles.fundraising.controller.rest.BamboraPaymentsController;
+import com.poivredesiles.fundraising.controller.rest.CloverPaymentsController;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.resource.OrderResource;
-import com.poivredesiles.fundraising.service.BamboraPaymentsService;
+import com.poivredesiles.fundraising.service.CloverPaymentsService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
-@WebMvcTest(BamboraPaymentsController.class)
+@WebMvcTest(CloverPaymentsController.class)
 @Import({SecurityConfig.class, MaintenanceModeFilter.class, ApplicationProperties.class})
 @ActiveProfiles("test")
 public class PaymentsControllerTest extends BaseControllerTest {
@@ -41,7 +41,7 @@ public class PaymentsControllerTest extends BaseControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private BamboraPaymentsService paymentsService;
+    private CloverPaymentsService paymentsService;
 
     private final static OrderResource orderResource = new OrderResource();
 
