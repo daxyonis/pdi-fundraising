@@ -1,7 +1,6 @@
 package com.poivredesiles.fundraising.service;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
-import com.poivredesiles.fundraising.exception.OrderProcessingException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.resource.OrderResource;
@@ -10,7 +9,6 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,8 +39,9 @@ public interface OrderService {
 	/**
 	 * Confirm a successful (i.e. paid) order if pending
 	 * @param orderNumber
+	 * @param paymentId
 	 */
-	void confirmOrder(Long orderNumber);
+	void confirmOrder(Long orderNumber, String paymentId);
 
 	/**
 	 * Get the list of orders assigned to a given seller
@@ -105,5 +104,4 @@ public interface OrderService {
 
 	List<OrderHeaderDTO> resendCancellations(List<Long> orderIds);
 
-	void validatePostPayment(Long orderNum, BigDecimal amount, String timestamp, Locale locale) throws OrderProcessingException;
 }

@@ -160,9 +160,7 @@
 	  						removeChosenProduct(chosenProduct);
 	  					}	  				  					
 	  					updateTotal();
-	  				});	  			
-
-					let getCheckoutUrl = /*[[@{/api/pay/checkout}]]*/ '/api/pay/checkout';
+	  				});
 
 					$('#checkout-button').on('click', function(){
 							$('#buyerForm').submit();
@@ -206,35 +204,11 @@
 		  				// Disable button to prevent double-click
 		  				$('#checkout-button').attr('disabled', true);
 
+							// Build cart data and display the payment form
 							buildCartTable(chosenProducts, products);
 							$('#payForm').removeClass('d-none');
 							$('#orderForm').addClass('d-none');
 							$('#pdi-footer').addClass('d-none');
-		  				
-	  					// Validated, go !
-		  				/*$.post({
-		  					url: getCheckoutUrl,
-		  					data: JSON.stringify(orderData),
-		  					contentType: 'application/json'	  					
-		  				})	  				
-		  				.then(function(checkoutUrl){
-							if (checkoutUrl) {
-								//window.open(checkoutUrl, '_blank');
-								window.location.href = checkoutUrl;
-							} else {
-								console.error('Checkout URL not found in the response');
-							}
-						})
-		  				.fail(function(err){
-							console.log(err.responseJSON);
-							if(err.responseJSON && err.responseJSON.message){
-								displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);	
-							} else {
-								displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]/'Erreur');
-							}
-							return true;
-						});
-							*/
 		  			});
 		  			
 	  			});

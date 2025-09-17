@@ -42,7 +42,7 @@ public class SecurityConfig {
 					.requestMatchers(PUBLIC).permitAll()
 					.requestMatchers("/api/pay/callback").permitAll()
 					.requestMatchers("/").hasAnyRole("BUYER", "SELLER", "GROUP_LEADER", "CAMPAIGN_LEADER", "ADMIN")
-					.requestMatchers("/commande/**", "/api/pay/checkout").hasRole("BUYER")
+					.requestMatchers("/commande/**", "/api/pay/charge").hasRole("BUYER")
 					.requestMatchers("/ventes").hasRole("SELLER")
 					.requestMatchers("/synthese/**").hasAnyRole("CAMPAIGN_LEADER","GROUP_LEADER")
 					.requestMatchers(HttpMethod.GET, "/admin").hasRole("ADMIN")

@@ -29,6 +29,7 @@ public class ApplicationProperties {
 		private String url;
 		private String merchantId;
 		private String token;
+		private String privateToken;
 
 		public String url() {
 			return url;
@@ -54,6 +55,15 @@ public class ApplicationProperties {
 
 		public Pay setToken(String token) {
 			this.token = token;
+			return this;
+		}
+
+		public String privateToken() {
+			return privateToken;
+		}
+
+		public Pay setPrivateToken(String privateToken) {
+			this.privateToken = privateToken;
 			return this;
 		}
 	}

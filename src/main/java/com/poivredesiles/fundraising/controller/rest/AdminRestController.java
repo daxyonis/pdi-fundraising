@@ -1,11 +1,11 @@
 package com.poivredesiles.fundraising.controller.rest;
 
-import com.poivredesiles.fundraising.service.NotificationService;
-import com.poivredesiles.fundraising.service.dto.NotificationSettingsDTO;
+import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.resource.OrdersRequest;
 import com.poivredesiles.fundraising.resource.datatables.DataTablesResponse;
-import com.poivredesiles.fundraising.resource.EntitySelector;
+import com.poivredesiles.fundraising.service.NotificationService;
 import com.poivredesiles.fundraising.service.OrderService;
+import com.poivredesiles.fundraising.service.dto.NotificationSettingsDTO;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class AdminRestController {
     @PutMapping("/orders/confirm")
     @Secured("ROLE_ADMIN")
     public void confirmOrder(@RequestParam Long orderNumber) {
-        orderService.confirmOrder(orderNumber);
+        orderService.confirmOrder(orderNumber, "");
     }
 
     // cancel one order

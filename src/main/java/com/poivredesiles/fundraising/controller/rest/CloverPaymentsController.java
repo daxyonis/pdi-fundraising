@@ -14,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.LocaleResolver;
 
 import java.io.IOException;
@@ -34,25 +36,18 @@ public class CloverPaymentsController {
     @Autowired
     private PdiSellerService pdiSellerService;
 
-    @PostMapping("/checkout")
+    @PostMapping("/charge")
     @Secured({"ROLE_BUYER"})
-    public String createCheckoutUrl(@RequestBody OrderResource orderResource,
+    public String chargeOrderAmount(@RequestBody OrderResource orderResource,
                                     @AuthenticationPrincipal MyUserDetails userDetails,
-                                    HttpServletRequest request) throws InvalidOrderException, OrderProcessingException {
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) throws IOException, InvalidOrderException, OrderProcessingException {
         PdiSellerDTO seller = pdiSellerService.getSellerForUser(userDetails);
-        return paymentsService.getCheckoutUrl(orderResource, seller.getId(), localeResolver.resolveLocale(request));
-    }
-
-    // This method must not be secured because called by Bambora
-    @GetMapping(value="/callback")
-    public void processResponse(@RequestParam MultiValueMap<String, String> responseData,
-                                HttpServletRequest request,
-                                HttpServletResponse response) throws IOException {
         try {
-            Long orderNumber = paymentsService.processResponse(responseData, localeResolver.resolveLocale(request));
-            response.sendRedirect("/commande/succes?orderNum=" + orderNumber);
+            Long orderNumber = paymentsService.chargeOrderAmount(orderResource, seller.getId(), localeResolver.resolveLocale(request));
+            return "/commande/succes?orderNum=" + orderNumber;
         } catch (OrderProcessingException e) {
-            response.sendRedirect("/commande?failure=true");
+            return "/commande?failure=true";
         }
     }
 

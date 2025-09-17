@@ -8,6 +8,11 @@
     <body>
         <th:block th:fragment="payment">
             <a th:href="@{/commande}" th:text="#{order.back}">Retour a la commande</a>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
+                </div>
+            </div>
             <div class="row mt-3">
                 <div class="col-md-6">
                     <h4 class="pt-3 font-weight-bold" th:text="#{order.summary}">Votre panier</h4>
@@ -18,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-md-6">
                     <table id="cartTable" class="table table-bordered table-responsive-sm">
                         <thead>
@@ -157,27 +162,57 @@
                 // Listen for form submission
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
+                    $('.overlay').removeClass("d-none");
                     // Use the iframe's tokenization method with the user-entered card details
                     clover.createToken()
-                        .then(function(result) {
+                        .then(async function(result) {
                             if (result.errors) {
+                                $('.overlay').addClass("d-none");
                                 Object.values(result.errors).forEach(function (value) {
                                     displayError.textContent = value;
                                 });
                             } else {
-                                cloverTokenHandler(result.token);
+                                const token = await result.token;
+                                handleCloverPayment(token);
                             }
+                        }).catch((data) => {
+                            $('.overlay').addClass("d-none");
+                            displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
+                            console.log(data);
                         });
                 });
 
-                function cloverTokenHandler(token) {
-                    // Insert the token ID into the form so it gets submitted to the server
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.setAttribute('type', 'hidden');
-                    hiddenInput.setAttribute('name', 'cloverToken');
-                    hiddenInput.setAttribute('value', token);
-                    form.appendChild(hiddenInput);
-                    form.submit();
+                let chargeUrl = /*[[@{/api/pay/charge}]]*/ '/api/pay/charge';
+
+                function handleCloverPayment(token) {
+                    let orderData = { token };
+                    if(sessionStorage.getItem('orderData')){
+                        Object.assign(orderData, JSON.parse(sessionStorage.getItem('orderData')));
+                    }
+                    $.post({
+                      url: chargeUrl,
+                      data: JSON.stringify(orderData),
+                      contentType: 'application/json'
+                    })
+                    .then(function(newUri){
+                        if (newUri) {
+                          window.location.href = newUri;
+                        } else {
+                          console.error('No response from server');
+                        }
+                      })
+                    .fail(function(err){
+                        console.log(err.responseJSON);
+                        if(err.responseJSON && err.responseJSON.message){
+                          displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);
+                        } else {
+                          displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
+                        }
+                        return true;
+                      })
+                    .always(function(){
+                        $('.overlay').addClass("d-none");
+                    });
                 }
 
                 function buildCartTable(chosen, allProducts) {

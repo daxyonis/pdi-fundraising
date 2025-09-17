@@ -75,6 +75,9 @@ public class OrderHeader extends AbstractAuditingEntity implements Serializable 
 
     @JsonIgnore
     private String payTimestamp;
+
+    @JsonIgnore
+    private String paymentId;       // transaction ID from the payment platform
     
     public OrderHeader addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);

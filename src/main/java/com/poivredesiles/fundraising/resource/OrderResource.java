@@ -1,8 +1,8 @@
 package com.poivredesiles.fundraising.resource;
 
-import java.util.List;
-
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Resource representing a buyer order
@@ -15,8 +15,9 @@ public class OrderResource {
 	private String name;	
 	private String phone;		
 	private String note;
-	
 	private String email;
+
+	private String token;
 	
 	private List<OrderItemResource> items;
 	
