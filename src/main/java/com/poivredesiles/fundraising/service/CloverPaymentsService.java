@@ -24,7 +24,7 @@ import java.util.Locale;
 @Service
 public class CloverPaymentsService {
 
-    private ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
     private final OrderService orderService;
 
@@ -67,7 +67,6 @@ public class CloverPaymentsService {
     public Long chargeOrderAmount(OrderResource orderResource, Long sellerId, Locale locale) throws InvalidOrderException, OrderProcessingException {
         // Payment platform parameters
         String payUrl = applicationProperties.getPay().url();
-        String merchantId = applicationProperties.getPay().merchantId();
         String bearerToken = applicationProperties.getPay().privateToken();
 
         // Create new order
@@ -102,9 +101,11 @@ public class CloverPaymentsService {
             if (response != null) {
                 return processResponse(response, pendingOrder, locale);
             } else {
+                orderService.markOrderAsError(pendingOrder.getOrderNumber());
                 throw new InvalidOrderException("Charging for the order failed");
             }
         } catch (Exception e) {
+            orderService.markOrderAsError(pendingOrder.getOrderNumber());
             throw new InvalidOrderException(e.getMessage());
         }
     }
@@ -136,6 +137,7 @@ public class CloverPaymentsService {
 
         } catch (Exception e) {
             log.error("Error post-processing payment response : {}", e.getLocalizedMessage());
+            orderService.markOrderAsError(pendingOrder.getOrderNumber());
             throw new OrderProcessingException(messageSource.getMessage("order.error.postprocess", null, locale));
         }
 

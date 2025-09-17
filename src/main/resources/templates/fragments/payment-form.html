@@ -203,11 +203,7 @@
                       })
                     .fail(function(err){
                         console.log(err.responseJSON);
-                        if(err.responseJSON && err.responseJSON.message){
-                          displayError(err, '#order-msg-error', `ERREUR : ${err.responseJSON.message}`);
-                        } else {
-                          displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
-                        }
+                        displayError(err, '#order-msg-error', /*[[#{order.error.checkout}]]*/'Erreur');
                         return true;
                       })
                     .always(function(){
