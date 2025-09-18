@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,16 +30,20 @@ public class CloverPaymentsService {
 
     private final Environment env;
 
+    private final RestApiService restApiService;
+
     private final Logger log = LoggerFactory.getLogger(CloverPaymentsService.class);
 
     public CloverPaymentsService(ApplicationProperties applicationProperties,
                                  OrderService orderService,
                                  MessageSource messageSource,
-                                 Environment env) {
+                                 Environment env,
+                                 RestApiService restApiService) {
         this.applicationProperties = applicationProperties;
         this.orderService = orderService;
         this.messageSource = messageSource;
         this.env = env;
+        this.restApiService = restApiService;
     }
 
     private String getReceiptEmailTo(OrderHeader order) {
@@ -66,16 +68,12 @@ public class CloverPaymentsService {
      */
     public Long chargeOrderAmount(OrderResource orderResource, Long sellerId, Locale locale) throws InvalidOrderException, OrderProcessingException {
         // Payment platform parameters
-        String payUrl = applicationProperties.getPay().url();
+        String baseUrl = applicationProperties.getPay().url();
         String bearerToken = applicationProperties.getPay().privateToken();
 
         // Create new order
         OrderHeader pendingOrder = orderService.createNewOrder(orderResource, sellerId, locale);
         log.info("Charging payment for order #{}", pendingOrder.getOrderNumber());
-
-        RestClient client = RestClient.builder()
-                .baseUrl(payUrl)
-                .build();
 
         BigInteger total = BigDecimal.valueOf(100.0 * pendingOrder.getTotal().doubleValue()).toBigInteger();
         String description = "Campagne [" + pendingOrder.getCampaignName() + "], Commande #" + pendingOrder.getOrderNumber();
@@ -89,15 +87,7 @@ public class CloverPaymentsService {
         );
 
         try {
-            JsonNode response = client.post()
-                    .uri("/charges")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + bearerToken)
-                    .body(request)
-                    .retrieve()
-                    .body(JsonNode.class);
-
+            JsonNode response = restApiService.post(baseUrl, "/charges", bearerToken, request);
             if (response != null) {
                 return processResponse(response, pendingOrder, locale);
             } else {
