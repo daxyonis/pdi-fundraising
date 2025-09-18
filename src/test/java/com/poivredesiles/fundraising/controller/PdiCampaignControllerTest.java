@@ -1,35 +1,31 @@
 package com.poivredesiles.fundraising.controller;
 
+import com.poivredesiles.fundraising.config.SecurityConfig;
+import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
+import com.poivredesiles.fundraising.controller.rest.PdiCampaignController;
+import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
+import com.poivredesiles.fundraising.service.PdiCampaignService;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.Locale;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.Locale;
-
-import com.poivredesiles.fundraising.config.SecurityConfig;
-import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
-import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
-import org.apache.commons.lang3.RandomUtils;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.poivredesiles.fundraising.controller.rest.PdiCampaignController;
-import com.poivredesiles.fundraising.service.PdiCampaignService;
-import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Here we are testing only the MVC controller layer
@@ -49,7 +45,7 @@ public class PdiCampaignControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@MockitoBean
 	private PdiCampaignService pdiCampaignService;		
 
 	@Test

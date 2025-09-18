@@ -1,26 +1,6 @@
 package com.poivredesiles.fundraising.service;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
-
 import com.poivredesiles.fundraising.exception.PdiImportDataException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.imports.dto.Campaign;
 import com.poivredesiles.fundraising.model.group.PdiCampaign;
@@ -28,6 +8,19 @@ import com.poivredesiles.fundraising.model.order.OrderType;
 import com.poivredesiles.fundraising.repository.group.PdiCampaignRepository;
 import com.poivredesiles.fundraising.repository.order.OrderTypeRepository;
 import com.poivredesiles.fundraising.service.impl.PdiCampaignServiceImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PdiCampaignServiceTest {
@@ -37,8 +30,7 @@ public class PdiCampaignServiceTest {
 	
 	@Mock
 	private OrderTypeRepository orderTypeRepository;
-	
-	@Autowired
+
 	@InjectMocks
 	private PdiCampaignServiceImpl pdiCampaignService;
 		

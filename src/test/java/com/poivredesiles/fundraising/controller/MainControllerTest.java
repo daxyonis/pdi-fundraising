@@ -1,31 +1,29 @@
 package com.poivredesiles.fundraising.controller;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.Set;
-
 import com.poivredesiles.fundraising.config.SecurityConfig;
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
 import com.poivredesiles.fundraising.imports.CsvImportService;
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.service.PdiCampaignService;
-
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Set;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @Slf4j
 @WebMvcTest(MainController.class)
@@ -36,10 +34,10 @@ public class MainControllerTest extends BaseControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@MockBean
+	@MockitoBean
 	private CsvImportService csvImportService;
 	
-	@MockBean
+	@MockitoBean
 	private PdiCampaignService pdiCampaignService;
 	
 	@Test	

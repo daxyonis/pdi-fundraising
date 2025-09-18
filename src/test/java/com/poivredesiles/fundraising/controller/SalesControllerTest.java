@@ -1,28 +1,8 @@
 package com.poivredesiles.fundraising.controller;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import com.poivredesiles.fundraising.config.SecurityConfig;
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.filter.MaintenanceModeFilter;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
 import com.poivredesiles.fundraising.model.user.MyUserDetails;
 import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
@@ -33,8 +13,24 @@ import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.PdiCampaignRecapDTO;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
-
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
 @WebMvcTest(SalesController.class)
@@ -45,13 +41,13 @@ public class SalesControllerTest extends BaseControllerTest{
 	@Autowired
 	private MockMvc mockMvc;
 	
-	@MockBean
+	@MockitoBean
 	private PdiCampaignService pdiCampaignService;
 	
-	@MockBean
+	@MockitoBean
 	private OrderService orderService;
 	
-	@MockBean(name = "pdiGroupService")
+	@MockitoBean(name = "pdiGroupService")
 	private PdiGroupService pdiGroupService;
 	
 	

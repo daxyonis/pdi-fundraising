@@ -1,19 +1,18 @@
 package com.poivredesiles.fundraising.controller;
 
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
 import com.poivredesiles.fundraising.model.user.Role;
 import com.poivredesiles.fundraising.model.user.RoleEnum;
 import com.poivredesiles.fundraising.model.user.User;
 import com.poivredesiles.fundraising.service.PdiSellerService;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import java.util.Set;
 
 public abstract class BaseControllerTest {
 
-	@MockBean
+	@MockitoBean
 	protected PdiSellerService pdiSellerService;
 	
 	protected static User user;
