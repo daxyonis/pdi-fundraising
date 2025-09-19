@@ -8,11 +8,6 @@
     <body>
         <th:block th:fragment="payment">
             <a th:href="@{/commande}" th:text="#{order.back}">Retour a la commande</a>
-            <div class="row">
-                <div class="col-12">
-                    <div class="alert alert-warning d-none" id="order-msg-error">Une erreur est survenue...</div>
-                </div>
-            </div>
             <div class="row mt-3">
                 <div class="col-md-6">
                     <h4 class="pt-3 font-weight-bold" th:text="#{order.summary}">Votre panier</h4>
@@ -63,6 +58,11 @@
                                 <button id="submit_button" class="btn btn-large btn-success" th:text="#{order.pay}">Pay</button>
                             </div>
                     </form>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="alert alert-danger d-none" id="order-msg-error">Une erreur est survenue...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
