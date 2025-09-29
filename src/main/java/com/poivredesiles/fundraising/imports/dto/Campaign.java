@@ -1,7 +1,5 @@
 package com.poivredesiles.fundraising.imports.dto;
 
-import java.time.LocalDate;
-
 import lombok.Data;
 
 @Data
@@ -30,7 +28,7 @@ public class Campaign {
 	private Double percentProfit = Double.valueOf(50);
 
 	private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-			"[a-zA-Z0-9_+&*-]+)*@" +
+			"[\\w\\W]+)*@" +
 			"(?:[a-zA-Z0-9-]+\\.)+[a-z" +
 			"A-Z]{2,7}$";
 
