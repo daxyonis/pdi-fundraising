@@ -3,7 +3,7 @@
 <head>
   <title th:text="#{pdi.order}">pdi commande</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/order.css}"/>
-  <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod') || #arrays.contains(@environment.getActiveProfiles(), 'dev')} ?
+  <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod')} ?
                     'https://checkout.clover.com/sdk.js' : 'https://checkout.sandbox.dev.clover.com/sdk.js'"></script>
 </head>
 <body>
