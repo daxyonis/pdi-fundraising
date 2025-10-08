@@ -2,7 +2,7 @@
     <html xmlns:th="http://www.thymeleaf.org">
         <head>
             <link rel="stylesheet" type="text/css" th:href="@{/css/order.css}"/>
-            <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod')} ?
+            <script th:src="${#arrays.contains(@environment.getActiveProfiles(), 'prod') || #arrays.contains(@environment.getActiveProfiles(), 'dev')} ?
                     'https://checkout.clover.com/sdk.js' : 'https://checkout.sandbox.dev.clover.com/sdk.js'"></script>
         </head>
     <body>
