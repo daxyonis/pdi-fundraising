@@ -92,9 +92,11 @@ public class CloverPaymentsService {
                 return processResponse(response, pendingOrder, locale);
             } else {
                 orderService.markOrderAsError(pendingOrder.getOrderNumber());
+                log.error("Charging for the order failed because server response is null. Order #{}", pendingOrder.getOrderNumber());
                 throw new InvalidOrderException("Charging for the order failed");
             }
         } catch (Exception e) {
+            log.error("Exception while charging for the order", e);
             orderService.markOrderAsError(pendingOrder.getOrderNumber());
             throw new InvalidOrderException(e.getMessage());
         }
