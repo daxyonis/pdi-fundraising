@@ -49,8 +49,10 @@
 				function initExportButtonHandlers(){
 					$('button.action-export').off();
 					$('button.action-export').on('click', function(){
-						let campaign = $(this).data('campaign');
-						exportCampaign(campaign);
+						const id = $(this).data('id');
+						const orderHeaderFilename = $(this).data('orderHeaderFilename');
+						const orderDetailFilename = $(this).data('orderDetailFilename');
+						exportCampaign({id, orderHeaderFilename, orderDetailFilename});
 					});
 				}
 				
@@ -118,7 +120,12 @@
 						    	{data: 'organizationName'},
 						    	{data: 'project'},
 						    	{data: 'id', orderable: false, render: function(data, type, row){
-						    		return `<button type='button' class='btn btn-primary action-export' data-campaign='${JSON.stringify(row)}'>${exportButtonLabel}</button>`;
+						    		return `<button type='button'
+																		class='btn btn-primary action-export'
+																		data-id='${row.id}'
+																		data-order-header-filename='${row.orderHeaderFilename}'
+																		data-order-detail-filename='${row.orderDetailFilename}'
+															>${exportButtonLabel}</button>`;
 						    	}},
 						    	{data: 'formattedExportDate', render: function(data, type, row){
 									if(type === 'sort'){
