@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
     DEV-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:6.4.0
+        image: daxyonis/pdi-fundraising:latest
         ports:
             - 8081:8081
         volumes:
@@ -37,7 +37,7 @@ services:
             LOGGING_FILE_PATH: "/workspace/logs"
     
     PROD-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:6.4.0
+        image: daxyonis/pdi-fundraising:latest
         ports:
             - 8083:8083
         volumes:
