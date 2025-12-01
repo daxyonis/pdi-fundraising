@@ -2,11 +2,11 @@ version: '3.9'
 
 services:
     DEV-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:latest      
+        image: daxyonis/pdi-fundraising:6.4.0
         ports:
             - 8081:8081
         volumes:
-            - dev-logs:/var/log
+            - dev-logs:/workspace/logs
         deploy:
             mode: global
             restart_policy:
@@ -16,26 +16,28 @@ services:
                 window: 30s
             resources:
                 limits:              
-                    memory: 768M
+                    memory: 2048M
         secrets:
             - DB_USER
             - DB_PWD
             - DB_URL
             - EMAIL_PASSWORD
-            - PAY_MERCHANT_ID
-            - PAY_HASH_KEY
+            - DEV_PAY_MERCHANT_ID
+            - DEV_PAY_TOKEN
+            - DEV_PAY_PRIVATE_TOKEN
             - KEYSTORE_PASSWORD
             - KEYSTORE_FILENAME
             
         environment:
             SPRING_PROFILES_ACTIVE: dev            
-            JAVA_OPTS: "-Xms512m -Xmx512m"
+            JAVA_OPTS: "-Xms256m -Xmx768m -Xss512k -XX:MaxMetaspaceSize=128m -XX:MaxDirectMemorySize=64m"
             APPLICATION_ENCRYPTED: "true"
             APPLICATION_MODE_MAINTENANCE: "false"
             APPLICATION_ACTION_ENCRYPT: "false"
+            LOGGING_FILE_PATH: "/workspace/logs"
     
     PROD-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:latest
+        image: daxyonis/pdi-fundraising:6.4.0
         ports:
             - 8083:8083
         volumes:
@@ -55,8 +57,9 @@ services:
             - PROD_DB_PWD
             - PROD_DB_URL
             - EMAIL_PASSWORD
-            - PROD_PAY_MERCHANT_ID
-            - PROD_PAY_HASH_KEY
+            - PAY_MERCHANT_ID
+            - PAY_TOKEN
+            - PAY_PRIVATE_TOKEN
             - PROD_KEYSTORE_PASSWORD
             - PROD_KEYSTORE_FILENAME
                      
@@ -79,10 +82,18 @@ secrets:
   DB_URL:
     external: true 
   EMAIL_PASSWORD:
-    external: true 
+    external: true
   PAY_MERCHANT_ID:
     external: true
-  PAY_HASH_KEY:
+  PAY_TOKEN:
+    external: true
+  PAY_PRIVATE_TOKEN:
+    external: true
+  DEV_PAY_MERCHANT_ID:
+    external: true
+  DEV_PAY_TOKEN:
+    external: true
+  DEV_PAY_PRIVATE_TOKEN:
     external: true
   PROD_DB_USER:
     external: true 
@@ -90,10 +101,6 @@ secrets:
     external: true 
   PROD_DB_URL:
     external: true 
-  PROD_PAY_MERCHANT_ID:
-    external: true
-  PROD_PAY_HASH_KEY:
-    external: true
   KEYSTORE_PASSWORD:
     external: true
   KEYSTORE_FILENAME:
