@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
     DEV-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:latest
+        image: daxyonis/pdi-fundraising:6.4.2
         ports:
             - 8081:8081
         volumes:
@@ -37,7 +37,7 @@ services:
             LOGGING_FILE_PATH: "/workspace/logs"
     
     PROD-pdi-fundraising:
-        image: daxyonis/pdi-fundraising:latest
+        image: daxyonis/pdi-fundraising:6.4.2
         ports:
             - 8083:8083
         volumes:
@@ -57,9 +57,9 @@ services:
             - PROD_DB_PWD
             - PROD_DB_URL
             - EMAIL_PASSWORD
-            - PAY_MERCHANT_ID
-            - PAY_TOKEN
-            - PAY_PRIVATE_TOKEN
+            - PROD_PAY_MERCHANT_ID
+            - PROD_PAY_TOKEN
+            - PROD_PAY_PRIVATE_TOKEN
             - PROD_KEYSTORE_PASSWORD
             - PROD_KEYSTORE_FILENAME
                      
@@ -83,17 +83,17 @@ secrets:
     external: true 
   EMAIL_PASSWORD:
     external: true
-  PAY_MERCHANT_ID:
-    external: true
-  PAY_TOKEN:
-    external: true
-  PAY_PRIVATE_TOKEN:
-    external: true
   DEV_PAY_MERCHANT_ID:
     external: true
   DEV_PAY_TOKEN:
     external: true
   DEV_PAY_PRIVATE_TOKEN:
+    external: true
+  PROD_PAY_MERCHANT_ID:
+    external: true
+  PROD_PAY_TOKEN:
+    external: true
+  PROD_PAY_PRIVATE_TOKEN:
     external: true
   PROD_DB_USER:
     external: true 
