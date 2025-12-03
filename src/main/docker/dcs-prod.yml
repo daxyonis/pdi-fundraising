@@ -51,7 +51,7 @@ services:
                 window: 30s
             resources:
                 limits:              
-                    memory: 1536M
+                    memory: 2048M
         secrets:
             - PROD_DB_USER
             - PROD_DB_PWD
