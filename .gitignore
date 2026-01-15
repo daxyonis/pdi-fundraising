@@ -38,3 +38,6 @@ scripts/
 
 ### keystores ###
 *.p12
+
+### weird files ###
+nul
