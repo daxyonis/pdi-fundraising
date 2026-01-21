@@ -1,10 +1,10 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.poivredesiles.fundraising.service.RestApiService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.JsonNode;
 
 @Service
 public class RestApiServiceImpl implements RestApiService {

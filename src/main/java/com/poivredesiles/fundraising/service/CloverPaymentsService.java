@@ -1,6 +1,5 @@
 package com.poivredesiles.fundraising.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.poivredesiles.fundraising.config.properties.ApplicationProperties;
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.exception.OrderProcessingException;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -114,11 +114,11 @@ public class CloverPaymentsService {
     public Long processResponse(JsonNode response, OrderHeader pendingOrder, Locale locale) throws OrderProcessingException {
 
         try {
-            String status = response.get("status").asText();
+            String status = response.get("status").asString();
             log.info("Processing payment response for order #{}", pendingOrder.getOrderNumber());
             if(status != null && status.equalsIgnoreCase("succeeded")) {
                 // Success !
-                orderService.confirmOrder(pendingOrder.getOrderNumber(), response.get("id").asText(""));
+                orderService.confirmOrder(pendingOrder.getOrderNumber(), response.get("id").asString(""));
                 log.info("Order #{} confirmed !", pendingOrder.getOrderNumber());
                 return pendingOrder.getOrderNumber();
             } else {

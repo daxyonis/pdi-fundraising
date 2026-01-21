@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -54,7 +54,7 @@ public class PdiCampaignControllerTest {
 		this.mockMvc.perform(
 						get("/api/campaign/"))
 					.andExpect(status().isFound())
-					.andExpect(redirectedUrlPattern("**/login"));
+					.andExpect(redirectedUrl("/login"));
 	}
 	
 	@Test

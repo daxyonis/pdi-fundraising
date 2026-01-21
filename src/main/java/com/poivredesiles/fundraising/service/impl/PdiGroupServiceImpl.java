@@ -1,16 +1,5 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.ImportsUtils;
 import com.poivredesiles.fundraising.imports.dto.Group;
@@ -25,6 +14,16 @@ import com.poivredesiles.fundraising.resource.MultiGroupRecap;
 import com.poivredesiles.fundraising.service.PdiGroupService;
 import com.poivredesiles.fundraising.service.dto.PdiGroupRecapDTO;
 import com.poivredesiles.fundraising.service.mapper.PdiGroupRecapMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service(value = "pdiGroupService")
 @Transactional
@@ -89,7 +88,7 @@ public class PdiGroupServiceImpl implements PdiGroupService {
 			pdiGroup.setOrderType(pdiCampaign.get().getOrderType());
 		} else {
 			log.error("Cannot find campaign(number={}) for group(number={})", campaignNumber, pdiGroup.getNumber());
-			throw new ResourceNotFoundException(String.format("La campagne numéro %d associée au groupe numéro %d est introuvable", campaignNumber, pdiGroup.getNumber()));
+			throw new ResourceNotFoundException("La campagne numéro %d associée au groupe numéro %d est introuvable".formatted(campaignNumber, pdiGroup.getNumber()));
 		}		
 	}
 

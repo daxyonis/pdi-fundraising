@@ -1,15 +1,5 @@
 package com.poivredesiles.fundraising.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.imports.dto.Product;
 import com.poivredesiles.fundraising.model.product.PdiCategory;
@@ -19,6 +9,15 @@ import com.poivredesiles.fundraising.repository.product.PdiProductRepository;
 import com.poivredesiles.fundraising.service.PdiProductService;
 import com.poivredesiles.fundraising.service.dto.PdiProductDTO;
 import com.poivredesiles.fundraising.service.mapper.PdiProductMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link PdiProduct}.
@@ -115,7 +114,7 @@ public class PdiProductServiceImpl implements PdiProductService {
 			pdiProduct.setCategory(category);
 		} else {
 			log.error("Product number {} has unknown category: {}", product.getNumber(), product.getSectionNum());
-			throw new ResourceNotFoundException(String.format("Le produit numéro %s a une catégorie inconnue", product.getNumber()));
+			throw new ResourceNotFoundException("Le produit numéro %s a une catégorie inconnue".formatted(product.getNumber()));
 		}
 
 		pdiProduct.setLastModifiedBy("system");

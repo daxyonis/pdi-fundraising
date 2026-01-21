@@ -176,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
 		if(optionalOrderHeader.isPresent()) {
 			OrderHeader order = optionalOrderHeader.get();
 			if (order.getConfirmationNumber() == null || order.getCancelDate() != null) {
-				order.setConfirmationNumber(String.format(orderConfirmationFormat, order.getOrderNumber()));
+				order.setConfirmationNumber(orderConfirmationFormat.formatted(order.getOrderNumber()));
 				order.setOrderStatus(OrderStatusEnum.PAID);
 				order.setConfirmationDate(Instant.now());
 				order.setPaymentId(paymentId);
@@ -291,7 +291,7 @@ public class OrderServiceImpl implements OrderService {
 	public Page<OrderHeaderDTO> getOrders(EntitySelector entitySelector, Pageable pageable) {
 
 		// Build the specification given the filters in entitySelector
-		Specification<OrderHeader> spec = Specification.where(null);
+		Specification<OrderHeader> spec = (root, query, cb) -> cb.conjunction();
 		if (entitySelector.getStartDate() != null && entitySelector.getEndDate() != null) {
 			spec = spec.and((root, query, cb) -> cb.between(root.get("createdDate"), dateUtils.convertToInstant(entitySelector.getStartDate()), dateUtils.convertToInstant(entitySelector.getEndDate())));
 		}
