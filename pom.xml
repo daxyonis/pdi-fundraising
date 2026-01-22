@@ -299,7 +299,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.44.0</version>
 				<configuration>
-					<dockerHost>http://127.0.0.1:2375</dockerHost>
+					<dockerHost>npipe:////./pipe/docker_engine</dockerHost>
 					<verbose>true</verbose>
 					<images>
 						<image>
@@ -314,21 +314,16 @@
 									</assembly>
 									<assembly>
 										<name>keys</name>
-										<!-- This copies some files (the keystore) -->
-										<inline xmlns="http://maven.apache.org/ASSEMBLY/2.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-											xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
-											<id>app-files</id>
-											<files>
-												<file>
-													<source>keystore.p12</source>
-												</file>
-												<file>
-													<source>src/main/docker/keystore-staging.p12</source>
-												</file>
-												<file>
-													<source>src/main/docker/keystore-prod.p12</source>
-												</file>
-											</files>
+										<inline>
+											<fileSets>
+												<fileSet>
+													<directory>src/main/resources/keys</directory>
+													<outputDirectory>.</outputDirectory>
+													<includes>
+														<include>*.p12</include>
+													</includes>
+												</fileSet>
+											</fileSets>
 										</inline>
 									</assembly>
 								</assemblies>
