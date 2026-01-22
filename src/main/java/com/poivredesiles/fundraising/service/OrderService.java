@@ -1,6 +1,7 @@
 package com.poivredesiles.fundraising.service;
 
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
 import com.poivredesiles.fundraising.resource.EntitySelector;
 import com.poivredesiles.fundraising.resource.OrderResource;
@@ -9,6 +10,7 @@ import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
 
@@ -103,5 +105,13 @@ public interface OrderService {
 	List<OrderHeaderDTO> resendConfirmations(List<Long> orderIds);
 
 	List<OrderHeaderDTO> resendCancellations(List<Long> orderIds);
+
+	/**
+	 * Export filtered orders to CSV (orderNumber and orderStatus only)
+	 * @param entitySelector	the filters (date range, status)
+	 * @param writer			the writer to output CSV data
+	 * @throws PdiExportDataException if CSV export fails
+	 */
+	void exportFilteredOrders(EntitySelector entitySelector, PrintWriter writer) throws PdiExportDataException;
 
 }

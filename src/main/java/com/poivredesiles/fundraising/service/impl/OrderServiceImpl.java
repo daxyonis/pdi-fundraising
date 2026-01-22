@@ -1,6 +1,12 @@
 package com.poivredesiles.fundraising.service.impl;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
+import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
 import com.poivredesiles.fundraising.model.business.BusinessNumberTypeEnum;
 import com.poivredesiles.fundraising.model.order.OrderHeader;
@@ -21,6 +27,7 @@ import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
+import com.poivredesiles.fundraising.service.dto.OrderStatusCsvDTO;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import com.poivredesiles.fundraising.service.mapper.OrderHeaderMapper;
 import jakarta.persistence.EntityManager;
@@ -33,10 +40,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.PrintWriter;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -290,6 +299,12 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(readOnly = true)
 	public Page<OrderHeaderDTO> getOrders(EntitySelector entitySelector, Pageable pageable) {
 
+		Page<OrderHeader> orders = getOrderHeaders(entitySelector, pageable);
+
+		return orders.map(orderHeaderMapper::toDto);
+	}
+
+	private Page<OrderHeader> getOrderHeaders(EntitySelector entitySelector, Pageable pageable) {
 		// Build the specification given the filters in entitySelector
 		Specification<OrderHeader> spec = (root, query, cb) -> cb.conjunction();
 		if (entitySelector.getStartDate() != null && entitySelector.getEndDate() != null) {
@@ -308,8 +323,14 @@ public class OrderServiceImpl implements OrderService {
 		if (entitySelector.getSearch() != null && !entitySelector.getSearch().isEmpty()) {
 			// Test that the search string is a number
 			if (entitySelector.getSearch().matches("\\d+")) {
-				Long orderNumber = Long.parseLong(entitySelector.getSearch());
-				Specification<OrderHeader> searchSpec = Specification.where((root, query, cb) -> cb.equal(root.get("orderNumber"), orderNumber));
+				Long searchNumber = Long.parseLong(entitySelector.getSearch());
+				Specification<OrderHeader> searchSpec = Specification.where((root, query, cb) -> {
+					// Search by orderNumber OR campaignNumber
+					return cb.or(
+						cb.equal(root.get("orderNumber"), searchNumber),
+						cb.equal(root.get("pdiSeller").get("pdiGroup").get("pdiCampaign").get("number"), searchNumber)
+					);
+				});
 				spec = spec.and(searchSpec);
 			}
 			else {
@@ -321,10 +342,11 @@ public class OrderServiceImpl implements OrderService {
 				spec = spec.and(searchSpec);
 			}
 		}
-
-		Page<OrderHeader> orders = orderHeaderRepository.findAll(spec, pageable);
-
-		return orders.map(orderHeaderMapper::toDto);
+		Sort sort = Sort.by(Sort.Direction.ASC, "orderNumber");
+		Pageable sortedPageable = pageable.isUnpaged()
+				? Pageable.unpaged(sort)
+				: PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+		return orderHeaderRepository.findAll(spec, sortedPageable);
 	}
 
 	private ArrayList<Long> getIdsOfMatchingStringFields(String lowerCaseSearch) {
@@ -349,6 +371,34 @@ public class OrderServiceImpl implements OrderService {
 			log.debug("Found {} orders matching search string out of {}", ids.size(), numOrders);
 		} while ((long) page *batchSize < numOrders);
 		return ids;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public void exportFilteredOrders(EntitySelector entitySelector, PrintWriter writer) throws PdiExportDataException {
+		log.info("Exporting filtered orders to CSV");
+
+		Page<OrderHeader> orders = getOrderHeaders(entitySelector, Pageable.unpaged());
+		log.info("Found {} orders to export", orders.getTotalElements());
+
+		// Map to CSV DTO
+		List<OrderStatusCsvDTO> dtos = orders.stream()
+				.map(o -> new OrderStatusCsvDTO(o.getOrderNumber(), o.getOrderStatus().name()))
+				.toList();
+
+		// Write CSV using OpenCSV
+		StatefulBeanToCsv<OrderStatusCsvDTO> csvWriter = new StatefulBeanToCsvBuilder<OrderStatusCsvDTO>(writer)
+				.withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+				.withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+				.withOrderedResults(true)
+				.build();
+
+		try {
+			csvWriter.write(dtos);
+		} catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
+			log.error("Error writing orders to CSV", e);
+			throw new PdiExportDataException("Error exporting orders to CSV");
+		}
 	}
 
 }

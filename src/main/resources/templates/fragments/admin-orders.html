@@ -54,6 +54,11 @@
 				<div class="col-md-1 pt-4">
 					<button type="button" class="btn btn-secondary" id="filterOrders" th:text="#{admin.orders.filter}">Filtrer</button>
 				</div>
+				<div class="col-md-2 pt-4">
+					<button type="button" class="btn btn-primary" id="exportOrders" onclick="exportFilteredOrders()">
+						<i class="bi bi-download"></i> <span th:text="#{admin.orders.export}">Exporter</span>
+					</button>
+				</div>
 			</div>
 			<div class="row mb-4">
 				<div class="col-lg-12">
@@ -196,7 +201,35 @@
 					ordersTable.ajax.reload();
 				}
 
-				const confirmButtonLabel = /*[[#{admin.orders.confirm}]]*/'confirmer';
+				function exportFilteredOrders() {
+				const data = {
+					startDate: $('#orderStartDate').val() || null,
+					endDate: $('#orderEndDate').val() || null,
+					status: $('#orderStatus').val() || null,
+					search: { value: ordersTable.search() || '' }
+				};
+
+				$.ajax({
+					url: /*[[@{/api/admin/orders/download}]]*/'/api/admin/orders/download',
+					method: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(data),
+					xhrFields: { responseType: 'blob' },
+					success: function(blob) {
+						const url = window.URL.createObjectURL(blob);
+						const a = document.createElement('a');
+						a.href = url;
+						a.download = 'orders-export.csv';
+						a.click();
+						window.URL.revokeObjectURL(url);
+					},
+					error: function(err) {
+						displayError(err, '#orders-msg-error', /*[[#{admin.orders.export.error}]]*/'Export error');
+					}
+				});
+			}
+
+			const confirmButtonLabel = /*[[#{admin.orders.confirm}]]*/'confirmer';
 				const cancelButtonLabel = /*[[#{admin.orders.cancel}]]*/'annuler';
 
 				const ordersDatatablesOptions = {
