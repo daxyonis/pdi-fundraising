@@ -109,9 +109,10 @@ public interface OrderService {
 	/**
 	 * Export filtered orders to CSV (orderNumber and orderStatus only)
 	 * @param entitySelector	the filters (date range, status)
+	 * @param pageable
 	 * @param writer			the writer to output CSV data
 	 * @throws PdiExportDataException if CSV export fails
 	 */
-	void exportFilteredOrders(EntitySelector entitySelector, PrintWriter writer) throws PdiExportDataException;
+	void exportFilteredOrders(EntitySelector entitySelector, Pageable pageable, PrintWriter writer) throws PdiExportDataException;
 
 }

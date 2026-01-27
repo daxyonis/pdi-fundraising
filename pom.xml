@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.poivredesiles</groupId>
 	<artifactId>fundraising</artifactId>
-	<version>7.0.0</version>
+	<version>7.0.1</version>
 	<name>fundraising</name>
 	<description>Fundraising Application For Poivre des Iles</description>
 	<properties>

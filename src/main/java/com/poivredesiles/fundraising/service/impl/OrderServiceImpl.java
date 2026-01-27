@@ -40,7 +40,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -342,11 +341,8 @@ public class OrderServiceImpl implements OrderService {
 				spec = spec.and(searchSpec);
 			}
 		}
-		Sort sort = Sort.by(Sort.Direction.ASC, "orderNumber");
-		Pageable sortedPageable = pageable.isUnpaged()
-				? Pageable.unpaged(sort)
-				: PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-		return orderHeaderRepository.findAll(spec, sortedPageable);
+
+		return orderHeaderRepository.findAll(spec, pageable);
 	}
 
 	private ArrayList<Long> getIdsOfMatchingStringFields(String lowerCaseSearch) {
@@ -375,10 +371,10 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public void exportFilteredOrders(EntitySelector entitySelector, PrintWriter writer) throws PdiExportDataException {
+	public void exportFilteredOrders(EntitySelector entitySelector, Pageable pageable, PrintWriter writer) throws PdiExportDataException {
 		log.info("Exporting filtered orders to CSV");
 
-		Page<OrderHeader> orders = getOrderHeaders(entitySelector, Pageable.unpaged());
+		Page<OrderHeader> orders = getOrderHeaders(entitySelector, pageable);
 		log.info("Found {} orders to export", orders.getTotalElements());
 
 		// Map to CSV DTO

@@ -96,7 +96,14 @@ public class AdminRestController {
                 ordersRequest.getStatus(),
                 ordersRequest.getSearch() != null ? ordersRequest.getSearch().getValue() : null
         );
-        orderService.exportFilteredOrders(entitySelector, response.getWriter());
+
+        Pageable pageable = Pageable.unpaged();
+        if (ordersRequest.getLength() > 0) {
+            int page = ordersRequest.getStart() / ordersRequest.getLength();
+            pageable = PageRequest.of(page, ordersRequest.getLength(), ordersRequest.getSort());
+        }
+
+        orderService.exportFilteredOrders(entitySelector, pageable, response.getWriter());
     }
 
     @PostMapping("/notificationsettings")
