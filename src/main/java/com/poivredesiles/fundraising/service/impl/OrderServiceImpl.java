@@ -1,10 +1,6 @@
 package com.poivredesiles.fundraising.service.impl;
 
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.poivredesiles.fundraising.exception.InvalidOrderException;
 import com.poivredesiles.fundraising.exception.PdiExportDataException;
 import com.poivredesiles.fundraising.exception.ResourceNotFoundException;
@@ -27,7 +23,6 @@ import com.poivredesiles.fundraising.service.MailService;
 import com.poivredesiles.fundraising.service.OrderService;
 import com.poivredesiles.fundraising.service.dto.OrderHeaderDTO;
 import com.poivredesiles.fundraising.service.dto.OrderItemDTO;
-import com.poivredesiles.fundraising.service.dto.OrderStatusCsvDTO;
 import com.poivredesiles.fundraising.service.dto.PdiSellerDTO;
 import com.poivredesiles.fundraising.service.mapper.OrderHeaderMapper;
 import jakarta.persistence.EntityManager;
@@ -377,23 +372,18 @@ public class OrderServiceImpl implements OrderService {
 		Page<OrderHeader> orders = getOrderHeaders(entitySelector, pageable);
 		log.info("Found {} orders to export", orders.getTotalElements());
 
-		// Map to CSV DTO
-		List<OrderStatusCsvDTO> dtos = orders.stream()
-				.map(o -> new OrderStatusCsvDTO(o.getOrderNumber(), o.getOrderStatus().name()))
-				.toList();
+		// Write CSV using CSVWriter directly to preserve order
+		CSVWriter csvWriter = new CSVWriter(writer);
 
-		// Write CSV using OpenCSV
-		StatefulBeanToCsv<OrderStatusCsvDTO> csvWriter = new StatefulBeanToCsvBuilder<OrderStatusCsvDTO>(writer)
-				.withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
-				.withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-				.withOrderedResults(true)
-				.build();
+		// Write header
+		csvWriter.writeNext(new String[]{"orderNumber", "orderStatus"});
 
-		try {
-			csvWriter.write(dtos);
-		} catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
-			log.error("Error writing orders to CSV", e);
-			throw new PdiExportDataException("Error exporting orders to CSV");
+		// Write data rows in the same order as the Page
+		for (OrderHeader order : orders) {
+			csvWriter.writeNext(new String[]{
+					String.valueOf(order.getOrderNumber()),
+					order.getOrderStatus().name()
+			});
 		}
 	}
 

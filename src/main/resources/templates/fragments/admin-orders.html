@@ -202,11 +202,20 @@
 				}
 
 				function exportFilteredOrders() {
+				// Get current sort order from DataTable
+				const tableOrder = ordersTable.order();
+				const order = tableOrder.map(o => ({
+					column: o[0],
+					dir: o[1],
+					name: ordersTable.settings()[0].aoColumns[o[0]].data || ''
+				}));
+
 				const data = {
 					startDate: $('#orderStartDate').val() || null,
 					endDate: $('#orderEndDate').val() || null,
 					status: $('#orderStatus').val() || null,
-					search: { value: ordersTable.search() || '' }
+					search: { value: ordersTable.search() || '' },
+					order: order
 				};
 
 				$.ajax({

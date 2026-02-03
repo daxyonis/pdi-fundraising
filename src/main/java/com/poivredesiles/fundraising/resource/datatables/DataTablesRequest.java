@@ -76,8 +76,15 @@ public class DataTablesRequest implements Serializable {
             return Sort.unsorted();
         }
         Order o = order.get(0);
-        Column c = columns.get(o.getColumn());
-        return Sort.by(Sort.Direction.fromString(o.getDir()), c.getData());
+        String columnName;
+        if (columns != null && !columns.isEmpty() && o.getColumn() < columns.size()) {
+            columnName = columns.get(o.getColumn()).getData();
+        } else if (o.getName() != null && !o.getName().isEmpty()) {
+            columnName = o.getName();
+        } else {
+            return Sort.unsorted();
+        }
+        return Sort.by(Sort.Direction.fromString(o.getDir()), columnName);
     }
 
 }

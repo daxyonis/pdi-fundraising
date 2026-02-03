@@ -98,9 +98,8 @@ public class AdminRestController {
         );
 
         Pageable pageable = Pageable.unpaged();
-        if (ordersRequest.getLength() > 0) {
-            int page = ordersRequest.getStart() / ordersRequest.getLength();
-            pageable = PageRequest.of(page, ordersRequest.getLength(), ordersRequest.getSort());
+        if (ordersRequest.getOrder() != null && !ordersRequest.getOrder().isEmpty()) {
+            pageable = PageRequest.of(0, Integer.MAX_VALUE, ordersRequest.getSort());
         }
 
         orderService.exportFilteredOrders(entitySelector, pageable, response.getWriter());
