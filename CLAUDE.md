@@ -341,8 +341,7 @@ Key environment variables required for deployment:
 
 ## Version Information
 
-- Current version: **6.4.2**
+- Current version: **7.0.2** (see `<version>` in pom.xml)
 - Recent changes:
-  - 6.4.2: Increased memory allocation
-  - 6.4.1: Adjusted payment variables for dev vs prod
-  - 6.4.0: Environment variable naming standardization (PROD_ vs DEV_ prefixes)
+  - 7.0.2 / 7.0.1: Fix orders list sorting
+  - 0.1 (pre-7.0): Add order number + status export for filtered orders

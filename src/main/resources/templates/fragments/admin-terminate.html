@@ -14,7 +14,7 @@
 			<div class="row mt-3">
 				<div class="col-md-12">
 					<h4 th:text="#{campaigns.active}">Campagnes actives</h4>
-				</div>				
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-10 offset-lg-2">
@@ -26,10 +26,19 @@
 								<th th:text="#{campaign.number}">numero</th>
 								<th th:text="#{campaign.organization}">organisme</th>
 								<th th:text="#{campaign.project}">projet</th>
+								<th th:text="#{campaign.totalsales}">total actuel</th>
 								<th th:text="#{admin.action}">action</th>
 							</tr>
-						</thead>						
+						</thead>
 					</table>
+				</div>
+			</div>
+			<div class="row mt-2">
+				<div class="col-lg-10 offset-lg-2 text-right">
+					<strong>
+						<span th:text="#{campaigns.active.totalsales}">Total de toutes les campagnes actives</span>
+						: <span id="activeCampaignsTotalSales">0,00 $</span>
+					</strong>
 				</div>
 			</div>
 			<div class="row mt-3">
@@ -112,15 +121,22 @@
 			}
 			
 			
+			function updateActiveCampaignsTotalSales(){
+				let total = activeCampaignsDTable.rows().data().toArray()
+					.reduce(function(sum, row){ return sum + (Number(row.totalSales) || 0); }, 0);
+				$('#activeCampaignsTotalSales').text(total.toLocaleString('fr-CA', {style: 'currency', currency: 'CAD'}));
+			}
+
 			var activeCampaignsDTable = $('#activeCamp1')
 				.on('draw.dt', initCloseButtonHandlers)
-				.DataTable( 
+				.on('draw.dt', updateActiveCampaignsTotalSales)
+				.DataTable(
 					Object.assign({
 					    ajax: {
 					        url: /*[[@{/api/campaign/?active=true}]]*/'/api/campaign/',
 					        dataSrc: ''
 					    },
-					    columns: [ 
+					    columns: [
 					    	{data: 'formattedDueDate', render: function(data, type, row){
 					    		if(type ==='sort'){
 					    			return row.dueDate;
@@ -131,6 +147,13 @@
 					    	{data: 'number'},
 					    	{data: 'organizationName'},
 					    	{data: 'project'},
+					    	{data: 'formattedTotalSales', render: function(data, type, row){
+					    		if(type === 'sort'){
+					    			return row.totalSales;
+					    		} else {
+					    			return row.formattedTotalSales;
+					    		}
+					    	}},
 					    	{data: 'id', orderable: false, render: function(data, type, row){
 					    		return `<button type='button' class='btn btn-primary action-close' data-id='${data}'>${closeButtonLabel}</button>`;
 					    	}}

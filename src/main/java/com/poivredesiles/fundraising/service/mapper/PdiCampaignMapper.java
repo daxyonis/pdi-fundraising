@@ -1,19 +1,18 @@
 package com.poivredesiles.fundraising.service.mapper;
 
-import java.time.LocalDate;
-
+import com.poivredesiles.fundraising.imports.ImportsUtils;
+import com.poivredesiles.fundraising.model.group.PdiCampaign;
+import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import com.poivredesiles.fundraising.imports.ImportsUtils;
-import com.poivredesiles.fundraising.model.group.PdiCampaign;
-import com.poivredesiles.fundraising.service.dto.PdiCampaignDTO;
+import java.time.LocalDate;
 
 /**
  * Mapper for the entity {@link PdiCampaign} and its DTO {@link PdiCampaignDTO}.
  */
-@Mapper(componentModel = "spring", uses = {OrderTypeMapper.class})
+@Mapper(componentModel = "spring", uses = {OrderTypeMapper.class, CurrencyFormattingMapper.class})
 public interface PdiCampaignMapper extends EntityMapper<PdiCampaignDTO, PdiCampaign> {
 
     @Mapping(source = "orderType.id", target = "orderTypeId")
@@ -21,6 +20,8 @@ public interface PdiCampaignMapper extends EntityMapper<PdiCampaignDTO, PdiCampa
     @Mapping(source = "closedDate", target = "formattedClosedDate", qualifiedByName="formatDate")
     @Mapping(source = "blockedDate", target = "formattedBlockedDate", qualifiedByName="formatDate")
     @Mapping(source = "exportDate", target = "formattedExportDate", qualifiedByName="formatDate")
+    @Mapping(source = "totalSales", target = "totalSales")
+    @Mapping(source = "totalSales", target = "formattedTotalSales", qualifiedByName="formatCurrency")
     PdiCampaignDTO toDto(PdiCampaign pdiCampaign);
 
     @Mapping(target = "pdiGroups", ignore = true)    

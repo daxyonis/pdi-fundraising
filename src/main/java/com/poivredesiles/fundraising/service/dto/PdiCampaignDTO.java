@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -58,8 +59,12 @@ public class PdiCampaignDTO implements Serializable {
     
     private String formattedExportDate;
 
-    private Long orderTypeId;      
-    
+    private Long orderTypeId;
+
+    private BigDecimal totalSales;
+
+    private String formattedTotalSales;
+
     @JsonProperty("campaignInfo")
     public String getCampaignInfo() {
     	return "%d %s - %s".formatted(organizationNum, organizationName, project);
